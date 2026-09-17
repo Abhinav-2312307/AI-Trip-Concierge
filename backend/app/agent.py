@@ -18,17 +18,29 @@ from .tools import (
 load_dotenv()
 logger = logging.getLogger("ai_concierge.agent")
 
-def get_system_prompt(guest_name: Optional[str] = None) -> str:
-    guest_context = f"The guest's name is {guest_name.strip()}, staying in a Sea View Luxury Suite.\n" if guest_name and guest_name.strip() else "The guest is staying in a Sea View Luxury Suite.\n"
+def get_system_prompt(hotel_id: str = "taj-fort-aguada", guest_name: Optional[str] = None) -> str:
+    hotel = get_hotel_info(hotel_id)
+    hotel_name = hotel.get("name", "Taj Fort Aguada Resort & Spa, Goa")
+    hotel_area = hotel.get("area", "Sinquerim, Candolim")
+    hotel_region = hotel.get("region", "North Goa")
+    room_type = hotel.get("room_type", "Luxury Suite")
+    conf_code = hotel.get("confirmation_code", "CONF-DEMO")
+    check_in_time = hotel.get("check_in_time", "3:00 PM")
+    check_out_time = hotel.get("check_out_time", "12:00 PM")
+    amenities_str = ", ".join(hotel.get("amenities", [])[:5])
+
+    guest_intro = f"The esteemed guest is {guest_name.strip()}." if guest_name and guest_name.strip() else "The guest is our esteemed traveler."
+    
     return (
-        "You are the exclusive AI Trip Concierge for the guest staying at Taj Fort Aguada Resort & Spa, Goa "
-        "located in Sinquerim, Candolim, North Goa.\n" + guest_context +
-        "Crucial Guidelines:\n"
-        "1. When the guest asks for recommendations 'near me' or 'nearby', always use their hotel location in Sinquerim / Candolim as the origin.\n"
-        "2. Always call tools (search_restaurants, search_activities, get_transport_tips, get_weather_and_tide_info) to retrieve authentic Goa knowledge.\n"
-        "3. Never hallucinate or invent fake place names, fictional addresses, or wrong prices. Only recommend places retrieved from tool execution.\n"
-        "4. When recommending restaurants, always include: Name, Area, Cuisine, Price Range, One-line Reason to visit, and Distance/Travel time from Taj Fort Aguada.\n"
-        "5. Keep responses conversational, warm, polished, and hospitable. Greet the guest warmly by name if provided, or as our esteemed guest."
+        f"You are the exclusive AI Trip Concierge for the guest staying at {hotel_name}, located in {hotel_area}, {hotel_region}.\n"
+        f"{guest_intro} Reservation: {room_type} (Confirmation: {conf_code}).\n"
+        f"Hotel Details: Check-in: {check_in_time}, Check-out: {check_out_time}. Key Amenities: {amenities_str}.\n\n"
+        f"Crucial Concierge Guidelines:\n"
+        f"1. GEOGRAPHIC GROUNDING: When the guest asks for recommendations 'near me', 'nearby', 'near my hotel', or 'close to my stay', ALWAYS use {hotel_name} in {hotel_area} as the origin.\n"
+        f"2. HOTEL CONTEXT: Never confuse this hotel with any other property. Do not recommend Candolim spots as 'nearby' if the guest is staying at The Leela in South Goa or W Goa in Vagator.\n"
+        f"3. AUTHENTIC KNOWLEDGE: Always call tools (search_restaurants, search_activities, get_transport_tips, get_weather_and_tide_info) to retrieve authentic Goa knowledge. Never invent fake venues.\n"
+        f"4. CHECK-IN INQUIRIES: When asked about check-in guidance, provide check-in time ({check_in_time}), check-out time ({check_out_time}), digital key services, welcome amenities, and luggage storage assistance.\n"
+        f"5. TONE & HOSPITALITY: Keep responses warm, polished, hospitable, and concise. Address the guest warmly."
     )
 
 class AIConciergeAgent:
@@ -43,22 +55,36 @@ class AIConciergeAgent:
                 logger.warning(f"Failed to initialize Anthropic client: {e}")
                 self.client = None
 
-    def chat(self, user_message: str, chat_history: Optional[List[Dict[str, str]]] = None, guest_name: Optional[str] = None) -> Dict[str, Any]:
+    def chat(
+        self,
+        user_message: str,
+        chat_history: Optional[List[Dict[str, str]]] = None,
+        guest_name: Optional[str] = None,
+        hotel_id: Optional[str] = "taj-fort-aguada"
+    ) -> Dict[str, Any]:
         """Process user message via Claude tool-use, falling back to smart local tool calling if API key is missing."""
+        active_h_id = hotel_id or "taj-fort-aguada"
         if self.client:
             try:
-                return self._chat_claude(user_message, chat_history or [], guest_name=guest_name)
+                return self._chat_claude(user_message, chat_history or [], guest_name=guest_name, hotel_id=active_h_id)
             except Exception as e:
                 logger.error(f"Claude API execution failed: {e}. Falling back to offline tool engine.")
-                return self._chat_fallback(user_message, chat_history or [], guest_name=guest_name)
+                return self._chat_fallback(user_message, chat_history or [], guest_name=guest_name, hotel_id=active_h_id)
         else:
-            return self._chat_fallback(user_message, chat_history or [], guest_name=guest_name)
+            return self._chat_fallback(user_message, chat_history or [], guest_name=guest_name, hotel_id=active_h_id)
 
-    def _chat_claude(self, user_message: str, chat_history: List[Dict[str, str]], guest_name: Optional[str] = None) -> Dict[str, Any]:
+    def _chat_claude(
+        self,
+        user_message: str,
+        chat_history: List[Dict[str, str]],
+        guest_name: Optional[str] = None,
+        hotel_id: str = "taj-fort-aguada"
+    ) -> Dict[str, Any]:
         """Execute conversational flow with Anthropic Claude and tool calling."""
-        import anthropic
+        system_prompt = get_system_prompt(hotel_id, guest_name)
+        hotel = get_hotel_info(hotel_id)
+        hotel_name = hotel.get("name", "Taj Fort Aguada")
 
-        system_prompt = get_system_prompt(guest_name)
         messages = []
         for msg in chat_history[-6:]:
             role = "user" if msg.get("role") == "user" else "assistant"
@@ -94,8 +120,8 @@ class AIConciergeAgent:
                     "input": tool_input
                 })
 
-                # Execute local tool
-                tool_result = execute_tool(tool_name, tool_input)
+                # Execute local tool with hotel context
+                tool_result = execute_tool(tool_name, tool_input, hotel_id=hotel_id)
                 
                 # If tool returned places or restaurant data, collect as cards
                 if isinstance(tool_result, list):
@@ -133,7 +159,7 @@ class AIConciergeAgent:
                 "tool_calls": tool_calls_trace,
                 "cards": recommendation_cards,
                 "provider": "Anthropic Claude 3.5 Sonnet (Live API)",
-                "hotel_origin": "Taj Fort Aguada, Candolim"
+                "hotel_origin": f"{hotel_name}, {hotel.get('area')}"
             }
         else:
             # Direct text response
@@ -147,19 +173,40 @@ class AIConciergeAgent:
                 "tool_calls": tool_calls_trace,
                 "cards": recommendation_cards,
                 "provider": "Anthropic Claude 3.5 Sonnet (Live API)",
-                "hotel_origin": "Taj Fort Aguada, Candolim"
+                "hotel_origin": f"{hotel_name}, {hotel.get('area')}"
             }
 
-    def _chat_fallback(self, user_message: str, chat_history: List[Dict[str, str]], guest_name: Optional[str] = None) -> Dict[str, Any]:
-        """Intelligent semantic tool dispatcher fallback for offline/keyless demo environments."""
+    def _chat_fallback(
+        self,
+        user_message: str,
+        chat_history: List[Dict[str, str]],
+        guest_name: Optional[str] = None,
+        hotel_id: str = "taj-fort-aguada"
+    ) -> Dict[str, Any]:
+        """Intelligent semantic tool dispatcher fallback grounded in active hotel context."""
         msg = user_message.lower().strip()
+        hotel = get_hotel_info(hotel_id)
+        hotel_name = hotel.get("name", "Taj Fort Aguada")
+        hotel_area = hotel.get("area", "Candolim")
+        
         tool_calls_trace = []
         recommendation_cards = []
         reply_lines = []
+        greeting = f"Namaste {guest_name.strip()}!" if guest_name and guest_name.strip() else "Namaste!"
 
-        # Intent 1: Dinner / Restaurant near me
-        if any(w in msg for w in ["dinner", "lunch", "restaurant", "food", "eat", "dining", "hungry", "dish"]):
-            is_near = any(w in msg for w in ["near", "nearby", "around", "closest", "tonight", "here"])
+        # Intent 1: Check-in guidance
+        if any(w in msg for w in ["check-in", "checkin", "check in", "arrival", "before check-in", "luggage", "room key"]):
+            reply_lines.append(f"{greeting} Here is everything you should know regarding your stay at **{hotel_name}**:\n")
+            reply_lines.append(f"• **Check-in Time**: {hotel.get('check_in_time', '3:00 PM')} (Check-out: {hotel.get('check_out_time', '12:00 PM')})")
+            reply_lines.append(f"• **Room Type**: {hotel.get('room_type', 'Luxury Suite')} (Ref: `{hotel.get('confirmation_code', 'CONF-DEMO')}`)")
+            reply_lines.append(f"• **Early Arrival & Luggage**: Our concierge desk is delighted to store your luggage securely and grant pool & beach lounge access if you arrive before standard check-in.")
+            reply_lines.append(f"• **Required at Check-in**: Valid government photo ID and booking confirmation reference.")
+            reply_lines.append(f"• **Key Highlights & Perks**: {', '.join(hotel.get('highlights', ['24/7 Concierge', 'Complimentary welcome refreshment']))}.")
+            reply_lines.append(f"\nFeel free to ask me for dining or activity arrangements while your suite is being finalized!")
+
+        # Intent 2: Dinner / Restaurant near me
+        elif any(w in msg for w in ["dinner", "lunch", "restaurant", "food", "eat", "dining", "hungry", "dish"]):
+            is_near = any(w in msg for w in ["near", "nearby", "around", "closest", "tonight", "here", "hotel"])
             cuisine_filter = ""
             if "seafood" in msg:
                 cuisine_filter = "seafood"
@@ -169,7 +216,13 @@ class AIConciergeAgent:
                 cuisine_filter = "greek"
 
             area_filter = ""
-            if "baga" in msg:
+            if "cavelossim" in msg:
+                area_filter = "Cavelossim"
+            elif "majorda" in msg or "betalbatim" in msg:
+                area_filter = "Betalbatim"
+            elif "vagator" in msg:
+                area_filter = "Vagator"
+            elif "baga" in msg:
                 area_filter = "Baga"
             elif "assagao" in msg:
                 area_filter = "Assagao"
@@ -181,6 +234,7 @@ class AIConciergeAgent:
                 area_filter = "Panjim"
 
             tool_input = {
+                "hotel_id": hotel_id,
                 "query": cuisine_filter or "dinner",
                 "area": area_filter,
                 "near_hotel": is_near or not area_filter
@@ -191,109 +245,112 @@ class AIConciergeAgent:
             if places:
                 recommendation_cards = places[:2]
                 primary = places[0]
-                reply_lines.append(f"Here is a fantastic dining recommendation for you tonight right near your stay at **Taj Fort Aguada**:\n")
+                reply_lines.append(f"Here is a top dining recommendation near your stay at **{hotel_name}** ({hotel_area}):\n")
                 reply_lines.append(f"🍽️ **{primary['name']}**")
-                reply_lines.append(f"• **Area**: {primary['area']} ({primary['distance_from_hotel']})")
-                reply_lines.append(f"• **Cuisine**: {primary['cuisine']}")
-                reply_lines.append(f"• **Price Range**: {primary['price_range']}")
-                reply_lines.append(f"• **Why Visit**: {primary['description']}")
-                if "signature_dishes" in primary:
+                reply_lines.append(f"• **Area**: {primary['area']} ({primary.get('distance_from_hotel', 'Near Hotel')})")
+                reply_lines.append(f"• **Cuisine**: {primary.get('cuisine', 'Coastal')}")
+                reply_lines.append(f"• **Price Range**: {primary.get('price_range', '₹₹')}")
+                reply_lines.append(f"• **Why Visit**: {primary.get('description')}")
+                if "signature_dishes" in primary and primary["signature_dishes"]:
                     reply_lines.append(f"• **Must-Try**: {', '.join(primary['signature_dishes'][:3])}")
 
                 if len(places) > 1:
                     secondary = places[1]
-                    reply_lines.append(f"\nAlternatively, if you prefer a different atmosphere:\n• **{secondary['name']}** in {secondary['area']} — {secondary['vibe']} ({secondary['price_range']}).")
+                    reply_lines.append(f"\nAlternatively:\n• **{secondary['name']}** ({secondary.get('distance_from_hotel')}) — {secondary.get('vibe')}.")
                 
-                reply_lines.append("\nWould you like me to request a priority table reservation through the Taj concierge desk?")
+                reply_lines.append(f"\nWould you like our concierge team to coordinate priority table reservations for you?")
             else:
-                reply_lines.append("I checked our North Goa dining directory and recommend visiting **The Fisherman's Wharf** in Candolim (just 2.5 km from your resort) for exquisite Goan seafood and live music.")
+                reply_lines.append(f"I checked our verified Goa directory and recommend dining at the seaside spots located right near {hotel_name}.")
 
-        # Intent 2: Chill beach / morning beach
-        elif any(w in msg for w in ["beach", "sea", "sand", "swim", "chill beach", "morning beach"]):
-            tool_input = {"query": "chill beach", "category": "beach", "time_of_day": "morning"}
+        # Intent 3: Chill beach / morning beach / close to my stay
+        elif any(w in msg for w in ["beach", "sea", "sand", "swim", "chill beach", "morning beach", "close to my stay"]):
+            tool_input = {"hotel_id": hotel_id, "query": "chill beach", "category": "beach", "time_of_day": "morning"}
             tool_calls_trace.append({"tool": "search_activities", "input": tool_input})
             beaches = search_activities(**tool_input)
             
-            # Select peaceful/clean beaches
-            quiet_beaches = [b for b in beaches if any(t in b.get("tags", []) for t in ["chill beach", "relax", "near hotel"])]
-            selected = quiet_beaches if quiet_beaches else beaches
-            recommendation_cards = selected[:2]
-            primary = selected[0]
+            selected = beaches
+            if selected:
+                recommendation_cards = selected[:2]
+                primary = selected[0]
 
-            reply_lines.append(f"For a serene and refreshing morning, here is my top recommendation:\n")
-            reply_lines.append(f"🏖️ **{primary['name']}**")
-            reply_lines.append(f"• **Area**: {primary['area']} ({primary['distance_from_hotel']})")
-            reply_lines.append(f"• **Atmosphere**: {primary['vibe']}")
-            reply_lines.append(f"• **Best Time**: {primary['best_time']}")
-            reply_lines.append(f"• **Why Visit**: {primary['description']}")
-            
-            if len(selected) > 1 and selected[1]['id'] == 'sinquerim-candolim-beach':
-                reply_lines.append(f"\n💡 *Quick Tip*: If you prefer something right on your doorstep without a cab ride, **Sinquerim Beach** is just 5 minutes walk from your room!")
+                reply_lines.append(f"For a serene beach experience close to **{hotel_name}**, here is my top recommendation:\n")
+                reply_lines.append(f"🏖️ **{primary['name']}**")
+                reply_lines.append(f"• **Location**: {primary['area']} ({primary.get('distance_from_hotel', 'Near Hotel')})")
+                reply_lines.append(f"• **Atmosphere**: {primary.get('vibe')}")
+                reply_lines.append(f"• **Best Time**: {primary.get('best_time')}")
+                reply_lines.append(f"• **Why Visit**: {primary.get('description')}")
+                
+                if len(selected) > 1:
+                    sec = selected[1]
+                    reply_lines.append(f"\n💡 *Another nearby option*: **{sec['name']}** ({sec.get('distance_from_hotel')}) — {sec.get('vibe')}.")
 
-        # Intent 3: Anjuna / Evening activities
-        elif "anjuna" in msg or ("evening" in msg and not "dinner" in msg):
-            area = "Anjuna" if "anjuna" in msg else ""
-            tool_input = {"query": "sunset evening", "area": area, "time_of_day": "evening"}
+        # Intent 4: What can I do near my hotel / Tomorrow's activities
+        elif any(w in msg for w in ["do near", "near my hotel", "tomorrow", "plan tomorrow", "what can i do"]):
+            tool_input = {"hotel_id": hotel_id, "query": "activities"}
             tool_calls_trace.append({"tool": "search_activities", "input": tool_input})
             activities = search_activities(**tool_input)
             recommendation_cards = activities[:2]
-            
-            reply_lines.append(f"Here are top-tier evening experiences around {area or 'North Goa'}:\n")
+
+            reply_lines.append(f"Here are exciting experiences starting right from **{hotel_name}** ({hotel_area}):\n")
             for act in activities[:2]:
                 reply_lines.append(f"✨ **{act['name']}** ({act['area']})")
-                reply_lines.append(f"• **Vibe**: {act['vibe']}")
-                reply_lines.append(f"• **Distance**: {act['distance_from_hotel']}")
-                reply_lines.append(f"• **Experience**: {act['description']}\n")
+                reply_lines.append(f"• **Distance**: {act.get('distance_from_hotel', 'Near Hotel')}")
+                reply_lines.append(f"• **Vibe**: {act.get('vibe')}")
+                reply_lines.append(f"• **Experience**: {act.get('description')}\n")
+            reply_lines.append("Would you like me to add any of these to your customized daily itinerary?")
 
-        # Intent 4: Transport / How to travel from X to Y
+        # Intent 5: Transport / Travel advice
         elif any(w in msg for w in ["travel", "go to", "cab", "taxi", "scooter", "goamiles", "reach", "transport", "how can i"]):
-            destination = "Panjim" if "panjim" in msg else ("Baga" if "baga" in msg else "Palolem")
-            origin = "Baga" if "from baga" in msg else "Taj Fort Aguada, Candolim"
-            tool_input = {"origin": origin, "destination": destination}
+            destination = "Panjim" if "panjim" in msg else ("Baga" if "baga" in msg else ("Palolem" if "palolem" in msg else "Old Goa"))
+            origin = f"{hotel_name}, {hotel_area}"
+            tool_input = {"hotel_id": hotel_id, "origin": origin, "destination": destination}
             tool_calls_trace.append({"tool": "get_transport_tips", "input": tool_input})
             guides = get_transport_tips(**tool_input)
 
-            reply_lines.append(f"Here is the best way to travel between **{origin}** and **{destination}**:\n")
-            reply_lines.append(f"1. 🚗 **GoaMiles App Cab**: Most reliable option with meter pricing (~₹500-650). Download the GoaMiles app or ask the hotel concierge to book one.")
-            reply_lines.append(f"2. 🛵 **Scooter / Activa Rental**: (~₹400/day). Scenic 30-minute ride along the Nerul / Mandovi river road. Make sure to wear helmets.")
-            reply_lines.append(f"3. 🏍️ **Goa Pilot (Motorcycle Taxi)**: Fastest for solo travelers (~₹150-200).")
-            reply_lines.append(f"\n💡 *Pro-Tip*: If heading into Panjim Latin Quarter, afternoon around 4:00 PM is ideal for exploring before sunset.")
+            reply_lines.append(f"Here is the best way to travel from **{origin}** to **{destination}**:\n")
+            reply_lines.append(f"1. 🚗 **GoaMiles App Cab**: Most reliable government-regulated meter pricing. Download the GoaMiles app or ask the hotel concierge desk to arrange a pickup.")
+            reply_lines.append(f"2. 🛵 **Scooter / Activa Rental**: (~₹400/day). Scenic and flexible for beach hops within 15 km. Helmets are mandatory.")
+            reply_lines.append(f"3. 🚘 **Private Chauffeur Sedan**: (~₹2,500 for 8 hrs). Ideal for stress-free day tours across South or North Goa.")
 
-        # Intent 5: Romantic evening
+        # Intent 6: Romantic evening
         elif any(w in msg for w in ["romantic", "couple", "date", "anniversary", "sunset"]):
-            tool_input = {"query": "romantic sunset", "vibe": "romantic"}
+            tool_input = {"hotel_id": hotel_id, "query": "romantic sunset", "vibe": "romantic", "near_hotel": True}
             tool_calls_trace.append({"tool": "search_restaurants", "input": tool_input})
             rom_restaurants = search_restaurants(**tool_input)
-            tool_calls_trace.append({"tool": "search_activities", "input": {"query": "sunset cruise"}})
-            rom_activities = search_activities(query="sunset cruise")
+            tool_calls_trace.append({"tool": "search_activities", "input": {"hotel_id": hotel_id, "query": "sunset"}})
+            rom_activities = search_activities(hotel_id=hotel_id, query="sunset")
 
             combined_cards = (rom_restaurants[:1] + rom_activities[:1])
             recommendation_cards = combined_cards
 
-            reply_lines.append(f"Here is a curated itinerary for an unforgettable romantic evening in Goa:\n")
-            reply_lines.append(f"1. 🌅 **5:15 PM — Mandovi River Luxury Sunset Cruise**: Sip sparkling wine and enjoy live saxophone music as the sun sets over the Arabian Sea.")
-            reply_lines.append(f"2. 🕯️ **7:45 PM — Intimate Dinner at Thalassa (Siolim) or Gunpowder (Assagao)**: Dine under a candlelit heritage garden canopy with artisanal cocktails and exquisite coastal cuisine.")
-            reply_lines.append(f"\nWould you like our concierge team to reserve prime sunset seating for you?")
+            reply_lines.append(f"Here is a curated romantic evening tailored from **{hotel_name}**:\n")
+            if rom_activities:
+                act = rom_activities[0]
+                reply_lines.append(f"1. 🌅 **Golden Hour ({act['name']})**: {act['description']} ({act.get('distance_from_hotel')}).")
+            if rom_restaurants:
+                rest = rom_restaurants[0]
+                reply_lines.append(f"2. 🕯️ **Intimate Dinner at {rest['name']} ({rest['area']})**: {rest['description']} ({rest.get('distance_from_hotel')}).")
+            reply_lines.append(f"\nShall I have our hotel concierge desk reserve a private table for you tonight?")
 
         # General queries
         else:
-            tool_input = {"query": user_message}
+            tool_input = {"hotel_id": hotel_id, "query": user_message}
             tool_calls_trace.append({"tool": "search_activities", "input": tool_input})
-            results = search_activities(query=user_message)
+            results = search_activities(**tool_input)
             if not results:
-                results = search_restaurants(query=user_message)
+                results = search_restaurants(**tool_input)
             recommendation_cards = results[:2]
 
-            reply_lines.append(f"As your Taj Fort Aguada concierge, I'm delighted to assist! Based on your Goa trip details, here are recommended highlights:")
+            reply_lines.append(f"As your concierge at **{hotel_name}**, I am delighted to assist! Here are verified Goa highlights matching your inquiry:")
             for item in results[:2]:
-                reply_lines.append(f"\n• **{item['name']}** ({item['area']}): {item['description']} ({item['distance_from_hotel']})")
+                reply_lines.append(f"\n• **{item['name']}** ({item['area']}): {item.get('description')} ({item.get('distance_from_hotel')})")
 
         return {
             "reply": "\n".join(reply_lines),
             "tool_calls": tool_calls_trace,
             "cards": recommendation_cards,
-            "provider": "Anthropic Claude Tool-Calling Engine (Smart Fallback Mode)",
-            "hotel_origin": "Taj Fort Aguada, Candolim"
+            "provider": "AI Concierge Tool-Calling Engine (Active Hotel Grounded)",
+            "hotel_origin": f"{hotel_name}, {hotel_area}"
         }
 
 agent_instance = AIConciergeAgent()

@@ -1,9 +1,16 @@
-import type { TripContext, ItineraryResponse, Place, SmartAlert, TransportGuideItem } from '../types';
+import type { TripContext, ItineraryResponse, Place, SmartAlert, TransportGuideItem, HotelBooking } from '../types';
 
 const API_BASE = 'http://localhost:8000/api';
 
-export async function fetchTripContext(): Promise<TripContext> {
-  const res = await fetch(`${API_BASE}/trip-context`);
+export async function fetchBookings(): Promise<{ count: number; hotels: HotelBooking[] }> {
+  const res = await fetch(`${API_BASE}/hotels`);
+  if (!res.ok) throw new Error('Failed to fetch hotel bookings');
+  return res.json();
+}
+
+export async function fetchTripContext(hotelId?: string): Promise<TripContext> {
+  const url = hotelId ? `${API_BASE}/trip-context?hotel_id=${encodeURIComponent(hotelId)}` : `${API_BASE}/trip-context`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error('Failed to fetch trip context');
   return res.json();
 }
@@ -11,7 +18,8 @@ export async function fetchTripContext(): Promise<TripContext> {
 export async function sendChatMessage(
   message: string,
   history: Array<{ role: string; content: string }>,
-  guestName?: string
+  guestName?: string,
+  hotelId?: string
 ): Promise<{
   reply: string;
   tool_calls?: Array<{ tool: string; input: Record<string, any> }>;
@@ -22,7 +30,12 @@ export async function sendChatMessage(
   const res = await fetch(`${API_BASE}/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message, history, guest_name: guestName }),
+    body: JSON.stringify({
+      message,
+      history,
+      guest_name: guestName,
+      hotel_id: hotelId || 'taj-fort-aguada'
+    }),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: 'Network error' }));
@@ -32,6 +45,7 @@ export async function sendChatMessage(
 }
 
 export async function generateItinerary(
+  hotelId: string = 'taj-fort-aguada',
   days: number = 3,
   focus: string = 'balanced',
   guestName?: string,
@@ -40,14 +54,26 @@ export async function generateItinerary(
   const res = await fetch(`${API_BASE}/itinerary/generate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ days, focus, guest_name: guestName, start_date: startDate }),
+    body: JSON.stringify({
+      hotel_id: hotelId,
+      days,
+      focus,
+      guest_name: guestName,
+      start_date: startDate
+    }),
   });
   if (!res.ok) throw new Error('Failed to generate itinerary');
   return res.json();
 }
 
-export async function fetchRecommendations(category?: string, area?: string, search?: string): Promise<{ count: number; places: Place[] }> {
+export async function fetchRecommendations(
+  hotelId?: string,
+  category?: string,
+  area?: string,
+  search?: string
+): Promise<{ count: number; places: Place[] }> {
   const params = new URLSearchParams();
+  if (hotelId) params.append('hotel_id', hotelId);
   if (category && category !== 'all') params.append('category', category);
   if (area && area !== 'all') params.append('area', area);
   if (search) params.append('search', search);
@@ -57,24 +83,32 @@ export async function fetchRecommendations(category?: string, area?: string, sea
   return res.json();
 }
 
-export async function fetchAlerts(): Promise<{ alerts: SmartAlert[] }> {
-  const res = await fetch(`${API_BASE}/alerts`);
+export async function fetchAlerts(hotelId?: string): Promise<{ alerts: SmartAlert[] }> {
+  const url = hotelId ? `${API_BASE}/alerts?hotel_id=${encodeURIComponent(hotelId)}` : `${API_BASE}/alerts`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error('Failed to fetch alerts');
   return res.json();
 }
 
-export async function simulateAlert(alertType: string = 'rain_baga'): Promise<{ status: string; alert: SmartAlert }> {
+export async function simulateAlert(
+  hotelId: string = 'taj-fort-aguada',
+  alertType: string = 'rain_baga'
+): Promise<{ status: string; alert: SmartAlert }> {
   const res = await fetch(`${API_BASE}/alerts/simulate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ alert_type: alertType }),
+    body: JSON.stringify({
+      hotel_id: hotelId,
+      alert_type: alertType
+    }),
   });
   if (!res.ok) throw new Error('Failed to simulate alert');
   return res.json();
 }
 
-export async function fetchTransportGuide(): Promise<{ guide: TransportGuideItem[] }> {
-  const res = await fetch(`${API_BASE}/transport-guide`);
+export async function fetchTransportGuide(hotelId?: string): Promise<{ guide: TransportGuideItem[] }> {
+  const url = hotelId ? `${API_BASE}/transport-guide?hotel_id=${encodeURIComponent(hotelId)}` : `${API_BASE}/transport-guide`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error('Failed to fetch transport guide');
   return res.json();
 }

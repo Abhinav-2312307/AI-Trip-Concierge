@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Hotel, Calendar, Utensils, Waves, ShieldCheck, Check, Sparkles, Navigation, User, Clock } from 'lucide-react';
+import { Hotel, Calendar, Utensils, Waves, ShieldCheck, Check, Sparkles, User, Clock, HelpCircle } from 'lucide-react';
 import type { TripContext } from '../types';
 
 interface TripOverviewProps {
@@ -8,6 +8,7 @@ interface TripOverviewProps {
   onUpdateGuestName: (name: string) => void;
   onQuickAction: (action: string) => void;
   onGenerateItineraryClick: () => void;
+  onSwitchBookingClick: () => void;
 }
 
 export const TripOverview: React.FC<TripOverviewProps> = ({
@@ -16,6 +17,7 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
   onUpdateGuestName,
   onQuickAction,
   onGenerateItineraryClick,
+  onSwitchBookingClick,
 }) => {
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameInput, setNameInput] = useState(guestName);
@@ -36,16 +38,16 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
     day: 'numeric'
   });
 
-  const checkInFormatted = tripContext?.check_in_formatted || 'Sep 18, 2026';
-  const checkOutFormatted = tripContext?.check_out_formatted || 'Sep 21, 2026';
-  const daysUntil = tripContext?.days_until_checkin ?? 1;
+  const checkInFormatted = hotel?.check_in_formatted || tripContext?.check_in_formatted || 'Sep 18, 2026';
+  const checkOutFormatted = hotel?.check_out_formatted || tripContext?.check_out_formatted || 'Sep 21, 2026';
+  const daysUntil = tripContext?.days_until_checkin ?? hotel?.days_until_checkin ?? 1;
 
   const countdownText = daysUntil === 0 
     ? 'Check-in Today' 
     : (daysUntil === 1 ? 'Starts Tomorrow (1 day to go)' : `Starts in ${daysUntil} days`);
 
   return (
-    <div style={{ marginBottom: '28px' }} className="animate-fade-in">
+    <div style={{ marginBottom: '24px' }} className="animate-fade-in">
       {/* Hospitality Booking Banner */}
       <div style={{
         borderRadius: 'var(--radius-md)',
@@ -53,7 +55,7 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
         color: '#FFFFFF',
         border: '1px solid rgba(255, 255, 255, 0.08)',
         boxShadow: 'var(--shadow-card)',
-        padding: '30px 34px',
+        padding: '28px 32px',
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
@@ -62,24 +64,27 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
       }}>
         {/* Left Guest Info */}
         <div style={{ maxWidth: '640px' }}>
+          {/* Top Status Indicators */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px', flexWrap: 'wrap' }}>
             <span style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '4px',
               fontSize: '0.74rem',
-              fontWeight: 600,
+              fontWeight: 700,
               color: '#A7F3D0',
               background: 'rgba(16, 185, 129, 0.12)',
               padding: '2px 8px',
               borderRadius: 'var(--radius-xs)',
               border: '1px solid rgba(16, 185, 129, 0.2)'
             }}>
-              <Check size={12} /> Confirmed Stay
+              <Check size={12} /> {hotel?.status || 'Confirmed Stay'}
             </span>
+
             <span style={{ fontSize: '0.78rem', color: '#94A3B8' }}>
-              Booking Ref: <code style={{ color: '#E2E8F0', fontWeight: 600 }}>{hotel?.confirmation_code || 'TAJ-GOA-89421'}</code>
+              Booking Ref: <code style={{ color: '#E2E8F0', fontWeight: 600 }}>{hotel?.confirmation_code || 'CONF-DEMO'}</code>
             </span>
+
             <span style={{
               fontSize: '0.74rem',
               color: '#FDBA74',
@@ -93,10 +98,31 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
             }}>
               <Clock size={11} /> {todayFormatted}
             </span>
+
+            <button
+              onClick={onSwitchBookingClick}
+              style={{
+                background: 'rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                color: '#FDBA74',
+                borderRadius: 'var(--radius-xs)',
+                padding: '2px 8px',
+                fontSize: '0.74rem',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '3px',
+                fontWeight: 600,
+                transition: 'all 0.15s ease'
+              }}
+            >
+              <Hotel size={11} /> Switch Hotel Booking
+            </button>
           </div>
 
+          {/* Active Trip Header */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px', flexWrap: 'wrap' }}>
-            <h1 className="font-serif" style={{ fontSize: '2.1rem', fontWeight: 700, lineHeight: 1.25, letterSpacing: '-0.01em', margin: 0 }}>
+            <h1 className="font-serif" style={{ fontSize: '2rem', fontWeight: 700, lineHeight: 1.25, letterSpacing: '-0.01em', margin: 0 }}>
               {guestName ? `Welcome to Goa, ${guestName}` : 'Welcome to AI Trip Concierge'}
             </h1>
             {!isEditingName && (
@@ -168,29 +194,30 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
             </form>
           )}
 
-          <p style={{ fontSize: '0.96rem', color: '#CBD5E1', marginBottom: '18px', lineHeight: 1.5 }}>
-            Your post-booking travel concierge at <strong>{hotel?.name || 'Taj Fort Aguada Resort & Spa, Goa'}</strong> in {hotel?.area || 'Sinquerim, Candolim'}. Access your customized day-by-day itinerary, ask dining advice, or explore North & South Goa.
+          {/* Active Trip Indicator Line */}
+          <p style={{ fontSize: '0.94rem', color: '#CBD5E1', marginBottom: '16px', lineHeight: 1.5 }}>
+            Your active trip: <strong style={{ color: '#FDBA74' }}>{hotel?.name || 'Taj Fort Aguada Resort & Spa, Goa'}</strong> ({hotel?.area || 'Sinquerim, Candolim'}). Access your personalized day-by-day itinerary, ask dining advice, or explore {hotel?.region || 'Goa'}.
           </p>
 
           {/* Booking Meta Bar */}
           <div style={{
             display: 'flex',
             flexWrap: 'wrap',
-            gap: '14px',
+            gap: '12px',
             background: 'rgba(255, 255, 255, 0.05)',
-            padding: '10px 16px',
+            padding: '10px 14px',
             borderRadius: 'var(--radius-sm)',
             border: '1px solid rgba(255, 255, 255, 0.08)',
-            fontSize: '0.84rem',
+            fontSize: '0.82rem',
             alignItems: 'center'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Hotel size={15} color="#E28445" />
-              <span><strong>{hotel?.name || 'Taj Fort Aguada Resort & Spa, Goa'}</strong> • {hotel?.area || 'Sinquerim, Candolim'}</span>
+              <Hotel size={14} color="#E28445" />
+              <span><strong>{hotel?.name || 'Taj Fort Aguada'}</strong></span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Calendar size={15} color="#E28445" />
-              <span>{checkInFormatted} – {checkOutFormatted} ({tripContext?.duration || '3 Nights'})</span>
+              <Calendar size={14} color="#E28445" />
+              <span>{checkInFormatted} – {checkOutFormatted} ({hotel?.duration || tripContext?.duration || '3 Nights'})</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <span style={{
@@ -198,14 +225,14 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
                 color: '#FED7AA',
                 padding: '2px 7px',
                 borderRadius: 'var(--radius-xs)',
-                fontSize: '0.74rem',
+                fontSize: '0.72rem',
                 fontWeight: 600
               }}>
                 {countdownText}
               </span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <ShieldCheck size={15} color="#A7F3D0" />
+              <ShieldCheck size={14} color="#A7F3D0" />
               <span>{hotel?.room_type || 'Sea View Luxury Suite'}</span>
             </div>
           </div>
@@ -224,7 +251,7 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
               Coastal Conditions
             </span>
             <span style={{ fontSize: '0.72rem', color: '#E2E8F0', background: 'rgba(255, 255, 255, 0.1)', padding: '1px 6px', borderRadius: '3px' }}>
-              Candolim
+              {hotel?.region || 'Goa'}
             </span>
           </div>
 
@@ -283,31 +310,31 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
           className="btn-secondary"
           style={{ fontSize: '0.82rem', padding: '6px 12px' }}
         >
-          <Utensils size={13} color="#D05B3B" /> Dinner Near Hotel
+          <Utensils size={13} color="#D05B3B" /> Dinner Near My Hotel
         </button>
 
         <button
-          onClick={() => onQuickAction("Suggest a chill beach for tomorrow morning.")}
+          onClick={() => onQuickAction("What should I know before check-in?")}
           className="btn-secondary"
           style={{ fontSize: '0.82rem', padding: '6px 12px' }}
         >
-          <Waves size={13} color="#2C5282" /> Quiet Morning Beach
+          <HelpCircle size={13} color="#10B981" /> Check-in Guide
         </button>
 
         <button
-          onClick={() => onQuickAction("What can I do near Anjuna this evening?")}
+          onClick={() => onQuickAction("Suggest a beach close to my stay.")}
           className="btn-secondary"
           style={{ fontSize: '0.82rem', padding: '6px 12px' }}
         >
-          Evening in Anjuna
+          <Waves size={13} color="#2C5282" /> Beach Close to Stay
         </button>
 
         <button
-          onClick={() => onQuickAction("How can I travel from Baga to Panjim?")}
+          onClick={() => onQuickAction("What can I do near my hotel?")}
           className="btn-secondary"
           style={{ fontSize: '0.82rem', padding: '6px 12px' }}
         >
-          <Navigation size={13} color="#64748B" /> Travel Baga to Panjim
+          Activities Near Hotel
         </button>
 
         <button

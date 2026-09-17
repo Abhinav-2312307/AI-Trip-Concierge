@@ -7,14 +7,18 @@ import { AIChat } from './components/AIChat';
 import { RecommendationsView } from './components/RecommendationsView';
 import { AlertsHub } from './components/AlertsHub';
 import { TransportModal } from './components/TransportModal';
+import { BookingsView } from './components/BookingsView';
+import { BookingDetailModal } from './components/BookingDetailModal';
 import type {
   TripContext,
   ItineraryResponse,
   ChatMessage,
   SmartAlert,
-  TransportGuideItem
+  TransportGuideItem,
+  HotelBooking
 } from './types';
 import {
+  fetchBookings,
   fetchTripContext,
   sendChatMessage,
   generateItinerary,
@@ -27,8 +31,12 @@ export const App: React.FC = () => {
   const [guestName, setGuestName] = useState<string>(() => {
     return localStorage.getItem('concierge_guest_name') || '';
   });
+  const [activeHotelId, setActiveHotelId] = useState<string>(() => {
+    return localStorage.getItem('concierge_active_hotel_id') || 'taj-fort-aguada';
+  });
+  const [bookings, setBookings] = useState<HotelBooking[]>([]);
   const [tripContext, setTripContext] = useState<TripContext | null>(null);
-  const [activeTab, setActiveTab] = useState<string>('overview');
+  const [activeTab, setActiveTab] = useState<string>('bookings');
   const [itineraryData, setItineraryData] = useState<ItineraryResponse | null>(null);
   const [itineraryLoading, setItineraryLoading] = useState<boolean>(false);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -38,21 +46,32 @@ export const App: React.FC = () => {
   const [transportItems, setTransportItems] = useState<TransportGuideItem[]>([]);
   const [isTransportOpen, setIsTransportOpen] = useState<boolean>(false);
   const [toastAlert, setToastAlert] = useState<SmartAlert | null>(null);
+  const [selectedBookingForModal, setSelectedBookingForModal] = useState<HotelBooking | null>(null);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState<boolean>(false);
 
-  const getWelcomeGreeting = (name: string) => {
+  const activeHotel = bookings.find(b => b.id === activeHotelId) || tripContext?.hotel || bookings[0] || null;
+
+  const getWelcomeGreeting = (name: string, hotel?: HotelBooking | null) => {
     const greeting = name.trim() ? `Namaste ${name.trim()}!` : 'Namaste!';
-    return `${greeting} Welcome to Goa and **Taj Fort Aguada Resort & Spa, Goa**.\n\nI am your hotel trip concierge. Whether you'd like dinner recommendations near Candolim, quiet morning beaches, sunset bookings at Thalassa, or local transport guidance, feel free to ask anytime.\n\nHow may I assist your stay today?`;
+    const hName = hotel?.name || 'Taj Fort Aguada Resort & Spa, Goa';
+    const hArea = hotel?.area || 'Sinquerim, Candolim';
+    return `${greeting} Welcome to Goa and **${hName}** (${hArea}).\n\nI am your dedicated hotel AI concierge. Whether you'd like dinner recommendations near your stay, quiet morning beaches, sunset bookings, check-in guidance, or local transport guidance, feel free to ask anytime.\n\nHow may I assist your stay today?`;
   };
 
   // Initial Load
   useEffect(() => {
     const initData = async () => {
       try {
-        const [contextRes, alertsRes, transportRes] = await Promise.all([
-          fetchTripContext().catch(() => null),
-          fetchAlerts().catch(() => ({ alerts: [] })),
-          fetchTransportGuide().catch(() => ({ guide: [] })),
+        const [bookingsRes, contextRes, alertsRes, transportRes] = await Promise.all([
+          fetchBookings().catch(() => ({ count: 0, hotels: [] })),
+          fetchTripContext(activeHotelId).catch(() => null),
+          fetchAlerts(activeHotelId).catch(() => ({ alerts: [] })),
+          fetchTransportGuide(activeHotelId).catch(() => ({ guide: [] })),
         ]);
+
+        if (bookingsRes.hotels && bookingsRes.hotels.length > 0) {
+          setBookings(bookingsRes.hotels);
+        }
 
         if (contextRes) {
           setTripContext(contextRes);
@@ -60,25 +79,30 @@ export const App: React.FC = () => {
             setGuestName(contextRes.guest_name);
           }
         }
+
         if (alertsRes.alerts) {
           setAlerts(alertsRes.alerts);
           setUnreadAlertCount(alertsRes.alerts.length);
         }
-        if (transportRes.guide) setTransportItems(transportRes.guide);
+
+        if (transportRes.guide) {
+          setTransportItems(transportRes.guide);
+        }
 
         const currentSavedName = localStorage.getItem('concierge_guest_name') || '';
+        const initialHotel = bookingsRes.hotels.find(b => b.id === activeHotelId) || contextRes?.hotel;
 
-        // Generate initial 3-day itinerary
-        loadItinerary(3, false, currentSavedName, contextRes?.check_in);
+        // Generate initial 3-day itinerary for active hotel
+        loadItinerary(activeHotelId, 3, false, currentSavedName, contextRes?.check_in);
 
-        // Seed initial welcome message from Taj Concierge
+        // Seed initial welcome message for active hotel
         setChatMessages([
           {
             id: 'welcome-msg',
             sender: 'assistant',
-            text: getWelcomeGreeting(currentSavedName),
+            text: getWelcomeGreeting(currentSavedName, initialHotel),
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            provider: 'Taj AI Concierge Grounded Engine'
+            provider: `${initialHotel?.name || 'AI Concierge'} Grounded Engine`
           }
         ]);
       } catch (err) {
@@ -98,22 +122,70 @@ export const App: React.FC = () => {
       if (prev.length === 1 && prev[0].id === 'welcome-msg') {
         return [{
           ...prev[0],
-          text: getWelcomeGreeting(newName)
+          text: getWelcomeGreeting(newName, activeHotel)
         }];
       }
       return prev;
     });
 
     // Refresh itinerary with new guest name
-    loadItinerary(itineraryData?.total_days || 3, false, newName, tripContext?.check_in);
+    loadItinerary(activeHotelId, itineraryData?.total_days || 3, false, newName, tripContext?.check_in);
   };
 
-  const loadItinerary = async (days: number = 3, triggerConfetti: boolean = true, nameParam?: string, startDate?: string) => {
+  const handleSwitchHotel = async (newHotelId: string, switchTabTo?: string) => {
+    setActiveHotelId(newHotelId);
+    localStorage.setItem('concierge_active_hotel_id', newHotelId);
+    
+    const selectedHotel = bookings.find(b => b.id === newHotelId) || null;
+
+    try {
+      const [contextRes, alertsRes] = await Promise.all([
+        fetchTripContext(newHotelId).catch(() => null),
+        fetchAlerts(newHotelId).catch(() => ({ alerts: [] })),
+      ]);
+
+      if (contextRes) {
+        setTripContext(contextRes);
+      }
+      if (alertsRes.alerts) {
+        setAlerts(alertsRes.alerts);
+        setUnreadAlertCount(alertsRes.alerts.length);
+      }
+
+      // Refresh itinerary for new hotel
+      await loadItinerary(newHotelId, itineraryData?.total_days || 3, false, guestName, contextRes?.check_in);
+
+      // Update welcome message for new hotel
+      setChatMessages([
+        {
+          id: `welcome-${Date.now()}`,
+          sender: 'assistant',
+          text: getWelcomeGreeting(guestName, selectedHotel || contextRes?.hotel),
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          provider: `${selectedHotel?.name || 'AI Concierge'} Grounded Engine`
+        }
+      ]);
+
+      if (switchTabTo) {
+        setActiveTab(switchTabTo);
+      }
+    } catch (err) {
+      console.error('Error switching hotel:', err);
+    }
+  };
+
+  const loadItinerary = async (
+    hotelId: string = activeHotelId,
+    days: number = 3,
+    triggerConfetti: boolean = true,
+    nameParam?: string,
+    startDate?: string
+  ) => {
     setItineraryLoading(true);
     try {
       const activeName = nameParam !== undefined ? nameParam : guestName;
       const start = startDate || tripContext?.check_in;
-      const data = await generateItinerary(days, 'balanced', activeName, start);
+      const data = await generateItinerary(hotelId, days, 'balanced', activeName, start);
       setItineraryData(data);
       if (triggerConfetti) {
         confetti({
@@ -153,7 +225,7 @@ export const App: React.FC = () => {
         content: m.text
       }));
 
-      const res = await sendChatMessage(text, historyPayload, guestName);
+      const res = await sendChatMessage(text, historyPayload, guestName, activeHotelId);
 
       const assistantMsg: ChatMessage = {
         id: `assistant-${Date.now()}`,
@@ -162,7 +234,8 @@ export const App: React.FC = () => {
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         tool_calls: res.tool_calls,
         cards: res.cards,
-        provider: res.provider
+        provider: res.provider,
+        hotel_origin: res.hotel_origin
       };
 
       setChatMessages(prev => [...prev, assistantMsg]);
@@ -181,7 +254,7 @@ export const App: React.FC = () => {
 
   const handleSimulateAlert = async (type: string = 'rain_baga') => {
     try {
-      const res = await simulateAlert(type);
+      const res = await simulateAlert(activeHotelId, type);
       const simulated = res.alert;
 
       setAlerts(prev => [simulated, ...prev.filter(a => a.id !== simulated.id)]);
@@ -195,7 +268,7 @@ export const App: React.FC = () => {
         sender: 'assistant',
         text: `**Notification: ${simulated.title}**\n\n${simulated.message}\n\n💡 *Concierge Recommendation*: ${simulated.recommended_action}`,
         timestamp: simulated.timestamp || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        provider: 'Guest Notification Service',
+        provider: `${activeHotel?.name || 'Hotel'} Notification Service`,
         isAlert: true
       };
 
@@ -210,20 +283,26 @@ export const App: React.FC = () => {
       {
         id: `welcome-${Date.now()}`,
         sender: 'assistant',
-        text: getWelcomeGreeting(guestName),
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        text: getWelcomeGreeting(guestName, activeHotel),
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        provider: `${activeHotel?.name || 'AI Concierge'} Grounded Engine`
       }
     ]);
   };
 
   const handleAskConciergeAboutPlace = (placeName: string) => {
     setActiveTab('chat');
-    handleSendMessage(`Tell me more about visiting ${placeName} from Taj Fort Aguada, and what is the best time and must-try experience?`);
+    handleSendMessage(`Tell me more about visiting ${placeName} from ${activeHotel?.name || 'my hotel'}, and what is the best time and must-try experience?`);
   };
 
   const handleAlertAction = (alert: SmartAlert) => {
     setActiveTab('chat');
     handleSendMessage(`Regarding the alert "${alert.title}", what should I do next? ${alert.recommended_action}`);
+  };
+
+  const handleOpenBookingModal = (hotel: HotelBooking) => {
+    setSelectedBookingForModal(hotel);
+    setIsBookingModalOpen(true);
   };
 
   return (
@@ -238,6 +317,9 @@ export const App: React.FC = () => {
           if (t === 'alerts') setUnreadAlertCount(0);
         }}
         unreadAlertCount={unreadAlertCount}
+        bookings={bookings}
+        activeHotelId={activeHotelId}
+        onSwitchHotel={(id) => handleSwitchHotel(id)}
         onOpenTransport={() => setIsTransportOpen(true)}
         onSimulateAlert={() => handleSimulateAlert('rain_baga')}
       />
@@ -253,16 +335,30 @@ export const App: React.FC = () => {
             onQuickAction={handleSendMessage}
             onGenerateItineraryClick={() => {
               setActiveTab('overview');
-              loadItinerary(3, true);
+              loadItinerary(activeHotelId, 3, true);
             }}
+            onSwitchBookingClick={() => setActiveTab('bookings')}
           />
 
           {/* Active View Switching */}
+          {activeTab === 'bookings' && (
+            <BookingsView
+              bookings={bookings}
+              activeHotelId={activeHotelId}
+              guestName={guestName}
+              onSelectBooking={(id) => handleSwitchHotel(id, 'overview')}
+              onOpenConcierge={(id) => handleSwitchHotel(id, 'chat')}
+              onPlanTrip={(id) => handleSwitchHotel(id, 'overview')}
+              onViewDetails={handleOpenBookingModal}
+            />
+          )}
+
           {activeTab === 'overview' && (
             <ItineraryView
               itineraryData={itineraryData}
               loading={itineraryLoading}
-              onGenerate={(days) => loadItinerary(days, true)}
+              activeHotel={activeHotel}
+              onGenerate={(days) => loadItinerary(activeHotelId, days, true)}
               onAskConciergeAboutPlace={handleAskConciergeAboutPlace}
             />
           )}
@@ -271,6 +367,8 @@ export const App: React.FC = () => {
             <AIChat
               messages={chatMessages}
               loading={chatLoading}
+              activeHotel={activeHotel}
+              guestName={guestName}
               onSendMessage={handleSendMessage}
               onClearChat={handleClearChat}
               onViewPlaceDetails={(place) => handleAskConciergeAboutPlace(place.name)}
@@ -279,6 +377,7 @@ export const App: React.FC = () => {
 
           {activeTab === 'directory' && (
             <RecommendationsView
+              activeHotel={activeHotel}
               onAskConcierge={handleAskConciergeAboutPlace}
               onSelectPlace={(place) => handleAskConciergeAboutPlace(place.name)}
             />
@@ -287,6 +386,7 @@ export const App: React.FC = () => {
           {activeTab === 'alerts' && (
             <AlertsHub
               alerts={alerts}
+              activeHotel={activeHotel}
               guestName={guestName}
               onSimulate={handleSimulateAlert}
               onAlertAction={handleAlertAction}
@@ -327,7 +427,7 @@ export const App: React.FC = () => {
             <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#FDBA74' }}>
               {toastAlert.title}
             </div>
-            <p style={{ fontSize: '0.82rem', color: '#CBD5E1', marginTop: '3px', lineHeight: 1.4 }}>
+            <p style={{ fontSize: '0.82rem', color: '#CBD5E1', marginTop: '3px', lineHeight: 1.4, margin: 0 }}>
               {toastAlert.message}
             </p>
             <div style={{ marginTop: '6px', fontSize: '0.76rem', color: '#A7F3D0', fontWeight: 600 }}>
@@ -336,6 +436,17 @@ export const App: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Booking Details Modal */}
+      <BookingDetailModal
+        hotel={selectedBookingForModal}
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+        isActive={selectedBookingForModal?.id === activeHotelId}
+        guestName={guestName}
+        onSelectAndOpenConcierge={(id) => handleSwitchHotel(id, 'chat')}
+        onSelectAndPlanItinerary={(id) => handleSwitchHotel(id, 'overview')}
+      />
 
       {/* Transport Guide Modal */}
       <TransportModal
@@ -354,10 +465,10 @@ export const App: React.FC = () => {
       }}>
         <div className="app-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <strong style={{ color: '#FFFFFF' }}>AI Trip Concierge</strong> • Taj Fort Aguada Resort & Spa, Goa
+            <strong style={{ color: '#FFFFFF' }}>AI Trip Concierge</strong> • {activeHotel?.name || 'Taj Fort Aguada Resort & Spa, Goa'}
           </div>
           <div style={{ display: 'flex', gap: '14px', fontSize: '0.8rem' }}>
-            <span>Sinquerim, Candolim, North Goa</span>
+            <span>{activeHotel?.area || 'Sinquerim, Candolim'}, {activeHotel?.region || 'North Goa'}</span>
             <span>•</span>
             <span style={{ color: '#E28445' }}>24/7 Hotel Guest Assistant</span>
           </div>

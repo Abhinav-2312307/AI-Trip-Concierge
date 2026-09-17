@@ -1,15 +1,26 @@
-export interface HotelInfo {
+export interface HotelBooking {
   id: string;
   name: string;
   area: string;
-  region: string;
+  region: 'North Goa' | 'South Goa' | 'Central Goa' | string;
+  address: string;
   coordinates: { lat: number; lng: number };
-  guest_name: string;
+  image_url: string;
   room_type: string;
-  check_in: string;
-  check_out: string;
+  check_in_time: string;
+  check_out_time: string;
   confirmation_code: string;
+  guests_count: number;
+  guest_name?: string;
+  status: string;
+  check_in?: string;
+  check_in_formatted?: string;
+  check_out?: string;
+  check_out_formatted?: string;
+  duration?: string;
+  days_until_checkin?: number;
   amenities: string[];
+  highlights: string[];
 }
 
 export interface Place {
@@ -54,6 +65,7 @@ export interface DayPlan {
 }
 
 export interface ItineraryResponse {
+  hotel_id?: string;
   guest_name: string;
   hotel: string;
   total_days: number;
@@ -75,6 +87,7 @@ export interface ChatMessage {
   tool_calls?: ToolCall[];
   cards?: Place[];
   provider?: string;
+  hotel_origin?: string;
   isAlert?: boolean;
 }
 
@@ -100,7 +113,8 @@ export interface TransportGuideItem {
 }
 
 export interface TripContext {
-  hotel: HotelInfo;
+  active_hotel_id: string;
+  hotel: HotelBooking;
   destination: string;
   stay: string;
   guest_name: string;

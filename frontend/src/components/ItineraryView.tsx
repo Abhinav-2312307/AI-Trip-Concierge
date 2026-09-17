@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Clock, MapPin, Sparkles, Utensils, Sun, Moon, Sunrise, Navigation, MessageSquare } from 'lucide-react';
-import type { ItineraryResponse, ItinerarySlot } from '../types';
+import type { ItineraryResponse, ItinerarySlot, HotelBooking } from '../types';
 
 interface ItineraryViewProps {
   itineraryData: ItineraryResponse | null;
   loading: boolean;
+  activeHotel: HotelBooking | null;
   onGenerate: (days: number) => void;
   onAskConciergeAboutPlace: (placeName: string) => void;
 }
@@ -12,6 +13,7 @@ interface ItineraryViewProps {
 export const ItineraryView: React.FC<ItineraryViewProps> = ({
   itineraryData,
   loading,
+  activeHotel,
   onGenerate,
   onAskConciergeAboutPlace,
 }) => {
@@ -20,6 +22,9 @@ export const ItineraryView: React.FC<ItineraryViewProps> = ({
 
   const days = itineraryData?.itinerary || [];
   const currentDay = days[activeDayIndex] || days[0];
+
+  const hotelName = activeHotel?.name || itineraryData?.hotel || 'Taj Fort Aguada Resort & Spa, Goa';
+  const hotelArea = activeHotel?.area || 'Candolim, Goa';
 
   return (
     <div style={{ marginTop: '12px' }} className="animate-fade-in">
@@ -32,13 +37,14 @@ export const ItineraryView: React.FC<ItineraryViewProps> = ({
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: '16px',
+        background: '#FFFFFF',
       }}>
         <div>
           <h2 className="font-serif" style={{ fontSize: '1.45rem', fontWeight: 700, color: '#101F35' }}>
             Curated Day-by-Day Itinerary
           </h2>
           <p style={{ color: '#64748B', fontSize: '0.88rem', marginTop: '2px' }}>
-            Sequenced realistically from <strong>Taj Fort Aguada, Candolim</strong>.
+            Personalized route sequenced realistically from <strong>{hotelName}</strong> ({hotelArea}).
           </p>
         </div>
 
@@ -102,13 +108,13 @@ export const ItineraryView: React.FC<ItineraryViewProps> = ({
 
       {/* Loading State */}
       {loading && (
-        <div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>
+        <div className="glass-card" style={{ padding: '40px', textAlign: 'center', background: '#FFFFFF' }}>
           <Sparkles size={24} color="#D05B3B" style={{ display: 'inline-block', marginBottom: '12px' }} />
           <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#101F35', marginBottom: '4px' }}>
-            Organizing Your Goa Schedule...
+            Organizing Your Goa Schedule for {hotelName}...
           </h3>
           <p style={{ color: '#64748B', fontSize: '0.86rem' }}>
-            Calculating travel times, beach hours, and verified dining spots from Candolim.
+            Calculating travel times, beach hours, and verified dining spots from {hotelArea}.
           </p>
         </div>
       )}
@@ -191,8 +197,8 @@ export const ItineraryView: React.FC<ItineraryViewProps> = ({
                 {currentDay.title}
               </h3>
             </div>
-            <div style={{ fontSize: '0.82rem', color: '#94A3B8', display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <Navigation size={13} color="#E28445" /> Depart from Taj Fort Aguada, Sinquerim
+            <div style={{ fontSize: '0.82rem', color: '#CBD5E1', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <Navigation size={13} color="#E28445" /> Depart from {hotelName}
             </div>
           </div>
 
@@ -255,6 +261,7 @@ const TimelineCard: React.FC<TimelineCardProps> = ({
       display: 'grid',
       gridTemplateColumns: '260px 1fr',
       borderLeft: `4px solid ${colorBorder}`,
+      background: '#FFFFFF',
     }}>
       {/* Photo Column */}
       <div style={{ position: 'relative', minHeight: '190px', background: 'var(--color-sand-100)' }}>
@@ -348,7 +355,7 @@ const TimelineCard: React.FC<TimelineCardProps> = ({
               <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600 }}>
                 Signature:
               </span>
-              {place.signature_dishes.map((dish, i) => (
+              {place.signature_dishes.map((dish: string, i: number) => (
                 <span key={i} className="badge-pill badge-terracotta" style={{ fontSize: '0.72rem' }}>
                   {dish}
                 </span>

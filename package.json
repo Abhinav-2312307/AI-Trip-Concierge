@@ -1,0 +1,11 @@
+{
+  "name": "ai-trip-concierge",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload",
+    "build": "npm --prefix frontend run build"
+  }
+}
