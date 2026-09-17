@@ -1,0 +1,243 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap');
+
+:root {
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+
+  /* Goa-Inspired Hospitality Palette */
+  --color-sand-50: #FBF9F5;
+  --color-sand-100: #F3EFE8;
+  --color-sand-200: #E6DFD5;
+  --color-sand-300: #D4C9BC;
+
+  --color-ocean-950: #0B1626;
+  --color-ocean-900: #101F35;
+  --color-ocean-800: #172D4D;
+  --color-ocean-700: #1E3A63;
+  --color-ocean-600: #2C5282;
+
+  --color-terracotta-600: #B84A2E;
+  --color-terracotta-500: #D05B3B;
+  --color-sunset-500: #E28445;
+  --color-sunset-100: #FDF1E8;
+
+  --color-palm-800: #1C4433;
+  --color-palm-700: #265943;
+  --color-palm-100: #EAF3EE;
+
+  --color-gold-700: #946E13;
+  --color-gold-50: #FCF8EE;
+
+  --card-bg: #FFFFFF;
+  --card-border: #E8E2D8;
+  --card-border-hover: #D0C5B4;
+
+  --shadow-subtle: 0 1px 3px rgba(16, 31, 53, 0.04), 0 4px 12px rgba(16, 31, 53, 0.03);
+  --shadow-card: 0 2px 8px rgba(16, 31, 53, 0.05), 0 8px 24px rgba(16, 31, 53, 0.04);
+  --shadow-elevated: 0 8px 28px rgba(16, 31, 53, 0.09);
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 9999px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-sand-50);
+  color: var(--color-ocean-950);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-sand-100);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-sand-300);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-terracotta-500);
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+/* Subtle transitions */
+.animate-fade-in {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Refined Cards */
+.glass-card {
+  background: #FFFFFF;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-card:hover {
+  border-color: var(--card-border-hover);
+  box-shadow: var(--shadow-elevated);
+}
+
+/* Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: var(--color-ocean-900);
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-ocean-950);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background: var(--color-ocean-800);
+  border-color: var(--color-ocean-900);
+}
+
+.btn-terracotta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: var(--color-terracotta-500);
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-terracotta-600);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.btn-terracotta:hover {
+  background: var(--color-terracotta-600);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #FFFFFF;
+  color: var(--color-ocean-900);
+  font-weight: 500;
+  font-size: 0.86rem;
+  padding: 8px 15px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--card-border);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--color-sand-50);
+  border-color: var(--color-sand-300);
+}
+
+/* Badges */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: var(--radius-xs);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.badge-terracotta {
+  background: var(--color-sunset-100);
+  color: var(--color-terracotta-600);
+  border: 1px solid rgba(208, 91, 59, 0.2);
+}
+
+.badge-emerald {
+  background: var(--color-palm-100);
+  color: var(--color-palm-800);
+  border: 1px solid rgba(28, 68, 51, 0.18);
+}
+
+.badge-ocean {
+  background: #EDF3FA;
+  color: var(--color-ocean-700);
+  border: 1px solid rgba(30, 58, 99, 0.18);
+}
+
+.badge-gold {
+  background: var(--color-gold-50);
+  color: var(--color-gold-700);
+  border: 1px solid rgba(148, 110, 19, 0.25);
+}
+
+/* Layout Container */
+.app-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Navigation Tabs */
+.tab-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  font-weight: 500;
+  font-size: 0.88rem;
+  border: none;
+  background: transparent;
+  color: #94A3B8;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.tab-button:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.tab-button.active {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.15);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .app-container {
+    padding: 0 16px;
+  }
+}
