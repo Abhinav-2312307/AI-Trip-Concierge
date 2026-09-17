@@ -1,6 +1,7 @@
 import os
 import json
 import logging
+import requests
 from typing import List, Dict, Any, Optional
 from dotenv import load_dotenv
 
@@ -38,22 +39,25 @@ def get_system_prompt(hotel_id: str = "taj-fort-aguada", guest_name: Optional[st
         f"Crucial Concierge Guidelines:\n"
         f"1. GEOGRAPHIC GROUNDING: When the guest asks for recommendations 'near me', 'nearby', 'near my hotel', or 'close to my stay', ALWAYS use {hotel_name} in {hotel_area} as the origin.\n"
         f"2. HOTEL CONTEXT: Never confuse this hotel with any other property. Do not recommend Candolim spots as 'nearby' if the guest is staying at The Leela in South Goa or W Goa in Vagator.\n"
-        f"3. AUTHENTIC KNOWLEDGE: Always call tools (search_restaurants, search_activities, get_transport_tips, get_weather_and_tide_info) to retrieve authentic Goa knowledge. Never invent fake venues.\n"
+        f"3. AUTHENTIC KNOWLEDGE: Always recommend authentic Goa places with accurate details (pricing, signature dishes, travel time from hotel).\n"
         f"4. CHECK-IN INQUIRIES: When asked about check-in guidance, provide check-in time ({check_in_time}), check-out time ({check_out_time}), digital key services, welcome amenities, and luggage storage assistance.\n"
-        f"5. TONE & HOSPITALITY: Keep responses warm, polished, hospitable, and concise. Address the guest warmly."
+        f"5. TONE & HOSPITALITY: Keep responses warm, polished, hospitable, and concise."
     )
 
 class AIConciergeAgent:
     def __init__(self):
-        self.api_key = os.getenv("ANTHROPIC_API_KEY")
-        self.client = None
-        if self.api_key and self.api_key.strip() and not self.api_key.startswith("your_"):
+        self.anthropic_key = os.getenv("ANTHROPIC_API_KEY")
+        self.gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+        self.groq_key = os.getenv("GROQ_API_KEY")
+        self.openai_key = os.getenv("OPENAI_API_KEY")
+        
+        self.claude_client = None
+        if self.anthropic_key and self.anthropic_key.strip() and not self.anthropic_key.startswith("your_"):
             try:
                 import anthropic
-                self.client = anthropic.Anthropic(api_key=self.api_key)
+                self.claude_client = anthropic.Anthropic(api_key=self.anthropic_key)
             except Exception as e:
                 logger.warning(f"Failed to initialize Anthropic client: {e}")
-                self.client = None
 
     def chat(
         self,
@@ -62,16 +66,130 @@ class AIConciergeAgent:
         guest_name: Optional[str] = None,
         hotel_id: Optional[str] = "taj-fort-aguada"
     ) -> Dict[str, Any]:
-        """Process user message via Claude tool-use, falling back to smart local tool calling if API key is missing."""
+        """Process user message using available LLM provider or built-in intelligent offline engine."""
         active_h_id = hotel_id or "taj-fort-aguada"
-        if self.client:
+        history = chat_history or []
+
+        # 1. Try Google Gemini (Free Tier from Google AI Studio)
+        if self.gemini_key and self.gemini_key.strip() and not self.gemini_key.startswith("your_"):
             try:
-                return self._chat_claude(user_message, chat_history or [], guest_name=guest_name, hotel_id=active_h_id)
+                return self._chat_gemini(user_message, history, guest_name=guest_name, hotel_id=active_h_id)
             except Exception as e:
-                logger.error(f"Claude API execution failed: {e}. Falling back to offline tool engine.")
-                return self._chat_fallback(user_message, chat_history or [], guest_name=guest_name, hotel_id=active_h_id)
+                logger.warning(f"Gemini API execution error: {e}. Falling back to smart tool engine.")
+
+        # 2. Try Anthropic Claude
+        if self.claude_client:
+            try:
+                return self._chat_claude(user_message, history, guest_name=guest_name, hotel_id=active_h_id)
+            except Exception as e:
+                logger.warning(f"Claude API execution error: {e}. Falling back to smart tool engine.")
+
+        # 3. Try Groq (Free Fast Tier)
+        if self.groq_key and self.groq_key.strip() and not self.groq_key.startswith("your_"):
+            try:
+                return self._chat_groq(user_message, history, guest_name=guest_name, hotel_id=active_h_id)
+            except Exception as e:
+                logger.warning(f"Groq API execution error: {e}. Falling back to smart tool engine.")
+
+        # 4. Built-in Intelligent Offline Semantic Fallback (100% Zero-Key Guarantee)
+        return self._chat_fallback(user_message, history, guest_name=guest_name, hotel_id=active_h_id)
+
+    def _chat_gemini(
+        self,
+        user_message: str,
+        chat_history: List[Dict[str, str]],
+        guest_name: Optional[str] = None,
+        hotel_id: str = "taj-fort-aguada"
+    ) -> Dict[str, Any]:
+        """Call Google Gemini API with grounded hotel knowledge."""
+        hotel = get_hotel_info(hotel_id)
+        hotel_name = hotel.get("name", "Taj Fort Aguada")
+        system_prompt = get_system_prompt(hotel_id, guest_name)
+
+        # Retrieve relevant ground knowledge
+        near_places = search_restaurants(hotel_id=hotel_id, near_hotel=True)
+        near_acts = search_activities(hotel_id=hotel_id)
+        knowledge_context = json.dumps({
+            "hotel": hotel,
+            "nearby_restaurants": near_places[:3],
+            "nearby_activities": near_acts[:3],
+            "weather": get_weather_and_tide_info(hotel_id=hotel_id)
+        }, ensure_ascii=False)
+
+        prompt = (
+            f"{system_prompt}\n\n"
+            f"VERIFIED GOA KNOWLEDGE FOR THIS HOTEL:\n{knowledge_context}\n\n"
+            f"User Question: {user_message}\n\n"
+            f"Answer the guest warmly and recommend specific verified venues from the knowledge context above:"
+        )
+
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={self.gemini_key}"
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": {"temperature": 0.3, "maxOutputTokens": 800}
+        }
+        res = requests.post(url, json=payload, timeout=12)
+        if res.status_code == 200:
+            data = res.json()
+            reply_text = data["candidates"][0]["content"]["parts"][0]["text"]
+            cards = (near_places[:2] if any(w in user_message.lower() for w in ["dinner", "food", "eat", "restaurant"]) else near_acts[:2])
+            return {
+                "reply": reply_text,
+                "tool_calls": [{"tool": "search_restaurants" if cards == near_places[:2] else "search_activities", "input": {"hotel_id": hotel_id}}],
+                "cards": cards,
+                "provider": "Google Gemini 1.5 Flash (Free AI Studio Key)",
+                "hotel_origin": f"{hotel_name}, {hotel.get('area')}"
+            }
         else:
-            return self._chat_fallback(user_message, chat_history or [], guest_name=guest_name, hotel_id=active_h_id)
+            raise Exception(f"Gemini API returned status {res.status_code}: {res.text}")
+
+    def _chat_groq(
+        self,
+        user_message: str,
+        chat_history: List[Dict[str, str]],
+        guest_name: Optional[str] = None,
+        hotel_id: str = "taj-fort-aguada"
+    ) -> Dict[str, Any]:
+        """Call Groq Cloud API with grounded context."""
+        hotel = get_hotel_info(hotel_id)
+        hotel_name = hotel.get("name", "Taj Fort Aguada")
+        system_prompt = get_system_prompt(hotel_id, guest_name)
+
+        near_places = search_restaurants(hotel_id=hotel_id, near_hotel=True)
+        near_acts = search_activities(hotel_id=hotel_id)
+        knowledge_context = json.dumps({
+            "hotel": hotel,
+            "nearby_restaurants": near_places[:3],
+            "nearby_activities": near_acts[:3]
+        }, ensure_ascii=False)
+
+        headers = {
+            "Authorization": f"Bearer {self.groq_key}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "model": "llama-3.3-70b-versatile",
+            "messages": [
+                {"role": "system", "content": f"{system_prompt}\nVerified Knowledge:\n{knowledge_context}"},
+                {"role": "user", "content": user_message}
+            ],
+            "temperature": 0.3,
+            "max_tokens": 800
+        }
+        res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=12)
+        if res.status_code == 200:
+            data = res.json()
+            reply_text = data["choices"][0]["message"]["content"]
+            cards = (near_places[:2] if any(w in user_message.lower() for w in ["dinner", "food", "eat", "restaurant"]) else near_acts[:2])
+            return {
+                "reply": reply_text,
+                "tool_calls": [{"tool": "search_restaurants", "input": {"hotel_id": hotel_id}}],
+                "cards": cards,
+                "provider": "Groq Llama 3.3 (Free API Key)",
+                "hotel_origin": f"{hotel_name}, {hotel.get('area')}"
+            }
+        else:
+            raise Exception(f"Groq API returned status {res.status_code}: {res.text}")
 
     def _chat_claude(
         self,
@@ -95,8 +213,7 @@ class AIConciergeAgent:
         tool_calls_trace = []
         recommendation_cards = []
 
-        # First call to Claude
-        response = self.client.messages.create(
+        response = self.claude_client.messages.create(
             model="claude-3-5-sonnet-20241022",
             max_tokens=1024,
             system=system_prompt,
@@ -104,7 +221,6 @@ class AIConciergeAgent:
             messages=messages
         )
 
-        # Check if Claude called tools
         if response.stop_reason == "tool_use":
             tool_use_blocks = [c for c in response.content if c.type == "tool_use"]
             assistant_content = response.content
@@ -120,10 +236,8 @@ class AIConciergeAgent:
                     "input": tool_input
                 })
 
-                # Execute local tool with hotel context
                 tool_result = execute_tool(tool_name, tool_input, hotel_id=hotel_id)
                 
-                # If tool returned places or restaurant data, collect as cards
                 if isinstance(tool_result, list):
                     for item in tool_result[:3]:
                         if isinstance(item, dict) and "name" in item and item not in recommendation_cards:
@@ -137,11 +251,10 @@ class AIConciergeAgent:
                     "content": json.dumps(tool_result, ensure_ascii=False)
                 })
 
-            # Follow up call with tool results
             messages.append({"role": "assistant", "content": assistant_content})
             messages.append({"role": "user", "content": tool_result_messages})
 
-            followup_response = self.client.messages.create(
+            followup_response = self.claude_client.messages.create(
                 model="claude-3-5-sonnet-20241022",
                 max_tokens=1024,
                 system=system_prompt,
@@ -162,7 +275,6 @@ class AIConciergeAgent:
                 "hotel_origin": f"{hotel_name}, {hotel.get('area')}"
             }
         else:
-            # Direct text response
             text_content = ""
             for block in response.content:
                 if hasattr(block, "text"):
@@ -349,7 +461,7 @@ class AIConciergeAgent:
             "reply": "\n".join(reply_lines),
             "tool_calls": tool_calls_trace,
             "cards": recommendation_cards,
-            "provider": "AI Concierge Tool-Calling Engine (Active Hotel Grounded)",
+            "provider": "AI Concierge Tool Engine (Built-in Zero-Key Offline Grounded Mode)",
             "hotel_origin": f"{hotel_name}, {hotel_area}"
         }
 
