@@ -1,7 +1,6 @@
 # 🌴 AI Trip Concierge — Hotel Travel Companion
-
-> **Hackathon Final-Round Demo Prototype**  
-> Post-booking travel companion for hotel guests in Goa, India.
+  
+> Post-booking travel companion for hotel guests in India.
 
 ---
 
