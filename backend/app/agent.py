@@ -167,29 +167,47 @@ class AIConciergeAgent:
             "Authorization": f"Bearer {self.groq_key}",
             "Content-Type": "application/json"
         }
-        payload = {
-            "model": "llama-3.3-70b-versatile",
-            "messages": [
-                {"role": "system", "content": f"{system_prompt}\nVerified Knowledge:\n{knowledge_context}"},
-                {"role": "user", "content": user_message}
-            ],
-            "temperature": 0.3,
-            "max_tokens": 800
-        }
-        res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=12)
-        if res.status_code == 200:
-            data = res.json()
-            reply_text = data["choices"][0]["message"]["content"]
-            cards = (near_places[:2] if any(w in user_message.lower() for w in ["dinner", "food", "eat", "restaurant"]) else near_acts[:2])
-            return {
-                "reply": reply_text,
-                "tool_calls": [{"tool": "search_restaurants", "input": {"hotel_id": hotel_id}}],
-                "cards": cards,
-                "provider": "Groq Llama 3.3 (Free API Key)",
-                "hotel_origin": f"{hotel_name}, {hotel.get('area')}"
+        
+        candidate_models = [
+            "qwen/qwen3.8-27b",
+            "groq/compound-mini",
+            "llama-3.3-70b-versatile",
+            "llama-3.1-8b-instant",
+            "openai/gpt-oss-120b",
+            "llama3-70b-8192",
+            "llama3-8b-8192"
+        ]
+
+        last_error = None
+        for model_name in candidate_models:
+            payload = {
+                "model": model_name,
+                "messages": [
+                    {"role": "system", "content": f"{system_prompt}\nVerified Knowledge:\n{knowledge_context}"},
+                    {"role": "user", "content": user_message}
+                ],
+                "temperature": 0.3,
+                "max_tokens": 800
             }
-        else:
-            raise Exception(f"Groq API returned status {res.status_code}: {res.text}")
+            try:
+                res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=12)
+                if res.status_code == 200:
+                    data = res.json()
+                    reply_text = data["choices"][0]["message"]["content"]
+                    cards = (near_places[:2] if any(w in user_message.lower() for w in ["dinner", "food", "eat", "restaurant"]) else near_acts[:2])
+                    return {
+                        "reply": reply_text,
+                        "tool_calls": [{"tool": "search_restaurants", "input": {"hotel_id": hotel_id}}],
+                        "cards": cards,
+                        "provider": f"Groq AI ({model_name})",
+                        "hotel_origin": f"{hotel_name}, {hotel.get('area')}"
+                    }
+                else:
+                    last_error = f"Status {res.status_code}: {res.text}"
+            except Exception as e:
+                last_error = str(e)
+
+        raise Exception(f"All Groq models failed. Last error: {last_error}")
 
     def _chat_claude(
         self,
