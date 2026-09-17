@@ -1,9 +1,10 @@
 import React from 'react';
 import { ArrowRight, MessageSquare } from 'lucide-react';
-import type { SmartAlert } from '../types';
+import type { SmartAlert, HotelBooking } from '../types';
 
 interface AlertsHubProps {
   alerts: SmartAlert[];
+  activeHotel: HotelBooking | null;
   guestName?: string;
   onSimulate: (type: string) => void;
   onAlertAction: (alert: SmartAlert) => void;
@@ -12,16 +13,20 @@ interface AlertsHubProps {
 
 export const AlertsHub: React.FC<AlertsHubProps> = ({
   alerts,
+  activeHotel,
   guestName,
   onSimulate,
   onAlertAction,
   onDismissAlert,
 }) => {
+  const hotelName = activeHotel?.name || 'Taj Fort Aguada Resort & Spa, Goa';
+  const hotelArea = activeHotel?.area || 'Candolim';
+
   const alertTypes = [
-    { id: 'rain_baga', label: '🌧️ Rain in Baga (6 PM)', desc: 'Recommends indoor dining at Gunpowder Assagao' },
-    { id: 'checkin_reminder', label: '🔑 Taj Digital Key Pass', desc: 'Suite activation and welcome voucher' },
-    { id: 'sunset_countdown', label: '🌅 Sunset Golden Hour', desc: 'Alerts guest 45 mins before Chapora sunset' },
-    { id: 'high_tide', label: '🌊 Vagator High Tide', desc: 'Advises calmer waters at Sinquerim beach' },
+    { id: 'checkin_reminder', label: '🔑 Digital Room Key & Welcome Pass', desc: `Suite activation and check-in pass for ${hotelName}` },
+    { id: 'rain_baga', label: `🌧️ Weather Advisory (${hotelArea})`, desc: 'Rain radar update with indoor dining suggestions' },
+    { id: 'sunset_countdown', label: '🌅 Golden Hour Countdown', desc: `Alerts 45 mins before peak golden light near ${hotelArea}` },
+    { id: 'high_tide', label: `🌊 Coastal Swell & Tide Advisory`, desc: `Sea conditions and lifeguard recommendations in ${activeHotel?.region || 'Goa'}` },
   ];
 
   return (
@@ -34,11 +39,23 @@ export const AlertsHub: React.FC<AlertsHubProps> = ({
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
           <div>
-            <h2 className="font-serif" style={{ fontSize: '1.45rem', fontWeight: 700, color: '#101F35' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+              <span style={{
+                background: 'rgba(208, 91, 59, 0.1)',
+                color: 'var(--color-terracotta-500)',
+                fontSize: '0.74rem',
+                fontWeight: 700,
+                padding: '2px 8px',
+                borderRadius: 'var(--radius-xs)',
+              }}>
+                Active Stay: {hotelName}
+              </span>
+            </div>
+            <h2 className="font-serif" style={{ fontSize: '1.45rem', fontWeight: 700, color: '#101F35', margin: 0 }}>
               Proactive Guest Alerts
             </h2>
-            <p style={{ color: '#64748B', fontSize: '0.86rem', marginTop: '2px' }}>
-              Real-time contextual notifications for weather advisories, hotel milestones, and coastal conditions.
+            <p style={{ color: '#64748B', fontSize: '0.86rem', marginTop: '2px', marginBottom: 0 }}>
+              Real-time contextual notifications for check-in milestones, weather advisories, and coastal conditions.
             </p>
           </div>
         </div>
@@ -70,7 +87,7 @@ export const AlertsHub: React.FC<AlertsHubProps> = ({
                 e.currentTarget.style.background = 'var(--color-sand-50)';
               }}
             >
-              <span style={{ fontSize: '0.86rem', fontWeight: 600, color: '#101F35' }}>
+              <span style={{ fontSize: '0.84rem', fontWeight: 600, color: '#101F35' }}>
                 {t.label}
               </span>
               <span style={{ fontSize: '0.74rem', color: '#64748B', lineHeight: 1.3 }}>
@@ -93,8 +110,8 @@ export const AlertsHub: React.FC<AlertsHubProps> = ({
         </div>
 
         {alerts.length === 0 ? (
-          <div className="glass-card" style={{ padding: '32px', textAlign: 'center', color: '#64748B', fontSize: '0.88rem' }}>
-            No active alerts at this moment. Trigger any scenario above to test.
+          <div className="glass-card" style={{ padding: '32px', textAlign: 'center', color: '#64748B', fontSize: '0.88rem', background: '#FFFFFF' }}>
+            No active alerts at this moment. Trigger any scenario above to test live simulation.
           </div>
         ) : (
           alerts.map((alert) => (
@@ -103,6 +120,7 @@ export const AlertsHub: React.FC<AlertsHubProps> = ({
               className="glass-card"
               style={{
                 padding: '16px 20px',
+                background: '#FFFFFF',
                 borderLeft: `4px solid ${
                   alert.severity === 'warning' ? '#D05B3B' : (alert.severity === 'info' ? '#1E3A63' : '#265943')
                 }`,
@@ -115,11 +133,11 @@ export const AlertsHub: React.FC<AlertsHubProps> = ({
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <span style={{ fontSize: '1.5rem' }}>{alert.icon}</span>
                   <div>
-                    <h4 style={{ fontSize: '1.02rem', fontWeight: 700, color: '#101F35' }}>
+                    <h4 style={{ fontSize: '1.02rem', fontWeight: 700, color: '#101F35', margin: 0 }}>
                       {alert.title}
                     </h4>
                     <span style={{ fontSize: '0.74rem', color: '#94A3B8' }}>
-                      {alert.timestamp || 'Just now'} • Verified for Taj Fort Aguada Guest{guestName ? `: ${guestName}` : ''}
+                      {alert.timestamp || 'Just now'} • Verified for {hotelName} Guest{guestName ? `: ${guestName}` : ''}
                     </span>
                   </div>
                 </div>
@@ -139,7 +157,7 @@ export const AlertsHub: React.FC<AlertsHubProps> = ({
                 </button>
               </div>
 
-              <p style={{ fontSize: '0.88rem', color: '#334155', lineHeight: 1.5, background: 'var(--color-sand-50)', padding: '10px 12px', borderRadius: 'var(--radius-xs)', border: '1px solid var(--card-border)' }}>
+              <p style={{ fontSize: '0.88rem', color: '#334155', lineHeight: 1.5, background: 'var(--color-sand-50)', padding: '10px 12px', borderRadius: 'var(--radius-xs)', border: '1px solid var(--card-border)', margin: 0 }}>
                 {alert.message}
               </p>
 

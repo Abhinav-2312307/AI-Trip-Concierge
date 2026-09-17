@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Utensils, Waves, Landmark, PartyPopper, Compass, Search, MapPin, Sparkles, MessageSquare } from 'lucide-react';
-import type { Place } from '../types';
+import type { Place, HotelBooking } from '../types';
 import { fetchRecommendations } from '../services/api';
 
 interface RecommendationsViewProps {
+  activeHotel: HotelBooking | null;
   onAskConcierge: (placeName: string) => void;
   onSelectPlace?: (place: Place) => void;
 }
 
 export const RecommendationsView: React.FC<RecommendationsViewProps> = ({
+  activeHotel,
   onAskConcierge,
 }) => {
   const [places, setPlaces] = useState<Place[]>([]);
@@ -16,6 +18,10 @@ export const RecommendationsView: React.FC<RecommendationsViewProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedArea, setSelectedArea] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const hotelName = activeHotel?.name || 'Taj Fort Aguada Resort & Spa, Goa';
+  const hotelArea = activeHotel?.area || 'Sinquerim, Candolim';
+  const hotelId = activeHotel?.id || 'taj-fort-aguada';
 
   const categories = [
     { id: 'all', label: 'All Places', icon: <Compass size={14} /> },
@@ -26,16 +32,16 @@ export const RecommendationsView: React.FC<RecommendationsViewProps> = ({
     { id: 'activity', label: 'Adventures & Tours', icon: <Sparkles size={14} /> },
   ];
 
-  const areas = ['all', 'Candolim', 'Assagao', 'Anjuna', 'Vagator', 'Siolim', 'Calangute', 'Panjim', 'Old Goa', 'Palolem'];
+  const areas = ['all', 'Candolim', 'Assagao', 'Anjuna', 'Vagator', 'Siolim', 'Calangute', 'Panjim', 'Old Goa', 'Cavelossim', 'Majorda', 'Betalbatim', 'Benaulim', 'Palolem'];
 
   useEffect(() => {
     loadPlaces();
-  }, [selectedCategory, selectedArea, searchQuery]);
+  }, [selectedCategory, selectedArea, searchQuery, hotelId]);
 
   const loadPlaces = async () => {
     setLoading(true);
     try {
-      const data = await fetchRecommendations(selectedCategory, selectedArea, searchQuery);
+      const data = await fetchRecommendations(hotelId, selectedCategory, selectedArea, searchQuery);
       setPlaces(data.places);
     } catch (err) {
       console.error('Failed to load places', err);
@@ -54,14 +60,15 @@ export const RecommendationsView: React.FC<RecommendationsViewProps> = ({
         flexWrap: 'wrap',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: '14px'
+        gap: '14px',
+        background: '#FFFFFF',
       }}>
         <div>
-          <h2 className="font-serif" style={{ fontSize: '1.45rem', fontWeight: 700, color: '#101F35' }}>
+          <h2 className="font-serif" style={{ fontSize: '1.45rem', fontWeight: 700, color: '#101F35', margin: 0 }}>
             Goa Places & Recommendations
           </h2>
-          <p style={{ color: '#64748B', fontSize: '0.88rem', marginTop: '2px' }}>
-            Verified dining, beaches, and sights with travel times from <strong>Taj Fort Aguada Resort & Spa, Sinquerim</strong>.
+          <p style={{ color: '#64748B', fontSize: '0.88rem', marginTop: '2px', marginBottom: 0 }}>
+            Verified dining, beaches, and sights with travel distances calculated from <strong>{hotelName}</strong> ({hotelArea}).
           </p>
         </div>
 
@@ -154,10 +161,10 @@ export const RecommendationsView: React.FC<RecommendationsViewProps> = ({
       {/* Grid of Places */}
       {loading ? (
         <div style={{ textAlign: 'center', padding: '36px', color: '#64748B', fontSize: '0.88rem' }}>
-          Loading curated places...
+          Loading curated places from {hotelName}...
         </div>
       ) : places.length === 0 ? (
-        <div className="glass-card" style={{ padding: '36px', textAlign: 'center', color: '#64748B', fontSize: '0.88rem' }}>
+        <div className="glass-card" style={{ padding: '36px', textAlign: 'center', color: '#64748B', fontSize: '0.88rem', background: '#FFFFFF' }}>
           No places match your selected filters.
         </div>
       ) : (
@@ -175,6 +182,7 @@ export const RecommendationsView: React.FC<RecommendationsViewProps> = ({
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
+                background: '#FFFFFF'
               }}
             >
               <div>
@@ -263,7 +271,7 @@ export const RecommendationsView: React.FC<RecommendationsViewProps> = ({
                 background: 'var(--color-sand-50)',
               }}>
                 <button
-                  onClick={() => onAskConcierge(`Tell me more about ${place.name} and how to visit from Taj Fort Aguada.`)}
+                  onClick={() => onAskConcierge(`Tell me more about ${place.name} and how to visit from ${hotelName}.`)}
                   className="btn-primary"
                   style={{
                     width: '100%',

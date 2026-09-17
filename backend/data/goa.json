@@ -1,18 +1,122 @@
 {
-  "hotel": {
-    "id": "taj-fort-aguada",
-    "name": "Taj Fort Aguada Resort & Spa, Goa",
-    "area": "Sinquerim, Candolim",
-    "region": "North Goa",
-    "address": "Sinquerim Beach, Candolim, Bardez, Goa 403515, India",
-    "coordinates": {"lat": 15.4952, "lng": 73.7667},
-    "guest_name": "",
-    "room_type": "Sea View Luxury Suite",
-    "check_in": "2026-09-18",
-    "check_out": "2026-09-21",
-    "confirmation_code": "TAJ-GOA-89421",
-    "amenities": ["Infinity Pool", "Jiva Spa", "Private Beach Access", "24/7 Concierge", "Sea Shell Restaurant", "SFX Lounge"]
-  },
+  "hotels": [
+    {
+      "id": "taj-fort-aguada",
+      "name": "Taj Fort Aguada Resort & Spa, Goa",
+      "area": "Sinquerim, Candolim",
+      "region": "North Goa",
+      "address": "Sinquerim Beach, Candolim, Bardez, Goa 403515, India",
+      "coordinates": {"lat": 15.4952, "lng": 73.7667},
+      "image_url": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
+      "room_type": "Sea View Luxury Suite",
+      "check_in_time": "3:00 PM",
+      "check_out_time": "12:00 PM",
+      "confirmation_code": "TAJ-GOA-89421",
+      "guests_count": 2,
+      "status": "Confirmed Sample Reservation",
+      "amenities": [
+        "Infinity Ocean Pool",
+        "Jiva Ayurvedic Spa",
+        "Private Beach Access",
+        "24/7 Concierge",
+        "Sea Shell Restaurant",
+        "SFX Lounge",
+        "Historic Fort Aguada Trail"
+      ],
+      "highlights": [
+        "Direct beachfront location adjoining historic 17th-century Fort Aguada",
+        "Panoramic Arabian Sea sunsets from private suite balconies",
+        "Complimentary heritage walking tours and oceanfront cocktails"
+      ]
+    },
+    {
+      "id": "w-goa",
+      "name": "W Goa",
+      "area": "Vagator Beach, Vagator",
+      "region": "North Goa",
+      "address": "Vagator Beach, Bardez, Goa 403509, India",
+      "coordinates": {"lat": 15.6022, "lng": 73.7345},
+      "image_url": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+      "room_type": "Fabulous Villa with Private Plunge Pool",
+      "check_in_time": "3:00 PM",
+      "check_out_time": "12:00 PM",
+      "confirmation_code": "WGOA-VAG-77102",
+      "guests_count": 2,
+      "status": "Confirmed Sample Reservation",
+      "amenities": [
+        "Rockpool Sunset Deck",
+        "AWAY® Spa",
+        "FIT Gym & Yoga Pavilion",
+        "WET® Outdoor Pool",
+        "Spice Traders Pan-Asian Restaurant",
+        "Living Room Bar & DJ Sessions",
+        "Direct Vagator Beach Access"
+      ],
+      "highlights": [
+        "Cliffside sunset lounge nestled right beneath historic Chapora Fort",
+        "High-energy music programming, bespoke mixology, and avant-garde luxury",
+        "Steps away from Little Vagator beach and chic North Goa cafes"
+      ]
+    },
+    {
+      "id": "the-leela-goa",
+      "name": "The Leela Goa",
+      "area": "Mobor Beach, Cavelossim",
+      "region": "South Goa",
+      "address": "Mobor Beach, Cavelossim, Salcete, Goa 403731, India",
+      "coordinates": {"lat": 15.1585, "lng": 73.9472},
+      "image_url": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80",
+      "room_type": "Royal Villa with Private Lagoon View",
+      "check_in_time": "2:00 PM",
+      "check_out_time": "12:00 PM",
+      "confirmation_code": "LEELA-CAV-33918",
+      "guests_count": 2,
+      "status": "Confirmed Sample Reservation",
+      "amenities": [
+        "75-Acre Tropical Lagoon & Gardens",
+        "12-Hole Executive Golf Course",
+        "The Spa by The Leela",
+        "Private Mobor Beach Access",
+        "The Riverside Italian Fine Dining",
+        "Sal River Luxury Catamaran Cruises",
+        "The Poolside Seafood Grill"
+      ],
+      "highlights": [
+        "Sprawling 75-acre Portuguese-inspired riverside & beachfront sanctuary",
+        "Direct access to pristine Mobor Beach and Sal River estuary",
+        "Unmatched tranquility, wildlife birdwatching, and refined luxury in South Goa"
+      ]
+    },
+    {
+      "id": "alila-diwa",
+      "name": "Alila Diwa Goa - Hyatt",
+      "area": "Ada Village, Majorda",
+      "region": "South Goa",
+      "address": "48/10, Adao Waddo, Majorda, Salcete, Goa 403713, India",
+      "coordinates": {"lat": 15.3134, "lng": 73.9168},
+      "image_url": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80",
+      "room_type": "Diwa Club Suite with Courtyard Terrace",
+      "check_in_time": "3:00 PM",
+      "check_out_time": "12:00 PM",
+      "confirmation_code": "ALILA-MAJ-51204",
+      "guests_count": 2,
+      "status": "Confirmed Sample Reservation",
+      "amenities": [
+        "Paddy Field Infinity Pool",
+        "Spa Alila Ayurveda Pavilion",
+        "Vivo All-Day Diner",
+        "Edge Bar & Lounge",
+        "Complimentary Shuttle to Majorda Beach",
+        "Boutique Mini-Cinema",
+        "Diwa Club Private Pool & Lounge"
+      ],
+      "highlights": [
+        "Overlooks verdant green paddy fields and whispering coconut palms",
+        "5 minutes from the expansive golden sands of Majorda & Utorda beaches",
+        "Exclusive Diwa Club wing with personalized butler service"
+      ]
+    }
+  ],
   "places": [
     {
       "id": "gunpowder-assagao",
@@ -23,7 +127,12 @@
       "cuisine": "Peninsular South Indian, Coastal Seafood, Cocktails",
       "price_range": "₹₹₹ (₹1,800 for two)",
       "vibe": "Bohemian, heritage garden villa, romantic, relaxed",
-      "distance_from_hotel": "14 km (~30 mins)",
+      "distance_map": {
+        "taj-fort-aguada": "14 km (~30 mins)",
+        "w-goa": "5.5 km (~12 mins - Near Hotel)",
+        "the-leela-goa": "52 km (~1 hr 25 mins)",
+        "alila-diwa": "39 km (~1 hr 10 mins)"
+      },
       "best_time": "Dinner (7:30 PM - 11:00 PM)",
       "duration": "1.5 - 2 hours",
       "signature_dishes": ["Kerala Beef / Mutton Curry", "Appams", "Prawn Pepper Fry", "Kokum Sol Kadi"],
@@ -40,7 +149,12 @@
       "cuisine": "Greek, Mediterranean, Seafood & Cocktails",
       "price_range": "₹₹₹₹ (₹2,800 for two)",
       "vibe": "Sunset vibes, glamorous, cliffside riverfront view, live performances",
-      "distance_from_hotel": "18 km (~35 mins)",
+      "distance_map": {
+        "taj-fort-aguada": "18 km (~35 mins)",
+        "w-goa": "8.5 km (~18 mins - Near Hotel)",
+        "the-leela-goa": "58 km (~1 hr 35 mins)",
+        "alila-diwa": "45 km (~1 hr 20 mins)"
+      },
       "best_time": "Sunset into Dinner (5:00 PM - 9:30 PM)",
       "duration": "2 - 3 hours",
       "signature_dishes": ["Greek Souvlaki Skewers", "Grilled Calamari", "Spanakopita", "Pomegranate Sangria"],
@@ -50,20 +164,113 @@
     },
     {
       "id": "fishermans-wharf-candolim",
-      "name": "The Fisherman's Wharf",
+      "name": "The Fisherman's Wharf (Candolim)",
       "category": "restaurant",
       "area": "Candolim",
       "region": "North Goa",
       "cuisine": "Authentic Goan, Fresh Seafood, Multi-cuisine",
       "price_range": "₹₹₹ (₹1,600 for two)",
       "vibe": "Family-friendly, vibrant, live acoustic music, seaside breeze",
-      "distance_from_hotel": "2.5 km (~7 mins - Near Hotel)",
+      "distance_map": {
+        "taj-fort-aguada": "2.5 km (~7 mins - Near Hotel)",
+        "w-goa": "12 km (~25 mins)",
+        "the-leela-goa": "48 km (~1 hr 20 mins)",
+        "alila-diwa": "35 km (~55 mins)"
+      },
       "best_time": "Lunch or Dinner (12:30 PM - 3:30 PM, 7:00 PM - 11:00 PM)",
       "duration": "1.5 hours",
       "signature_dishes": ["Goan Prawn Curry with Rice", "Kingfish Rava Fry", "Crab Xec Xec", "Bebinca"],
       "description": "Located just minutes from Candolim beach, Fisherman's Wharf offers an authentic taste of Goan-Portuguese seafood heritage with fresh morning catch, warm hospitality, and live Goan serenades.",
       "image_url": "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=800&q=80",
       "tags": ["goan seafood", "near hotel", "family", "live music", "dinner", "lunch"]
+    },
+    {
+      "id": "fishermans-wharf-mobor",
+      "name": "The Fisherman's Wharf (Mobor / River Sal)",
+      "category": "restaurant",
+      "area": "Cavelossim / Mobor",
+      "region": "South Goa",
+      "cuisine": "Authentic Goan Portuguese Seafood, Riverfront Dining",
+      "price_range": "₹₹₹ (₹1,800 for two)",
+      "vibe": "Scenic riverfront deck, gentle breezes, traditional fishing boat decor, romantic sunset",
+      "distance_map": {
+        "taj-fort-aguada": "50 km (~1 hr 25 mins)",
+        "w-goa": "59 km (~1 hr 40 mins)",
+        "the-leela-goa": "0.8 km (2 mins drive / 10 mins walk - At Hotel Doorstep)",
+        "alila-diwa": "18 km (~30 mins)"
+      },
+      "best_time": "Lunch or Sunset Dinner (12:30 PM - 11:00 PM)",
+      "duration": "2 hours",
+      "signature_dishes": ["Butter Garlic Crab", "Tiger Prawns Peri Peri", "Stuffed Squid", "Traditional Fish Curry Thali"],
+      "description": "The original flagship Fisherman's Wharf located right on the banks of the tranquil River Sal in Mobor. Watch traditional Goan fishing trawlers sail by while feasting on fresh catch of the day.",
+      "image_url": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
+      "tags": ["goan seafood", "riverfront", "near hotel", "south goa", "romantic", "dinner", "lunch"]
+    },
+    {
+      "id": "martins-corner-betalbatim",
+      "name": "Martin's Corner",
+      "category": "restaurant",
+      "area": "Betalbatim",
+      "region": "South Goa",
+      "cuisine": "Legendary Goan Coastal Cuisine, Fresh Seafood, Tandoori",
+      "price_range": "₹₹₹ (₹1,700 for two)",
+      "vibe": "Iconic Goan landmark, bustling, live acoustic Goan trios, legendary hospitality",
+      "distance_map": {
+        "taj-fort-aguada": "37 km (~1 hr)",
+        "w-goa": "46 km (~1 hr 15 mins)",
+        "the-leela-goa": "16 km (~25 mins)",
+        "alila-diwa": "2.2 km (~5 mins - Near Hotel)"
+      },
+      "best_time": "Lunch (1:00 PM - 3:30 PM) or Dinner (7:30 PM - 11:00 PM)",
+      "duration": "1.5 - 2 hours",
+      "signature_dishes": ["King Crab Recheado", "Shark Ambot Tik", "Prawn Masala Fry", "Goan Pork Vindaloo"],
+      "description": "A world-renowned Goan culinary institution founded by Mrs. Carafina Pereira in 1989. Beloved by celebrities and food lovers alike for mouthwatering Goan spice pastes and live serenades.",
+      "image_url": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
+      "tags": ["legendary", "authentic goan", "seafood", "near hotel", "south goa", "dinner", "lunch"]
+    },
+    {
+      "id": "cavatina-cuchina-benaulim",
+      "name": "Cavatina Cuchina by Chef Avinash Martins",
+      "category": "restaurant",
+      "area": "Benaulim",
+      "region": "South Goa",
+      "cuisine": "Modern Reimagined Goan Heritage, Artisanal Tasting Menus",
+      "price_range": "₹₹₹₹ (₹3,200 for two)",
+      "vibe": "Contemporary fine dining, artisanal storytelling, intimate, culinary artistry",
+      "distance_map": {
+        "taj-fort-aguada": "42 km (~1 hr 10 mins)",
+        "w-goa": "51 km (~1 hr 25 mins)",
+        "the-leela-goa": "12 km (~20 mins - Near Hotel)",
+        "alila-diwa": "7.5 km (~15 mins - Near Hotel)"
+      },
+      "best_time": "Dinner (7:00 PM - 10:30 PM, Reservations Essential)",
+      "duration": "2 - 2.5 hours",
+      "signature_dishes": ["Tender Coconut Carpaccio", "Smoked Pork Belly with Toddy Vinegar", "Stuffed Calamari Hay", "Deconstructed Bebinca"],
+      "description": "One of India's Top 50 restaurants, Chef Avinash Martins celebrates indigenous Saraswat and Catholic Goan recipes through contemporary gourmet storytelling using hyper-local ingredients.",
+      "image_url": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80",
+      "tags": ["fine dining", "gourmet", "modern goan", "chef tasting", "romantic", "south goa"]
+    },
+    {
+      "id": "zeebop-by-the-sea",
+      "name": "Zeebop by the Sea",
+      "category": "restaurant",
+      "area": "Utorda Beach",
+      "region": "South Goa",
+      "cuisine": "Fresh Coastal Seafood, Beach Shack Grill",
+      "price_range": "₹₹₹ (₹1,500 for two)",
+      "vibe": "Sand-under-feet beachfront dining, swaying lanterns, sunset cocktails",
+      "distance_map": {
+        "taj-fort-aguada": "35 km (~55 mins)",
+        "w-goa": "44 km (~1 hr 10 mins)",
+        "the-leela-goa": "19 km (~30 mins)",
+        "alila-diwa": "2.8 km (~6 mins - Near Hotel)"
+      },
+      "best_time": "Sunset into Dinner (4:30 PM - 10:00 PM)",
+      "duration": "2 hours",
+      "signature_dishes": ["Butter Garlic Lobster", "Crispy Calamari Rava", "Red Snapper Tandoori", "Goan Fish Curry"],
+      "description": "Situated directly on the peaceful white sands of Utorda Beach, Zeebop is South Goa's most romantic beach shack restaurant serving freshly caught Arabian Sea fish with unobstructed sunset views.",
+      "image_url": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+      "tags": ["beach shack", "sunset", "seafood", "near hotel", "south goa", "romantic"]
     },
     {
       "id": "brittos-baga",
@@ -74,30 +281,18 @@
       "cuisine": "Goan Seafood, Continental, Beachside Grill, Pastries",
       "price_range": "₹₹ (₹1,200 for two)",
       "vibe": "Iconic beach shack, casual, breezy, sea-facing",
-      "distance_from_hotel": "6.5 km (~15 mins)",
+      "distance_map": {
+        "taj-fort-aguada": "6.5 km (~15 mins)",
+        "w-goa": "6.8 km (~15 mins)",
+        "the-leela-goa": "51 km (~1 hr 25 mins)",
+        "alila-diwa": "38 km (~1 hr)"
+      },
       "best_time": "Late Afternoon to Dinner (4:00 PM - 10:30 PM)",
       "duration": "1.5 hours",
       "signature_dishes": ["Butter Garlic Prawns", "Stuffed Crab", "Goan Sausage Pao", "Baked Cheesecake"],
       "description": "An enduring Goan landmark sitting directly on the sands of Baga Beach since 1965, famous for mouthwatering seafood platters, fresh bakery items, and laid-back sunset shacks.",
       "image_url": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
       "tags": ["beach shack", "seafood", "baga", "casual", "sunset", "near hotel"]
-    },
-    {
-      "id": "vinayak-family-restaurant",
-      "name": "Vinayak Family Restaurant",
-      "category": "restaurant",
-      "area": "Assagao",
-      "region": "North Goa",
-      "cuisine": "Traditional Goan Hindu Thali, Fresh Local Catch",
-      "price_range": "₹ (₹600 for two)",
-      "vibe": "No-frills, authentic local favorite, paddy field views",
-      "distance_from_hotel": "13 km (~25 mins)",
-      "best_time": "Lunch (12:00 PM - 3:30 PM)",
-      "duration": "1 hour",
-      "signature_dishes": ["Goan Fish Thali with Surmai / Pomfret", "Squid Chourico Fry", "Prawn Masala"],
-      "description": "The quintessential Goan fish thali pilgrimage spot. Overlooking tranquil green paddy fields, Vinayak serves unbeatable crispy rava fried fish and soulful coconut curries loved by locals.",
-      "image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80",
-      "tags": ["fish thali", "budget", "authentic goan", "lunch", "local favorite"]
     },
     {
       "id": "pousada-by-the-beach",
@@ -108,7 +303,12 @@
       "cuisine": "Goan Portuguese, Fresh Seafood, European",
       "price_range": "₹₹₹ (₹2,200 for two)",
       "vibe": "Quiet beachfront sanctuary, pet-friendly, intimate, shaded tropical garden",
-      "distance_from_hotel": "4.5 km (~10 mins)",
+      "distance_map": {
+        "taj-fort-aguada": "4.5 km (~10 mins - Near Hotel)",
+        "w-goa": "9 km (~20 mins)",
+        "the-leela-goa": "49 km (~1 hr 20 mins)",
+        "alila-diwa": "36 km (~55 mins)"
+      },
       "best_time": "Lunch or Sunset (1:00 PM - 6:30 PM)",
       "duration": "2 hours",
       "signature_dishes": ["Sungta (Prawn) Balchao", "Goan Feijoada", "Squid in Butter Garlic", "Feni Cocktails"],
@@ -117,21 +317,26 @@
       "tags": ["romantic", "beachfront", "peaceful", "lunch", "near hotel", "goan portuguese"]
     },
     {
-      "id": "curlies-anjuna",
-      "name": "Curlies & Shiva Valley Beach Club",
-      "category": "nightlife",
-      "area": "Anjuna",
+      "id": "vinayak-family-restaurant",
+      "name": "Vinayak Family Restaurant",
+      "category": "restaurant",
+      "area": "Assagao",
       "region": "North Goa",
-      "cuisine": "Continental, Pizza, Cocktails, Shisha",
-      "price_range": "₹₹ (₹1,500 for two)",
-      "vibe": "Psytrance heritage, sunset trance, beach party, electric energy",
-      "distance_from_hotel": "9.5 km (~20 mins)",
-      "best_time": "Sunset & Night (5:30 PM - 2:00 AM)",
-      "duration": "2 - 4 hours",
-      "signature_dishes": ["Woodfired Pepperoni Pizza", "Cocktails & Beer Buckets", "Tandoori Platters"],
-      "description": "Goa's legendary beach club situated at the south end of Anjuna Beach. Famous for iconic sunset sessions, psytrance beats, beachfront daybeds, and nighttime revelry.",
-      "image_url": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80",
-      "tags": ["nightlife", "sunset party", "anjuna", "party", "cocktails", "music"]
+      "cuisine": "Traditional Goan Hindu Thali, Fresh Local Catch",
+      "price_range": "₹ (₹600 for two)",
+      "vibe": "No-frills, authentic local favorite, paddy field views",
+      "distance_map": {
+        "taj-fort-aguada": "13 km (~25 mins)",
+        "w-goa": "4.2 km (~10 mins - Near Hotel)",
+        "the-leela-goa": "53 km (~1 hr 25 mins)",
+        "alila-diwa": "40 km (~1 hr 10 mins)"
+      },
+      "best_time": "Lunch (12:00 PM - 3:30 PM)",
+      "duration": "1 hour",
+      "signature_dishes": ["Goan Fish Thali with Surmai / Pomfret", "Squid Chourico Fry", "Prawn Masala"],
+      "description": "The quintessential Goan fish thali pilgrimage spot. Overlooking tranquil green paddy fields, Vinayak serves unbeatable crispy rava fried fish and soulful coconut curries loved by locals.",
+      "image_url": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80",
+      "tags": ["fish thali", "budget", "authentic goan", "lunch", "local favorite"]
     },
     {
       "id": "sinquerim-candolim-beach",
@@ -142,7 +347,12 @@
       "cuisine": "Beachside snacks and drinks",
       "price_range": "Free entry (Water sports ₹500 - ₹2,000)",
       "vibe": "Clean golden sand, gentle waves, watersports, historic fort backdrop",
-      "distance_from_hotel": "0.4 km (5 mins walk - At Hotel Doorstep)",
+      "distance_map": {
+        "taj-fort-aguada": "0.4 km (5 mins walk - At Hotel Doorstep)",
+        "w-goa": "13 km (~25 mins)",
+        "the-leela-goa": "50 km (~1 hr 25 mins)",
+        "alila-diwa": "37 km (~55 mins)"
+      },
       "best_time": "Early Morning (6:30 AM - 9:00 AM) or Sunset (5:00 PM - 6:45 PM)",
       "duration": "2 hours",
       "signature_dishes": ["Fresh Coconut Water", "Water Sports (Parasailing, Jet Ski)"],
@@ -151,38 +361,70 @@
       "tags": ["beach", "near hotel", "watersports", "sunset", "morning walk", "relax"]
     },
     {
-      "id": "ashvem-mandrem-beach",
-      "name": "Ashvem & Mandrem Beach",
+      "id": "vagator-beach",
+      "name": "Vagator & Ozran (Little Vagator) Beach",
       "category": "beach",
-      "area": "Ashvem",
+      "area": "Vagator",
       "region": "North Goa",
-      "cuisine": "Boutique cafes, healthy smoothie bowls, French bakeries",
-      "price_range": "Free (Boutique daybeds ₹1,000 minimum spend)",
-      "vibe": "Serene, upscale, expansive flat sands, bohemian beach clubs, chill",
-      "distance_from_hotel": "22 km (~40 mins)",
-      "best_time": "Late Morning through Sunset (10:00 AM - 6:30 PM)",
-      "duration": "3 - 4 hours",
-      "signature_dishes": ["Organic Acai Bowls", "Woodfired Sourdough", "Fresh Juices"],
-      "description": "Known as North Goa's chic and peaceful coastline, Ashvem offers wide uncluttered sands, shallow crystal waters, bohemian cafes (La Plage, Sublime), and unmatched tranquility away from the crowds.",
+      "cuisine": "Cliffside cafes, cocktails & woodfired sourdough",
+      "price_range": "Free entry",
+      "vibe": "Dramatic red laterite cliffs, golden cove sands, sunset parties, sculpted Shiva rock",
+      "distance_map": {
+        "taj-fort-aguada": "13 km (~25 mins)",
+        "w-goa": "0.3 km (3 mins walk - At Hotel Doorstep)",
+        "the-leela-goa": "59 km (~1 hr 35 mins)",
+        "alila-diwa": "46 km (~1 hr 20 mins)"
+      },
+      "best_time": "Morning swim or Sunset Golden Hour (4:30 PM - 7:00 PM)",
+      "duration": "2 - 3 hours",
+      "signature_dishes": ["Sunset Cocktails at Rockpool", "Woodfired Pizzas"],
+      "description": "Framed by dramatic cliff faces and swaying palm trees directly below W Goa, Vagator is famous for Ozran's carved rock face, vibrant sunset beach clubs, and serene morning swimming waters.",
       "image_url": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
-      "tags": ["chill beach", "quiet", "romantic", "peaceful", "clean", "day-trip"]
+      "tags": ["beach", "near hotel", "vagator", "sunset", "cliffs", "party"]
     },
     {
-      "id": "anjuna-beach",
-      "name": "Anjuna Beach & Rocky Cove",
+      "id": "mobor-cavelossim-beach",
+      "name": "Mobor & Cavelossim Beach",
       "category": "beach",
-      "area": "Anjuna",
-      "region": "North Goa",
-      "cuisine": "Shack dining, Israeli platters, Cocktails",
-      "price_range": "Free",
-      "vibe": "Boho, rocky coastline, hippie heritage, bustling sunset shacks",
-      "distance_from_hotel": "9 km (~20 mins)",
-      "best_time": "Late Afternoon (4:30 PM - 7:00 PM)",
+      "area": "Cavelossim",
+      "region": "South Goa",
+      "cuisine": "Fresh fruit platters, coconut water, beach shacks",
+      "price_range": "Free entry (Kayaking & Jet Ski ₹600 - ₹1,500)",
+      "vibe": "Endless powdery white sands, dolphin sightings, ultra-peaceful, clean turquoise sea",
+      "distance_map": {
+        "taj-fort-aguada": "50 km (~1 hr 25 mins)",
+        "w-goa": "60 km (~1 hr 40 mins)",
+        "the-leela-goa": "0.2 km (Direct Private Access - At Hotel Doorstep)",
+        "alila-diwa": "19 km (~30 mins)"
+      },
+      "best_time": "Sunrise Walk (6:30 AM - 9:00 AM) or Golden Sunset (5:00 PM - 6:45 PM)",
       "duration": "2 - 3 hours",
-      "signature_dishes": ["Hummus & Shakshuka at German Bakery", "Sunset Cocktails"],
-      "description": "Characterized by red laterite cliffs and swaying coconut palms, Anjuna is world-renowned for its hippie flea markets, rocky coves, and lively beachfront shacks.",
-      "image_url": "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80",
-      "tags": ["beach", "anjuna", "sunset", "flea market", "chill"]
+      "signature_dishes": ["Fresh Tender Coconut", "Dolphin Watching Boat Trips"],
+      "description": "Where the calm River Sal meets the Arabian Sea, Mobor Beach boasts wide uncrowded silver sands, gentle waves ideal for swimming, and playful schools of dolphins leaping near the sandspit.",
+      "image_url": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+      "tags": ["beach", "near hotel", "south goa", "peaceful", "clean", "dolphins", "swim"]
+    },
+    {
+      "id": "majorda-utorda-beach",
+      "name": "Majorda & Utorda Beach",
+      "category": "beach",
+      "area": "Majorda",
+      "region": "South Goa",
+      "cuisine": "Beachside Goan shacks and chilled beer",
+      "price_range": "Free entry",
+      "vibe": "Expansive flat golden sands, gentle rolling surf, peaceful, shaded pine groves",
+      "distance_map": {
+        "taj-fort-aguada": "36 km (~55 mins)",
+        "w-goa": "45 km (~1 hr 15 mins)",
+        "the-leela-goa": "18 km (~30 mins)",
+        "alila-diwa": "1.2 km (2 mins shuttle / 10 mins walk - Near Hotel)"
+      },
+      "best_time": "Early Morning or Sunset (6:30 AM - 9:00 AM, 4:30 PM - 6:45 PM)",
+      "duration": "2 hours",
+      "signature_dishes": ["Fresh Toddy Bread (Pao)", "Seafood Shack Grills"],
+      "description": "One of South Goa's widest and most tranquil shorelines. Renowned for traditional Goan breadmaking history, soft sands, and pristine waters perfect for peaceful swims and sunset photography.",
+      "image_url": "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80",
+      "tags": ["beach", "near hotel", "south goa", "peaceful", "sunset", "swim"]
     },
     {
       "id": "palolem-beach",
@@ -193,13 +435,40 @@
       "cuisine": "Seafood, Vegan cafes, Tiki cocktails",
       "price_range": "Free (Kayak rental ₹300/hr)",
       "vibe": "Crescent bay, postcard calm turquoise waters, colorful beach huts, kayak to Butterfly Beach",
-      "distance_from_hotel": "75 km (~1 hr 50 mins)",
-      "best_time": "Full Day Trip (8:00 AM - 6:00 PM)",
-      "duration": "Full day",
+      "distance_map": {
+        "taj-fort-aguada": "75 km (~1 hr 50 mins)",
+        "w-goa": "85 km (~2 hrs 05 mins)",
+        "the-leela-goa": "34 km (~45 mins - South Trip)",
+        "alila-diwa": "48 km (~1 hr 10 mins)"
+      },
+      "best_time": "Full Day Trip or Morning Kayak (8:00 AM - 5:00 PM)",
+      "duration": "4 - 6 hours",
       "signature_dishes": ["Grilled Snapper", "Cold Brews", "Woodfired Pizzas"],
       "description": "South Goa's crown jewel: a stunning semi-circular bay lined with coconut palms and candy-colored wooden cottages. Its gentle waters make it the best swimming and kayaking spot in Goa.",
       "image_url": "https://images.unsplash.com/photo-1582650625119-3a31f8418b7d?auto=format&fit=crop&w=800&q=80",
       "tags": ["south goa", "paradise beach", "kayaking", "calm water", "day trip"]
+    },
+    {
+      "id": "cabo-de-rama-fort",
+      "name": "Cabo de Rama Fort & Cliff Viewpoint",
+      "category": "culture",
+      "area": "Cabo de Rama",
+      "region": "South Goa",
+      "cuisine": "Local cliffside juice stalls & coconut water",
+      "price_range": "Free entry",
+      "vibe": "Ancient clifftop fortress, panoramic turquoise ocean vista, dramatic rocky coast",
+      "distance_map": {
+        "taj-fort-aguada": "68 km (~1 hr 45 mins)",
+        "w-goa": "77 km (~2 hrs)",
+        "the-leela-goa": "22 km (~35 mins - Near Hotel)",
+        "alila-diwa": "35 km (~50 mins)"
+      },
+      "best_time": "Late Afternoon to Sunset (4:00 PM - 6:30 PM)",
+      "duration": "2 hours",
+      "signature_dishes": ["Sunset cliff photography"],
+      "description": "One of Goa's oldest forts with roots in Indian mythology. Perched atop a towering promontory in South Goa, its battlements offer breathtaking 360-degree views of the emerald Arabian Sea.",
+      "image_url": "https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?auto=format&fit=crop&w=800&q=80",
+      "tags": ["heritage", "south goa", "sunset", "viewpoint", "history", "photography", "culture"]
     },
     {
       "id": "aguada-fort-lighthouse",
@@ -210,7 +479,12 @@
       "cuisine": "Nearby local cafes and fresh tender coconut",
       "price_range": "₹50 entry fee",
       "vibe": "17th-century Portuguese fortress, sweeping sea panoramic vista, history",
-      "distance_from_hotel": "0.8 km (2 mins drive / 10 mins walk from Hotel)",
+      "distance_map": {
+        "taj-fort-aguada": "0.8 km (2 mins drive / 10 mins walk from Hotel)",
+        "w-goa": "13 km (~25 mins)",
+        "the-leela-goa": "51 km (~1 hr 25 mins)",
+        "alila-diwa": "38 km (~1 hr)"
+      },
       "best_time": "Early Morning (9:00 AM - 10:30 AM) or Sunset (4:30 PM - 5:45 PM)",
       "duration": "1 - 1.5 hours",
       "signature_dishes": ["Fresh Coconut Water at entrance"],
@@ -227,13 +501,18 @@
       "cuisine": "Fresh lime sodas at base",
       "price_range": "Free",
       "vibe": "Dramatic red laterite ruins, panoramic view of Vagator Beach & Chapora river mouth",
-      "distance_from_hotel": "12 km (~25 mins)",
+      "distance_map": {
+        "taj-fort-aguada": "12 km (~25 mins)",
+        "w-goa": "1.1 km (3 mins drive / 12 mins walk - At Doorstep)",
+        "the-leela-goa": "60 km (~1 hr 40 mins)",
+        "alila-diwa": "47 km (~1 hr 20 mins)"
+      },
       "best_time": "Golden Hour / Sunset (5:00 PM - 6:30 PM)",
       "duration": "1.5 hours",
       "signature_dishes": ["Sunset viewpoint"],
       "description": "Perched high on a hill overlooking Vagator beach, the dramatic red battlements of Chapora Fort became immortalized in Bollywood cinema. The sunset view over the Arabian Sea is unforgettable.",
       "image_url": "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=800&q=80",
-      "tags": ["sunset", "heritage", "view", "photography", "vagator", "culture"]
+      "tags": ["sunset", "heritage", "view", "photography", "vagator", "culture", "near hotel"]
     },
     {
       "id": "fontainhas-latin-quarter",
@@ -244,7 +523,12 @@
       "cuisine": "Traditional Goan Bakeries (Confeitaria 31 De Janeiro), Feni & Tapas",
       "price_range": "Free self-walk (Guided tour ₹800)",
       "vibe": "Cobblestone alleys, pastel yellow & indigo Portuguese villas, terracotta roofs, European charm",
-      "distance_from_hotel": "13 km (~25 mins)",
+      "distance_map": {
+        "taj-fort-aguada": "13 km (~25 mins)",
+        "w-goa": "19 km (~35 mins)",
+        "the-leela-goa": "42 km (~1 hr)",
+        "alila-diwa": "28 km (~45 mins)"
+      },
       "best_time": "Morning (8:30 AM - 11:00 AM) or Late Afternoon (4:00 PM - 6:30 PM)",
       "duration": "2 hours",
       "signature_dishes": ["Swiss Rolls & Patties at 31st January Bakery", "Pastel de Nata", "Portuguese Wine"],
@@ -261,7 +545,12 @@
       "cuisine": "Local snack stalls",
       "price_range": "Free (Museum ₹20)",
       "vibe": "UNESCO World Heritage, Baroque architecture, sacred silence, towering cathedrals",
-      "distance_from_hotel": "22 km (~40 mins)",
+      "distance_map": {
+        "taj-fort-aguada": "22 km (~40 mins)",
+        "w-goa": "26 km (~50 mins)",
+        "the-leela-goa": "39 km (~55 mins)",
+        "alila-diwa": "27 km (~40 mins)"
+      },
       "best_time": "Morning (9:30 AM - 12:00 PM)",
       "duration": "2 hours",
       "signature_dishes": ["Sightseeing"],
@@ -278,7 +567,12 @@
       "cuisine": "Island BBQ Lunch included",
       "price_range": "₹2,500 - ₹3,500 per person",
       "vibe": "Adventure, underwater coral reefs, marine life, boat cruise",
-      "distance_from_hotel": "1.2 km (Boat departs from Sinquerim Jetty near Hotel)",
+      "distance_map": {
+        "taj-fort-aguada": "1.2 km (Boat departs Sinquerim Jetty near Hotel)",
+        "w-goa": "14 km (~30 mins)",
+        "the-leela-goa": "52 km (~1 hr 25 mins)",
+        "alila-diwa": "38 km (~1 hr)"
+      },
       "best_time": "Morning (8:00 AM - 2:00 PM)",
       "duration": "5 - 6 hours",
       "signature_dishes": ["Island Grilled Fish & Fruit Platter"],
@@ -295,7 +589,12 @@
       "cuisine": "Goan tapas, wine & craft beer onboard",
       "price_range": "₹1,800 - ₹2,500 per person",
       "vibe": "Breezy luxury, live saxophone music, sunset over the Arabian Sea, romantic",
-      "distance_from_hotel": "14 km (~25 mins)",
+      "distance_map": {
+        "taj-fort-aguada": "14 km (~25 mins)",
+        "w-goa": "19 km (~35 mins)",
+        "the-leela-goa": "42 km (~1 hr)",
+        "alila-diwa": "29 km (~45 mins)"
+      },
       "best_time": "Sunset (5:15 PM - 7:00 PM)",
       "duration": "2 hours",
       "signature_dishes": ["Canapes & Sparkling Wine"],
@@ -312,37 +611,86 @@
       "cuisine": "Traditional Goan Hindu buffet served on banana leaf with fresh cashews & Feni welcome drink",
       "price_range": "₹600 per person (includes full lunch)",
       "vibe": "Eco-nature, fragrant spice trails, tropical lush greenery, authentic",
-      "distance_from_hotel": "38 km (~55 mins)",
+      "distance_map": {
+        "taj-fort-aguada": "38 km (~55 mins)",
+        "w-goa": "44 km (~1 hr 05 mins)",
+        "the-leela-goa": "32 km (~45 mins)",
+        "alila-diwa": "24 km (~35 mins)"
+      },
       "best_time": "Morning to Lunch (10:30 AM - 2:00 PM)",
       "duration": "3 hours",
       "signature_dishes": ["Traditional Banana Leaf Buffet", "Vanilla Pods", "Nutmeg", "Fresh Cashew Feni"],
       "description": "Experience Goa's lush hinterland with a guided walk through aromatic vanilla, cardamom, and pepper plantations followed by a traditional buffet lunch and herbal welcome teas.",
       "image_url": "https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=800&q=80",
       "tags": ["spice farm", "nature", "food tour", "culture", "day trip", "activity"]
+    },
+    {
+      "id": "curlies-anjuna",
+      "name": "Curlies & Shiva Valley Beach Club",
+      "category": "nightlife",
+      "area": "Anjuna",
+      "region": "North Goa",
+      "cuisine": "Continental, Pizza, Cocktails, Shisha",
+      "price_range": "₹₹ (₹1,500 for two)",
+      "vibe": "Psytrance heritage, sunset trance, beach party, electric energy",
+      "distance_map": {
+        "taj-fort-aguada": "9.5 km (~20 mins)",
+        "w-goa": "3.5 km (~8 mins - Near Hotel)",
+        "the-leela-goa": "56 km (~1 hr 35 mins)",
+        "alila-diwa": "43 km (~1 hr 15 mins)"
+      },
+      "best_time": "Sunset & Night (5:30 PM - 2:00 AM)",
+      "duration": "2 - 4 hours",
+      "signature_dishes": ["Woodfired Pepperoni Pizza", "Cocktails & Beer Buckets", "Tandoori Platters"],
+      "description": "Goa's legendary beach club situated at the south end of Anjuna Beach. Famous for iconic sunset sessions, psytrance beats, beachfront daybeds, and nighttime revelry.",
+      "image_url": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80",
+      "tags": ["nightlife", "sunset party", "anjuna", "party", "cocktails", "music"]
+    },
+    {
+      "id": "ashvem-mandrem-beach",
+      "name": "Ashvem & Mandrem Beach",
+      "category": "beach",
+      "area": "Ashvem",
+      "region": "North Goa",
+      "cuisine": "Boutique cafes, healthy smoothie bowls, French bakeries",
+      "price_range": "Free (Boutique daybeds ₹1,000 minimum spend)",
+      "vibe": "Serene, upscale, expansive flat sands, bohemian beach clubs, chill",
+      "distance_map": {
+        "taj-fort-aguada": "22 km (~40 mins)",
+        "w-goa": "12 km (~22 mins - Near Hotel)",
+        "the-leela-goa": "66 km (~1 hr 50 mins)",
+        "alila-diwa": "53 km (~1 hr 30 mins)"
+      },
+      "best_time": "Late Morning through Sunset (10:00 AM - 6:30 PM)",
+      "duration": "3 - 4 hours",
+      "signature_dishes": ["Organic Acai Bowls", "Woodfired Sourdough", "Fresh Juices"],
+      "description": "Known as North Goa's chic and peaceful coastline, Ashvem offers wide uncluttered sands, shallow crystal waters, bohemian cafes (La Plage, Sublime), and unmatched tranquility away from the crowds.",
+      "image_url": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+      "tags": ["chill beach", "quiet", "romantic", "peaceful", "clean", "day-trip"]
     }
   ],
   "transport_guide": [
     {
       "type": "Scooter / Activa Rental",
-      "best_for": "Exploring Candolim, Calangute, Baga, Anjuna, and Vagator within 15 km.",
+      "best_for": "Exploring nearby beaches, cafes, and markets within 15 km.",
       "cost": "₹350 - ₹500 per day (petrol extra)",
-      "tips": "Carry physical driving license, always wear helmets (strictly enforced in North Goa), and inspect vehicle for existing scratches before taking delivery. Hotel concierge can arrange doorstep delivery."
+      "tips": "Carry physical driving license, always wear helmets (strictly enforced in North and South Goa), and inspect vehicle for existing scratches before taking delivery. Hotel concierge can arrange doorstep delivery."
     },
     {
       "type": "GoaMiles App Cab",
       "best_for": "Airport transfers (GOX/GOI), Panjim trips, and night travel.",
-      "cost": "Government regulated meter rates (e.g., Candolim to Panjim ~₹500-600, Candolim to Airport ~₹1,400-1,800)",
+      "cost": "Government regulated meter rates (e.g., Candolim/Vagator to Panjim ~₹500-700, South Goa to Airport ~₹900-1,400)",
       "tips": "Download the official GoaMiles app. Unlike other states where Uber/Ola dominate, GoaMiles is the authorized app-based taxi aggregator in Goa."
     },
     {
       "type": "Goa Motorcycle Pilot (Bike Taxi)",
-      "best_for": "Solo travelers making quick hops between beaches (e.g. Candolim to Baga or Calangute).",
+      "best_for": "Solo travelers making quick hops between beaches.",
       "cost": "₹80 - ₹150 per short trip",
       "tips": "Unique to Goa! Look for yellow-and-black motorcycle pilots waiting at prominent junctions and beach stands."
     },
     {
       "type": "Private Chauffeur Sedan / SUV",
-      "best_for": "Full day South Goa sightseeing (Palolem, Dudhsagar) or Old Goa heritage tours.",
+      "best_for": "Full day South Goa sightseeing (Palolem, Dudhsagar, Cabo de Rama) or Old Goa heritage tours.",
       "cost": "₹2,500 - ₹3,800 for 8 hours / 80 km",
       "tips": "Ideal for stress-free sightseeing in air-conditioned comfort. Book through hotel concierge at least 3 hours in advance."
     },
@@ -351,48 +699,6 @@
       "best_for": "Scenic crossing to Betim or Divar Island.",
       "cost": "Free for pedestrians and 2-wheelers (Nominal ₹10 for cars)",
       "tips": "Operated by the River Navigation Department every 15-30 minutes. A nostalgic, breezy way to cross the backwaters."
-    }
-  ],
-  "simulated_alerts": [
-    {
-      "id": "alert-rain-baga",
-      "type": "weather",
-      "severity": "warning",
-      "icon": "🌧️",
-      "title": "Evening Rain Advisory - Baga & Calangute",
-      "message": "🌧️ Heads up — rain showers are expected in Baga and Calangute after 6:00 PM today. Consider planning an indoor dining experience like Gunpowder Assagao or an earlier beach visit to Sinquerim before 5:00 PM.",
-      "recommended_action": "Switch to indoor dining / visit Fontainhas Latin Quarter",
-      "action_payload": {"type": "search_restaurants", "area": "Assagao", "vibe": "indoor cozy"}
-    },
-    {
-      "id": "alert-checkin-taj",
-      "type": "concierge",
-      "severity": "info",
-      "icon": "🔑",
-      "title": "Welcome to Taj Fort Aguada Resort",
-      "message": "🏨 Your Sea View Luxury Suite (TAJ-GOA-89421) is prepared with personalized welcome refreshments. Digital room key & sunset cocktail voucher at Sea Shell restaurant are now active.",
-      "recommended_action": "View Hotel Amenities & Spa Slots",
-      "action_payload": {"type": "hotel_info"}
-    },
-    {
-      "id": "alert-sunset-chapora",
-      "type": "experience",
-      "severity": "tip",
-      "icon": "🌅",
-      "title": "Golden Hour Countdown - Chapora Fort & Thalassa",
-      "message": "🌅 Sunset in North Goa today is at 6:28 PM. Peak golden light begins at 5:45 PM. If you plan to visit Chapora Fort or Thalassa Siolim, start moving now to secure prime sunset viewing spots.",
-      "recommended_action": "View Thalassa / Chapora directions",
-      "action_payload": {"type": "view_place", "id": "thalassa-siolim"}
-    },
-    {
-      "id": "alert-tide-vagator",
-      "type": "safety",
-      "severity": "warning",
-      "icon": "🌊",
-      "title": "High Tide Advisory - Little Vagator Rocks",
-      "message": "🌊 High tide warning along Little Vagator and Anjuna rocky shorelines between 4:00 PM and 7:00 PM. Please enjoy water sports at Sinquerim beach where life guards are stationed.",
-      "recommended_action": "Check Sinquerim Beach Activities",
-      "action_payload": {"type": "view_place", "id": "sinquerim-candolim-beach"}
     }
   ]
 }

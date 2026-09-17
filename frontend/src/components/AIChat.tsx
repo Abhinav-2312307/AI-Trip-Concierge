@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, Bot, User, MapPin, ArrowRight, Volume2, VolumeX, Trash2 } from 'lucide-react';
-import type { ChatMessage, Place } from '../types';
+import { Send, Sparkles, Bot, ArrowRight, Volume2, VolumeX, Trash2 } from 'lucide-react';
+import type { ChatMessage, Place, HotelBooking } from '../types';
 
 interface AIChatProps {
   messages: ChatMessage[];
   loading: boolean;
+  activeHotel: HotelBooking | null;
+  guestName: string;
   onSendMessage: (msg: string) => void;
   onClearChat: () => void;
   onViewPlaceDetails: (place: Place) => void;
@@ -13,6 +15,8 @@ interface AIChatProps {
 export const AIChat: React.FC<AIChatProps> = ({
   messages,
   loading,
+  activeHotel,
+  guestName,
   onSendMessage,
   onClearChat,
   onViewPlaceDetails,
@@ -20,6 +24,9 @@ export const AIChat: React.FC<AIChatProps> = ({
   const [inputText, setInputText] = useState('');
   const [voiceEnabled, setVoiceEnabled] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const hotelName = activeHotel?.name || 'Taj Fort Aguada Resort & Spa, Goa';
+  const hotelArea = activeHotel?.area || 'Sinquerim, Candolim';
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -47,10 +54,10 @@ export const AIChat: React.FC<AIChatProps> = ({
 
   const sampleQuestions = [
     "What's a good place for dinner near me tonight?",
-    "Suggest a chill beach for tomorrow morning.",
-    "What can I do near Anjuna this evening?",
-    "How can I travel from Baga to Panjim?",
-    "Plan a romantic evening for me."
+    "What should I know before check-in?",
+    "Suggest a beach close to my stay.",
+    "What can I do near my hotel?",
+    "Plan tomorrow's activities from my hotel."
   ];
 
   return (
@@ -66,6 +73,7 @@ export const AIChat: React.FC<AIChatProps> = ({
         overflow: 'hidden',
         border: '1px solid var(--card-border)',
         borderRadius: 'var(--radius-md)',
+        background: '#FFFFFF',
       }}>
         {/* Chat Header */}
         <div style={{
@@ -79,22 +87,25 @@ export const AIChat: React.FC<AIChatProps> = ({
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{
-              width: '34px',
-              height: '34px',
+              width: '36px',
+              height: '36px',
               borderRadius: 'var(--radius-xs)',
               background: 'var(--color-terracotta-500)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-              <Bot size={19} color="#FFFFFF" />
+              <Bot size={20} color="#FFFFFF" />
             </div>
             <div>
-              <div style={{ fontSize: '0.98rem', fontWeight: 600 }}>
-                Taj Hotel Concierge Assistant
+              <div style={{ fontSize: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span>AI Concierge</span>
+                <span style={{ fontSize: '0.74rem', color: '#FDBA74', background: 'rgba(226, 132, 69, 0.2)', padding: '1px 7px', borderRadius: '3px', fontWeight: 600 }}>
+                  {hotelName}
+                </span>
               </div>
-              <div style={{ fontSize: '0.75rem', color: '#94A3B8' }}>
-                Grounded in Goa knowledge base • Origin: Taj Fort Aguada, Sinquerim
+              <div style={{ fontSize: '0.74rem', color: '#94A3B8' }}>
+                Grounded in Goa knowledge base • Origin: {hotelArea}
               </div>
             </div>
           </div>
@@ -149,264 +160,230 @@ export const AIChat: React.FC<AIChatProps> = ({
           display: 'flex',
           flexDirection: 'column',
           gap: '16px',
-          background: 'var(--color-sand-50)',
+          background: 'var(--color-sand-50)'
         }}>
           {messages.map((msg) => (
             <div
               key={msg.id}
               style={{
                 display: 'flex',
-                gap: '10px',
-                alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
-                maxWidth: '82%',
+                flexDirection: 'column',
+                alignItems: msg.sender === 'user' ? 'flex-end' : 'flex-start',
+                gap: '4px'
               }}
             >
-              {msg.sender === 'assistant' && (
-                <div style={{
-                  width: '30px',
-                  height: '30px',
-                  borderRadius: 'var(--radius-xs)',
-                  background: 'var(--color-ocean-900)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  marginTop: '2px',
-                }}>
-                  <Bot size={16} color="#E28445" />
-                </div>
-              )}
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%' }}>
-                {/* Tool Execution Badges */}
-                {msg.tool_calls && msg.tool_calls.length > 0 && (
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
-                    {msg.tool_calls.map((tc, idx) => (
-                      <span key={idx} style={{
-                        background: '#EDF3FA',
-                        border: '1px solid #D1E1F3',
-                        color: '#1E3A63',
-                        padding: '2px 8px',
-                        borderRadius: 'var(--radius-xs)',
-                        fontSize: '0.72rem',
-                        fontWeight: 500,
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '4px'
-                      }}>
-                        Tool: <code>{tc.tool}</code>({JSON.stringify(tc.input).slice(0, 28)}...)
+              {/* Message Sender Header */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.74rem',
+                color: '#64748B',
+                padding: '0 4px'
+              }}>
+                {msg.sender === 'user' ? (
+                  <>
+                    <span>{guestName || 'You'}</span>
+                    <span>•</span>
+                    <span>{msg.timestamp}</span>
+                  </>
+                ) : (
+                  <>
+                    <span style={{ fontWeight: 600, color: 'var(--color-ocean-900)' }}>AI Concierge</span>
+                    {msg.isAlert && (
+                      <span className="badge-pill badge-terracotta" style={{ fontSize: '0.65rem', padding: '1px 5px' }}>
+                        PROACTIVE ALERT
                       </span>
-                    ))}
-                  </div>
+                    )}
+                    <span>•</span>
+                    <span>{msg.timestamp}</span>
+                  </>
                 )}
+              </div>
 
-                {/* Message Bubble */}
-                <div style={{
-                  padding: '14px 18px',
-                  borderRadius: 'var(--radius-sm)',
+              {/* Message Bubble */}
+              <div
+                style={{
+                  maxWidth: '82%',
+                  padding: '12px 16px',
+                  borderRadius: msg.sender === 'user' ? '12px 12px 2px 12px' : '12px 12px 12px 2px',
                   background: msg.sender === 'user' ? 'var(--color-ocean-900)' : '#FFFFFF',
-                  color: msg.sender === 'user' ? '#FFFFFF' : '#101F35',
-                  boxShadow: 'var(--shadow-subtle)',
+                  color: msg.sender === 'user' ? '#FFFFFF' : '#1E293B',
                   border: msg.sender === 'user' ? 'none' : '1px solid var(--card-border)',
+                  boxShadow: 'var(--shadow-subtle)',
                   fontSize: '0.9rem',
                   lineHeight: 1.55,
                   whiteSpace: 'pre-wrap',
-                }}>
-                  {msg.text}
-                </div>
-
-                {/* Rich Recommendation Cards */}
-                {msg.cards && msg.cards.length > 0 && (
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: msg.cards.length > 1 ? 'repeat(auto-fit, minmax(220px, 1fr))' : '1fr',
-                    gap: '10px',
-                    marginTop: '4px'
-                  }}>
-                    {msg.cards.map((card) => (
-                      <div
-                        key={card.id}
-                        className="glass-card"
-                        style={{
-                          overflow: 'hidden',
-                          borderRadius: 'var(--radius-sm)',
-                          background: '#FFFFFF',
-                          border: '1px solid var(--card-border)',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'space-between'
-                        }}
-                      >
-                        <div style={{ position: 'relative', height: '115px' }}>
-                          <img
-                            src={card.image_url}
-                            alt={card.name}
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                          />
-                          <span style={{
-                            position: 'absolute',
-                            top: '6px',
-                            left: '6px',
-                            background: 'rgba(11, 22, 38, 0.85)',
-                            color: '#FFFFFF',
-                            fontSize: '0.68rem',
-                            fontWeight: 600,
-                            padding: '2px 6px',
-                            borderRadius: '2px',
-                            textTransform: 'uppercase'
-                          }}>
-                            {card.category}
-                          </span>
-                          <span style={{
-                            position: 'absolute',
-                            bottom: '6px',
-                            right: '6px',
-                            background: 'rgba(255, 255, 255, 0.95)',
-                            color: '#101F35',
-                            fontSize: '0.7rem',
-                            fontWeight: 600,
-                            padding: '2px 6px',
-                            borderRadius: '2px'
-                          }}>
-                            {card.distance_from_hotel}
-                          </span>
-                        </div>
-
-                        <div style={{ padding: '12px' }}>
-                          <h4 style={{ fontSize: '0.96rem', fontWeight: 700, color: '#101F35', marginBottom: '2px' }}>
-                            {card.name}
-                          </h4>
-                          <div style={{ fontSize: '0.76rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '6px' }}>
-                            <MapPin size={10} color="#D05B3B" /> {card.area} • {card.cuisine || card.price_range}
-                          </div>
-                          <p style={{ fontSize: '0.8rem', color: '#475569', lineHeight: 1.4, marginBottom: '10px' }}>
-                            {card.description.slice(0, 95)}...
-                          </p>
-
-                          <button
-                            onClick={() => onViewPlaceDetails(card)}
-                            className="btn-primary"
-                            style={{
-                              width: '100%',
-                              fontSize: '0.76rem',
-                              padding: '6px 8px',
-                              borderRadius: 'var(--radius-xs)'
-                            }}
-                          >
-                            Explore Spot <ArrowRight size={11} />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Footer Timestamp */}
-                <div style={{
-                  fontSize: '0.7rem',
-                  color: '#94A3B8',
-                  paddingLeft: '2px'
-                }}>
-                  {msg.timestamp}
-                </div>
+                }}
+              >
+                {msg.text}
               </div>
 
-              {msg.sender === 'user' && (
+              {/* Tool Execution Trace Badge */}
+              {msg.tool_calls && msg.tool_calls.length > 0 && (
                 <div style={{
-                  width: '30px',
-                  height: '30px',
-                  borderRadius: 'var(--radius-xs)',
-                  background: 'var(--color-terracotta-500)',
                   display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
+                  flexWrap: 'wrap',
+                  gap: '4px',
                   marginTop: '2px',
+                  padding: '0 4px'
                 }}>
-                  <User size={16} color="#FFFFFF" />
+                  {msg.tool_calls.map((tc, idx) => (
+                    <span
+                      key={idx}
+                      style={{
+                        fontSize: '0.7rem',
+                        background: 'rgba(38, 89, 67, 0.1)',
+                        color: 'var(--color-forest-900)',
+                        border: '1px solid rgba(38, 89, 67, 0.2)',
+                        padding: '1px 6px',
+                        borderRadius: '3px',
+                        fontFamily: 'monospace'
+                      }}
+                    >
+                      ⚡ executed: {tc.tool}({JSON.stringify(tc.input).slice(0, 45)}...)
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Rich Recommendation Place Cards */}
+              {msg.cards && msg.cards.length > 0 && (
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+                  gap: '10px',
+                  marginTop: '8px',
+                  width: '100%',
+                  maxWidth: '750px'
+                }}>
+                  {msg.cards.map((place) => (
+                    <div
+                      key={place.id}
+                      className="glass-card"
+                      style={{
+                        overflow: 'hidden',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        padding: 0,
+                        border: '1px solid var(--card-border)',
+                        background: '#FFFFFF'
+                      }}
+                    >
+                      <div style={{ position: 'relative', height: '120px' }}>
+                        <img
+                          src={place.image_url}
+                          alt={place.name}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                        <span style={{
+                          position: 'absolute',
+                          bottom: '6px',
+                          right: '6px',
+                          background: 'rgba(11, 22, 38, 0.9)',
+                          color: '#FFFFFF',
+                          fontSize: '0.68rem',
+                          fontWeight: 600,
+                          padding: '1px 6px',
+                          borderRadius: '2px'
+                        }}>
+                          📍 {place.distance_from_hotel}
+                        </span>
+                      </div>
+
+                      <div style={{ padding: '10px 12px' }}>
+                        <h4 style={{ fontSize: '0.92rem', fontWeight: 700, color: '#101F35', margin: '0 0 2px' }}>
+                          {place.name}
+                        </h4>
+                        <div style={{ fontSize: '0.74rem', color: '#64748B', marginBottom: '6px' }}>
+                          {place.area} • {place.price_range}
+                        </div>
+                        <p style={{ fontSize: '0.78rem', color: '#475569', margin: 0, lineHeight: 1.4 }}>
+                          {place.description.slice(0, 100)}...
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={() => onViewPlaceDetails(place)}
+                        style={{
+                          background: 'var(--color-sand-50)',
+                          border: 'none',
+                          borderTop: '1px solid var(--card-border)',
+                          padding: '7px 10px',
+                          fontSize: '0.76rem',
+                          fontWeight: 600,
+                          color: 'var(--color-terracotta-500)',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '4px'
+                        }}
+                      >
+                        Ask more details <ArrowRight size={11} />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
           ))}
 
-          {/* Typing Indicator */}
+          {/* Loading Indicator */}
           {loading && (
-            <div style={{ display: 'flex', gap: '10px', alignSelf: 'flex-start', alignItems: 'center' }}>
-              <div style={{
-                width: '30px',
-                height: '30px',
-                borderRadius: 'var(--radius-xs)',
-                background: 'var(--color-ocean-900)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                <Bot size={16} color="#E28445" />
-              </div>
-              <div style={{
-                padding: '10px 14px',
-                background: '#FFFFFF',
-                borderRadius: 'var(--radius-sm)',
-                border: '1px solid var(--card-border)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontSize: '0.84rem',
-                color: '#64748B'
-              }}>
-                <Sparkles size={14} color="#D05B3B" className="animate-spin" />
-                <span>Checking local knowledge base...</span>
-              </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#64748B', fontSize: '0.84rem' }}>
+              <Sparkles size={16} className="animate-spin" color="#D05B3B" />
+              <span>Consulting {hotelName} concierge knowledge base...</span>
             </div>
           )}
 
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Suggested Prompt Chips */}
+        {/* Suggested Quick Prompt Chips */}
         <div style={{
           padding: '8px 16px',
-          background: 'var(--color-sand-100)',
+          background: '#FFFFFF',
           borderTop: '1px solid var(--card-border)',
           display: 'flex',
           gap: '6px',
           overflowX: 'auto',
           whiteSpace: 'nowrap'
         }}>
-          <span style={{ fontSize: '0.74rem', fontWeight: 600, color: '#64748B', display: 'flex', alignItems: 'center' }}>
-            Quick Prompts:
+          <span style={{ fontSize: '0.74rem', color: '#94A3B8', alignSelf: 'center', fontWeight: 600 }}>
+            Try:
           </span>
           {sampleQuestions.map((q, idx) => (
             <button
               key={idx}
               onClick={() => onSendMessage(q)}
+              disabled={loading}
               style={{
-                background: '#FFFFFF',
+                background: 'var(--color-sand-50)',
                 border: '1px solid var(--card-border)',
                 borderRadius: 'var(--radius-xs)',
-                padding: '3px 10px',
-                fontSize: '0.76rem',
-                color: '#334155',
-                cursor: 'pointer',
-                transition: 'all 0.12s ease'
+                padding: '4px 9px',
+                fontSize: '0.74rem',
+                color: '#475569',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                transition: 'all 0.12s ease',
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'var(--color-terracotta-500)')}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--card-border)')}
             >
               {q}
             </button>
           ))}
         </div>
 
-        {/* Chat Input Bar */}
+        {/* Message Input Box */}
         <form
           onSubmit={handleSend}
           style={{
-            padding: '14px 16px',
+            padding: '12px 16px',
             background: '#FFFFFF',
             borderTop: '1px solid var(--card-border)',
             display: 'flex',
-            gap: '10px',
+            gap: '8px',
             alignItems: 'center'
           }}
         >
@@ -414,34 +391,31 @@ export const AIChat: React.FC<AIChatProps> = ({
             type="text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder="Ask your concierge about dining, beaches, transport, or trip ideas..."
+            placeholder={`Ask about dinner near ${hotelArea}, beaches, check-in, or trips...`}
+            disabled={loading}
             style={{
               flex: 1,
               padding: '10px 14px',
               borderRadius: 'var(--radius-xs)',
               border: '1px solid var(--card-border)',
-              fontSize: '0.9rem',
               outline: 'none',
-              background: 'var(--color-sand-50)',
-              fontFamily: 'inherit',
-            }}
-            onFocus={(e) => {
-              e.currentTarget.style.borderColor = 'var(--color-ocean-900)';
-            }}
-            onBlur={(e) => {
-              e.currentTarget.style.borderColor = 'var(--card-border)';
+              fontSize: '0.88rem',
+              background: 'var(--color-sand-50)'
             }}
           />
 
           <button
             type="submit"
-            disabled={!inputText.trim() || loading}
+            disabled={loading || !inputText.trim()}
             className="btn-terracotta"
             style={{
-              padding: '10px 16px',
-              borderRadius: 'var(--radius-xs)',
-              opacity: !inputText.trim() || loading ? 0.6 : 1,
-              cursor: !inputText.trim() || loading ? 'not-allowed' : 'pointer'
+              padding: '10px 18px',
+              fontSize: '0.88rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              opacity: loading || !inputText.trim() ? 0.6 : 1,
+              cursor: loading || !inputText.trim() ? 'not-allowed' : 'pointer'
             }}
           >
             <Send size={15} /> Send

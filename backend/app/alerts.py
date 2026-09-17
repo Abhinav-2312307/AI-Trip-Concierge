@@ -1,54 +1,190 @@
 from typing import List, Dict, Any, Optional
 from datetime import datetime
-from .tools import load_data
+from .tools import load_data, get_hotel_info
 
-def get_active_alerts() -> List[Dict[str, Any]]:
-    """Retrieve simulated proactive alerts from the knowledge base."""
-    data = load_data()
-    return data.get("simulated_alerts", [])
+def get_active_alerts(hotel_id: Optional[str] = "taj-fort-aguada") -> List[Dict[str, Any]]:
+    """Retrieve proactive alerts dynamically customized for the active hotel booking."""
+    active_h_id = hotel_id or "taj-fort-aguada"
+    hotel = get_hotel_info(active_h_id)
+    hotel_name = hotel.get("name", "Taj Fort Aguada")
+    hotel_area = hotel.get("area", "Sinquerim, Candolim")
+    room_type = hotel.get("room_type", "Luxury Suite")
+    conf_code = hotel.get("confirmation_code", "CONF-DEMO")
+    check_in_time = hotel.get("check_in_time", "3:00 PM")
 
-def simulate_alert(alert_type: str = "rain_baga") -> Dict[str, Any]:
-    """
-    Simulate a realistic proactive travel alert.
-    Supported types:
-    - 'rain_baga' (Weather rain alert at 6 PM in Baga with indoor dining recommendation)
-    - 'checkin_reminder' (Taj Fort Aguada check-in key & welcome drink voucher)
-    - 'sunset_countdown' (Golden hour notification for Chapora Fort / Thalassa)
-    - 'high_tide' (Sea swell advisory at Vagator)
-    """
-    alerts = get_active_alerts()
-    
-    mapping = {
-        "rain_baga": "alert-rain-baga",
-        "weather": "alert-rain-baga",
-        "checkin": "alert-checkin-taj",
-        "checkin_reminder": "alert-checkin-taj",
-        "sunset": "alert-sunset-chapora",
-        "sunset_countdown": "alert-sunset-chapora",
-        "tide": "alert-tide-vagator",
-        "high_tide": "alert-tide-vagator"
-    }
+    alerts = []
 
-    target_id = mapping.get(alert_type.lower(), "alert-rain-baga")
-    
-    for alert in alerts:
-        if alert.get("id") == target_id:
-            return {
-                **alert,
-                "timestamp": datetime.now().strftime("%I:%M %p"),
-                "is_simulated": True,
-                "note": "Simulated live concierge alert for demo purposes."
-            }
-            
-    # Default fallback alert
-    return {
-        "id": "alert-rain-baga",
-        "type": "weather",
-        "severity": "warning",
-        "icon": "🌧️",
-        "title": "Evening Rain Advisory - Baga & Calangute",
-        "message": "🌧️ Heads up — rain is expected in Baga after 6 PM today. Consider planning an indoor activity or an earlier beach visit.",
-        "recommended_action": "Switch to indoor dining at Gunpowder Assagao or Fontainhas Latin Quarter walk",
-        "timestamp": datetime.now().strftime("%I:%M %p"),
-        "is_simulated": True
-    }
+    # 1. Digital Check-in Key & Welcome Pass Alert
+    alerts.append({
+        "id": f"alert-checkin-{active_h_id}",
+        "type": "concierge",
+        "severity": "info",
+        "icon": "🔑",
+        "title": f"Welcome to {hotel_name}",
+        "message": f"🏨 Your {room_type} (Booking: {conf_code}) is prepared with personalized welcome refreshments. Digital room key & check-in pass (starts {check_in_time}) are active.",
+        "recommended_action": f"View {hotel_name} amenities & concierge services",
+        "action_payload": {"type": "hotel_info", "hotel_id": active_h_id},
+        "timestamp": "9:00 AM"
+    })
+
+    # 2. Area Weather / Rain Alert
+    if "cavelossim" in hotel_area.lower() or "mobor" in hotel_area.lower():
+        alerts.append({
+            "id": f"alert-weather-{active_h_id}",
+            "type": "weather",
+            "severity": "tip",
+            "icon": "⛵",
+            "title": "Clear Evening Skies over River Sal & Mobor",
+            "message": "🌅 Gentle coastal breeze and clear skies forecast along Cavelossim and River Sal after 5:00 PM. Ideal conditions for a sunset boat cruise or outdoor dining at Fisherman's Wharf.",
+            "recommended_action": "Explore River Sal Catamaran & Mobor Dining",
+            "action_payload": {"type": "view_place", "id": "fishermans-wharf-mobor"},
+            "timestamp": "11:30 AM"
+        })
+    elif "majorda" in hotel_area.lower() or "utorda" in hotel_area.lower():
+        alerts.append({
+            "id": f"alert-weather-{active_h_id}",
+            "type": "weather",
+            "severity": "tip",
+            "icon": "🌴",
+            "title": "Sunset Advisory - Utorda & Majorda Sands",
+            "message": "🌴 Beautiful golden hour conditions on Majorda and Utorda beaches today. Low tide at 4:30 PM makes it perfect for a long barefoot sunset beach walk.",
+            "recommended_action": "Check Zeebop by the Sea Sunset Booking",
+            "action_payload": {"type": "view_place", "id": "zeebop-by-the-sea"},
+            "timestamp": "12:00 PM"
+        })
+    elif "vagator" in hotel_area.lower():
+        alerts.append({
+            "id": f"alert-weather-{active_h_id}",
+            "type": "weather",
+            "severity": "warning",
+            "icon": "🌊",
+            "title": "High Tide Advisory - Little Vagator Rocks",
+            "message": "🌊 High tide warning along Little Vagator and Ozran rocky shorelines between 4:00 PM and 7:00 PM. Please enjoy sunset views safely from cliff decks like Chapora Fort or W Rockpool.",
+            "recommended_action": "View Chapora Fort Sunset Spot",
+            "action_payload": {"type": "view_place", "id": "chapora-fort"},
+            "timestamp": "1:15 PM"
+        })
+    else:
+        alerts.append({
+            "id": f"alert-weather-{active_h_id}",
+            "type": "weather",
+            "severity": "warning",
+            "icon": "🌧️",
+            "title": "Evening Rain Advisory - Baga & Calangute",
+            "message": "🌧️ Heads up — isolated rain showers expected in Calangute and Baga after 6:00 PM today. Consider planning an indoor dining experience like Gunpowder Assagao or an earlier beach visit to Sinquerim.",
+            "recommended_action": "Switch to indoor dining / visit Fontainhas Latin Quarter",
+            "action_payload": {"type": "view_place", "id": "gunpowder-assagao"},
+            "timestamp": "2:00 PM"
+        })
+
+    # 3. Golden Hour Experience Countdown
+    if "cavelossim" in hotel_area.lower() or "mobor" in hotel_area.lower():
+        alerts.append({
+            "id": f"alert-sunset-{active_h_id}",
+            "type": "experience",
+            "severity": "tip",
+            "icon": "🌅",
+            "title": "Golden Hour Countdown - Cabo de Rama Clifftop",
+            "message": "🌅 Sunset in South Goa today is at 6:28 PM. Peak golden light begins at 5:45 PM. Cabo de Rama Fort offers spectacular panoramic cliffs over the emerald sea.",
+            "recommended_action": "View Cabo de Rama Directions",
+            "action_payload": {"type": "view_place", "id": "cabo-de-rama-fort"},
+            "timestamp": "3:45 PM"
+        })
+    elif "vagator" in hotel_area.lower():
+        alerts.append({
+            "id": f"alert-sunset-{active_h_id}",
+            "type": "experience",
+            "severity": "tip",
+            "icon": "🌅",
+            "title": "Golden Hour Countdown - Chapora Fort & Thalassa",
+            "message": "🌅 Sunset in North Goa today is at 6:28 PM. Peak golden light starts at 5:45 PM. Start moving towards Chapora Fort or Thalassa Siolim to secure prime sunset viewing spots.",
+            "recommended_action": "View Thalassa / Chapora directions",
+            "action_payload": {"type": "view_place", "id": "thalassa-siolim"},
+            "timestamp": "3:45 PM"
+        })
+    else:
+        alerts.append({
+            "id": f"alert-sunset-{active_h_id}",
+            "type": "experience",
+            "severity": "tip",
+            "icon": "🌅",
+            "title": "Golden Hour Countdown - Fort Aguada Lighthouse",
+            "message": "🌅 Sunset in Candolim today is at 6:28 PM. Golden light over the lower bastions of Aguada begins at 5:45 PM. Just a 10-minute walk from your suite.",
+            "recommended_action": "View Fort Aguada Walking Route",
+            "action_payload": {"type": "view_place", "id": "aguada-fort-lighthouse"},
+            "timestamp": "3:45 PM"
+        })
+
+    return alerts
+
+def simulate_alert(hotel_id: Optional[str] = "taj-fort-aguada", alert_type: str = "rain_baga") -> Dict[str, Any]:
+    """Simulate a realistic proactive travel alert tied specifically to the active hotel."""
+    active_h_id = hotel_id or "taj-fort-aguada"
+    hotel = get_hotel_info(active_h_id)
+    hotel_name = hotel.get("name", "Taj Fort Aguada")
+    hotel_area = hotel.get("area", "Sinquerim, Candolim")
+    room_type = hotel.get("room_type", "Luxury Suite")
+    conf_code = hotel.get("confirmation_code", "CONF-DEMO")
+    current_time = datetime.now().strftime("%I:%M %p")
+
+    type_lower = alert_type.lower()
+
+    if "checkin" in type_lower or "key" in type_lower:
+        return {
+            "id": f"sim-checkin-{active_h_id}",
+            "type": "concierge",
+            "severity": "info",
+            "icon": "🔑",
+            "title": f"Digital Key Active • {hotel_name}",
+            "message": f"🏨 Welcome! Your {room_type} (Ref: {conf_code}) is prepared with personalized welcome refreshments. Concierge desk & sunset cocktail voucher are now active.",
+            "recommended_action": f"View {hotel_name} amenities and dining options",
+            "timestamp": current_time,
+            "is_simulated": True
+        }
+    elif "sunset" in type_lower or "golden" in type_lower:
+        if "cavelossim" in hotel_area.lower() or "mobor" in hotel_area.lower():
+            target_place = "Cabo de Rama Fort"
+            target_id = "cabo-de-rama-fort"
+        elif "vagator" in hotel_area.lower():
+            target_place = "Chapora Fort & Thalassa Siolim"
+            target_id = "thalassa-siolim"
+        else:
+            target_place = "Fort Aguada & Sinquerim Beach"
+            target_id = "aguada-fort-lighthouse"
+
+        return {
+            "id": f"sim-sunset-{active_h_id}",
+            "type": "experience",
+            "severity": "tip",
+            "icon": "🌅",
+            "title": f"Golden Hour Alert • {target_place}",
+            "message": f"🌅 Sunset today is at 6:28 PM. Peak golden lighting begins in 45 minutes near {target_place}. Prime spots fill quickly!",
+            "recommended_action": f"View directions to {target_place}",
+            "timestamp": current_time,
+            "is_simulated": True
+        }
+    elif "tide" in type_lower or "wave" in type_lower:
+        return {
+            "id": f"sim-tide-{active_h_id}",
+            "type": "safety",
+            "severity": "warning",
+            "icon": "🌊",
+            "title": f"High Tide Advisory • {hotel_area} Coastline",
+            "message": f"🌊 High tide recorded along {hotel_area}. Water sports pause during peak swell. Life guards recommend calm swimming areas near the hotel.",
+            "recommended_action": "Check verified beach safety and indoor activities",
+            "timestamp": current_time,
+            "is_simulated": True
+        }
+    else:
+        # Default weather/rain alert
+        return {
+            "id": f"sim-rain-{active_h_id}",
+            "type": "weather",
+            "severity": "warning",
+            "icon": "🌧️",
+            "title": f"Evening Weather Advisory • {hotel_area}",
+            "message": f"🌧️ Weather radar indicates brief coastal showers near {hotel_area} around 6:00 PM. Concierge recommends cozy indoor dining or early afternoon sightseeing.",
+            "recommended_action": "Ask Concierge for indoor dining reservations near hotel",
+            "timestamp": current_time,
+            "is_simulated": True
+        }
