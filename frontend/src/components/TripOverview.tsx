@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Sparkles, Utensils, Waves, MapPin, Search } from 'lucide-react';
+import { Sparkles, Utensils, Waves, MapPin, Search, Car, Calculator, CheckSquare } from 'lucide-react';
 import type { TripContext } from '../types';
+import type { SupportedLanguage } from '../utils/i18n';
+import { t } from '../utils/i18n';
 
 interface TripOverviewProps {
   tripContext: TripContext | null;
@@ -9,6 +11,10 @@ interface TripOverviewProps {
   onQuickAction: (action: string) => void;
   onGenerateItineraryClick: () => void;
   onSwitchBookingClick: () => void;
+  onOpenTransitEstimator?: () => void;
+  onOpenBudget?: () => void;
+  onOpenPacking?: () => void;
+  lang?: SupportedLanguage;
 }
 
 export const TripOverview: React.FC<TripOverviewProps> = ({
@@ -17,6 +23,10 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
   onUpdateGuestName,
   onQuickAction,
   onGenerateItineraryClick,
+  onOpenTransitEstimator,
+  onOpenBudget,
+  onOpenPacking,
+  lang = 'en',
 }) => {
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameInput, setNameInput] = useState(guestName);
@@ -32,11 +42,11 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
   return (
     <div className="full-bleed animate-fade-in" style={{
       marginTop: '-80px', // Pull up under the navbar
-      marginBottom: '40px',
+      marginBottom: '32px',
       position: 'relative',
-      height: '80vh',
-      minHeight: '600px',
-      maxHeight: '900px',
+      height: '75vh',
+      minHeight: '560px',
+      maxHeight: '850px',
       overflow: 'hidden'
     }}>
       
@@ -47,7 +57,7 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
         left: 0,
         width: '100%',
         height: '100%',
-        backgroundImage: 'url(https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=2000&auto=format&fit=crop)', // High quality beach/resort
+        backgroundImage: 'url(https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=2000&auto=format&fit=crop)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         zIndex: 1
@@ -60,7 +70,7 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
         left: 0,
         width: '100%',
         height: '100%',
-        background: 'linear-gradient(to bottom, rgba(11, 22, 38, 0.4) 0%, rgba(11, 22, 38, 0.2) 50%, var(--bg-primary) 100%)',
+        background: 'linear-gradient(to bottom, rgba(11, 22, 38, 0.45) 0%, rgba(11, 22, 38, 0.25) 50%, var(--bg-primary) 100%)',
         zIndex: 2
       }} />
 
@@ -72,11 +82,11 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-end',
-        paddingBottom: '60px'
+        paddingBottom: '40px'
       }}>
         
         {/* Welcome Header */}
-        <div style={{ maxWidth: '800px', marginBottom: '40px' }}>
+        <div style={{ maxWidth: '820px', marginBottom: '28px' }}>
           {isEditingName ? (
             <form onSubmit={handleSaveName} style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
               <input
@@ -102,12 +112,12 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
           ) : (
             <h1 className="font-serif" 
                 style={{ 
-                  fontSize: 'clamp(3rem, 6vw, 5rem)', 
+                  fontSize: 'clamp(2.6rem, 5.5vw, 4.5rem)', 
                   fontWeight: 600, 
                   lineHeight: 1.1, 
                   color: 'var(--text-primary)', 
-                  margin: '0 0 16px 0',
-                  textShadow: '0 4px 20px rgba(0,0,0,0.1)'
+                  margin: '0 0 14px 0',
+                  textShadow: '0 4px 20px rgba(0,0,0,0.15)'
                 }}
                 onClick={() => {
                   setNameInput(guestName);
@@ -115,19 +125,19 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
                 }}
                 title="Click to edit name"
             >
-              {guestName ? `Welcome to Goa, ${guestName}.` : 'Welcome to Goa.'}
+              {guestName ? `${t('welcomeToGoa', lang)}, ${guestName}.` : `${t('welcomeToGoa', lang)}.`}
             </h1>
           )}
           
           <p style={{ 
-            fontSize: '1.25rem', 
+            fontSize: '1.15rem', 
             color: 'var(--text-secondary)', 
             margin: 0, 
-            maxWidth: '600px', 
+            maxWidth: '650px', 
             lineHeight: 1.6,
             fontWeight: 500
           }}>
-            Your AI Concierge is ready. Let's make your stay at <strong>{hotel?.name || 'Taj Fort Aguada'}</strong> absolutely unforgettable.
+            {t('conciergeSubtitle', lang)} Current Stay: <strong>{hotel?.name || 'Taj Fort Aguada'}</strong> ({hotel?.area || 'Sinquerim'}).
           </p>
         </div>
 
@@ -137,40 +147,75 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
           backdropFilter: 'blur(16px)',
           border: '1px solid var(--border-primary)',
           borderRadius: 'var(--radius-lg)',
-          padding: '24px',
+          padding: '20px 24px',
           boxShadow: 'var(--shadow-card)',
           display: 'flex',
-          flexWrap: 'wrap',
-          gap: '12px',
-          alignItems: 'center'
+          flexDirection: 'column',
+          gap: '12px'
         }}>
-          <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)', paddingRight: '12px' }}>
-            What can I help you with?
-          </span>
-          
-          <button onClick={onGenerateItineraryClick} className="btn-terracotta" style={{ borderRadius: '30px', fontSize: '0.9rem' }}>
-            <Sparkles size={16} /> Auto-Plan My Day
-          </button>
-          
-          <button onClick={() => onQuickAction("What's a good place for dinner near me tonight?")} 
-            style={{ ...actionBtnStyle, color: 'var(--accent-primary)' }}>
-            <Utensils size={15} /> Dinner
-          </button>
-          
-          <button onClick={() => onQuickAction("Suggest a beach close to my stay.")} 
-            style={{ ...actionBtnStyle, color: 'var(--accent-secondary)' }}>
-            <Waves size={15} /> Beaches
-          </button>
-          
-          <button onClick={() => onQuickAction("What can I do near my hotel?")} 
-            style={{ ...actionBtnStyle, color: '#10B981' }}>
-            <MapPin size={15} /> Explore Area
-          </button>
-          
-          <button onClick={() => onQuickAction("What are some hidden gems in Goa?")} 
-            style={{ ...actionBtnStyle, color: '#8B5CF6' }}>
-            <Search size={15} /> Hidden Gems
-          </button>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', paddingRight: '8px' }}>
+              Ask Concierge:
+            </span>
+            
+            <button onClick={onGenerateItineraryClick} className="btn-terracotta" style={{ borderRadius: '30px', fontSize: '0.85rem' }}>
+              <Sparkles size={15} /> {t('autoPlanDay', lang)}
+            </button>
+            
+            <button onClick={() => onQuickAction("What's a good place for dinner near me tonight?")} 
+              style={{ ...actionBtnStyle, color: 'var(--accent-primary)' }}>
+              <Utensils size={14} /> {t('dinnerPrompt', lang)}
+            </button>
+            
+            <button onClick={() => onQuickAction("Suggest a quiet, scenic beach close to my stay.")} 
+              style={{ ...actionBtnStyle, color: 'var(--accent-secondary)' }}>
+              <Waves size={14} /> {t('beachesPrompt', lang)}
+            </button>
+            
+            <button onClick={() => onQuickAction("What can I do near my hotel?")} 
+              style={{ ...actionBtnStyle, color: '#10B981' }}>
+              <MapPin size={14} /> {t('explorePrompt', lang)}
+            </button>
+            
+            <button onClick={() => onQuickAction("What are some hidden gems in Goa?")} 
+              style={{ ...actionBtnStyle, color: '#8B5CF6' }}>
+              <Search size={14} /> {t('hiddenGemsPrompt', lang)}
+            </button>
+          </div>
+
+          {/* Quick Travel Utilities Row */}
+          {(onOpenTransitEstimator || onOpenBudget || onOpenPacking) && (
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '8px',
+              paddingTop: '8px',
+              borderTop: '1px solid var(--border-primary)',
+              alignItems: 'center'
+            }}>
+              <span style={{ fontSize: '0.74rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)', fontWeight: 700, paddingRight: '6px' }}>
+                Trip Tools:
+              </span>
+
+              {onOpenTransitEstimator && (
+                <button onClick={onOpenTransitEstimator} style={utilityBtnStyle}>
+                  <Car size={13} color="#F59E0B" /> {t('transitGuide', lang)} & Taxi Rates
+                </button>
+              )}
+
+              {onOpenBudget && (
+                <button onClick={onOpenBudget} style={utilityBtnStyle}>
+                  <Calculator size={13} color="#10B981" /> {t('budgetCalculator', lang)}
+                </button>
+              )}
+
+              {onOpenPacking && (
+                <button onClick={onOpenPacking} style={utilityBtnStyle}>
+                  <CheckSquare size={13} color="#3B82F6" /> {t('packingList', lang)}
+                </button>
+              )}
+            </div>
+          )}
         </div>
         
       </div>
@@ -181,14 +226,29 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
 const actionBtnStyle = {
   background: 'var(--bg-tertiary)',
   border: '1px solid var(--border-primary)',
-  padding: '10px 20px',
+  padding: '8px 16px',
   borderRadius: '30px',
-  fontSize: '0.9rem',
+  fontSize: '0.85rem',
   fontWeight: 600,
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
-  gap: '8px',
+  gap: '6px',
   boxShadow: 'var(--shadow-subtle)',
   transition: 'transform 0.2s, box-shadow 0.2s'
+};
+
+const utilityBtnStyle = {
+  background: 'transparent',
+  border: '1px solid var(--border-primary)',
+  color: 'var(--text-primary)',
+  padding: '5px 12px',
+  borderRadius: '20px',
+  fontSize: '0.78rem',
+  fontWeight: 500,
+  cursor: 'pointer',
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '6px',
+  transition: 'all 0.15s ease'
 };
