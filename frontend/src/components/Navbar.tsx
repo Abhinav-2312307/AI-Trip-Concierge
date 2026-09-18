@@ -13,6 +13,8 @@ interface NavbarProps {
   onSwitchHotel: (hotelId: string) => void;
   onOpenTransport: () => void;
   onSimulateAlert: () => void;
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -26,6 +28,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSwitchHotel,
   onOpenTransport,
   onSimulateAlert,
+  theme,
+  toggleTheme,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isUtilityMenuOpen, setIsUtilityMenuOpen] = useState(false);
@@ -107,7 +111,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     top: '120%',
                     left: 0,
                     width: '280px',
-                    background: '#FFFFFF',
+                    background: 'var(--bg-card)',
                     borderRadius: 'var(--radius-md)',
                     boxShadow: '0 12px 40px rgba(0,0,0,0.15)',
                     zIndex: 60,
@@ -130,18 +134,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                       }}
                       style={{
                         textAlign: 'left',
-                        background: b.id === activeHotelId ? 'var(--color-sand-50)' : 'transparent',
+                        background: b.id === activeHotelId ? 'var(--bg-tertiary)' : 'transparent',
                         border: 'none',
                         borderRadius: 'var(--radius-sm)',
                         padding: '10px 12px',
-                        color: '#0B1626',
+                        color: 'var(--text-primary)',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         transition: 'background 0.2s'
                       }}
-                      onMouseOver={e => { if(b.id !== activeHotelId) e.currentTarget.style.background = '#F8FAFC' }}
+                      onMouseOver={e => { if(b.id !== activeHotelId) e.currentTarget.style.background = 'var(--bg-tertiary)' }}
                       onMouseOut={e => { if(b.id !== activeHotelId) e.currentTarget.style.background = 'transparent' }}
                     >
                       <div>
@@ -205,6 +209,32 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Right Actions */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           
+          {/* Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            style={{
+              background: 'rgba(255,255,255,0.15)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255,255,255,0.3)',
+              color: '#FFFFFF',
+              cursor: 'pointer',
+              padding: '10px',
+              borderRadius: '50%',
+              transition: 'all 0.2s',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+          >
+            {theme === 'light' ? (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            )}
+          </button>
+
           <button
             onClick={() => setActiveTab('alerts')}
             style={{
@@ -270,7 +300,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                  top: '120%',
                  right: 0,
                  width: '200px',
-                 background: '#FFFFFF',
+                 background: 'var(--bg-card)',
                  borderRadius: 'var(--radius-md)',
                  boxShadow: '0 12px 40px rgba(0,0,0,0.15)',
                  zIndex: 60,
@@ -313,7 +343,7 @@ const menuBtnStyle = {
   padding: '10px',
   textAlign: 'left' as const,
   fontSize: '0.85rem',
-  color: '#0B1626',
+  color: 'var(--text-primary)',
   cursor: 'pointer',
   borderRadius: 'var(--radius-sm)',
   display: 'flex',

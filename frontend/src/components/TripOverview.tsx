@@ -60,7 +60,7 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
         left: 0,
         width: '100%',
         height: '100%',
-        background: 'linear-gradient(to bottom, rgba(11, 22, 38, 0.4) 0%, rgba(11, 22, 38, 0.2) 50%, rgba(251, 249, 245, 1) 100%)',
+        background: 'linear-gradient(to bottom, rgba(11, 22, 38, 0.4) 0%, rgba(11, 22, 38, 0.2) 50%, var(--bg-primary) 100%)',
         zIndex: 2
       }} />
 
@@ -86,10 +86,10 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
                 placeholder="Enter your name"
                 autoFocus
                 style={{
-                  background: 'rgba(255, 255, 255, 0.2)',
+                  background: 'var(--bg-card)',
                   backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255, 255, 255, 0.4)',
-                  color: '#101F35',
+                  border: '1px solid var(--border-primary)',
+                  color: 'var(--text-primary)',
                   padding: '12px 20px',
                   borderRadius: '30px',
                   fontSize: '1.2rem',
@@ -105,9 +105,9 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
                   fontSize: 'clamp(3rem, 6vw, 5rem)', 
                   fontWeight: 600, 
                   lineHeight: 1.1, 
-                  color: '#0B1626', 
+                  color: 'var(--text-primary)', 
                   margin: '0 0 16px 0',
-                  textShadow: '0 4px 20px rgba(255,255,255,0.6)'
+                  textShadow: '0 4px 20px rgba(0,0,0,0.1)'
                 }}
                 onClick={() => {
                   setNameInput(guestName);
@@ -121,7 +121,7 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
           
           <p style={{ 
             fontSize: '1.25rem', 
-            color: '#172D4D', 
+            color: 'var(--text-secondary)', 
             margin: 0, 
             maxWidth: '600px', 
             lineHeight: 1.6,
@@ -133,18 +133,18 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
 
         {/* Glassmorphic Quick Actions */}
         <div style={{
-          background: 'rgba(255, 255, 255, 0.6)',
+          background: 'var(--bg-card)',
           backdropFilter: 'blur(16px)',
-          border: '1px solid rgba(255, 255, 255, 0.8)',
+          border: '1px solid var(--border-primary)',
           borderRadius: 'var(--radius-lg)',
           padding: '24px',
-          boxShadow: '0 12px 40px rgba(0,0,0,0.08)',
+          boxShadow: 'var(--shadow-card)',
           display: 'flex',
           flexWrap: 'wrap',
           gap: '12px',
           alignItems: 'center'
         }}>
-          <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#2C5282', paddingRight: '12px' }}>
+          <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)', paddingRight: '12px' }}>
             What can I help you with?
           </span>
           
@@ -153,12 +153,12 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
           </button>
           
           <button onClick={() => onQuickAction("What's a good place for dinner near me tonight?")} 
-            style={{ ...actionBtnStyle, color: '#D05B3B' }}>
+            style={{ ...actionBtnStyle, color: 'var(--accent-primary)' }}>
             <Utensils size={15} /> Dinner
           </button>
           
           <button onClick={() => onQuickAction("Suggest a beach close to my stay.")} 
-            style={{ ...actionBtnStyle, color: '#2C5282' }}>
+            style={{ ...actionBtnStyle, color: 'var(--accent-secondary)' }}>
             <Waves size={15} /> Beaches
           </button>
           
@@ -179,8 +179,8 @@ export const TripOverview: React.FC<TripOverviewProps> = ({
 };
 
 const actionBtnStyle = {
-  background: '#FFFFFF',
-  border: '1px solid rgba(255, 255, 255, 0.9)',
+  background: 'var(--bg-tertiary)',
+  border: '1px solid var(--border-primary)',
   padding: '10px 20px',
   borderRadius: '30px',
   fontSize: '0.9rem',
@@ -189,6 +189,6 @@ const actionBtnStyle = {
   display: 'flex',
   alignItems: 'center',
   gap: '8px',
-  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+  boxShadow: 'var(--shadow-subtle)',
   transition: 'transform 0.2s, box-shadow 0.2s'
 };

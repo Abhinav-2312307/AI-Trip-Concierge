@@ -60,26 +60,26 @@ export const TripSetupView: React.FC<TripSetupViewProps> = ({ onSetupComplete })
       <div style={{
         maxWidth: '600px',
         margin: '0 auto',
-        background: 'rgba(255, 255, 255, 0.03)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border-primary)',
         backdropFilter: 'blur(16px)',
         borderRadius: 'var(--radius-lg)',
         padding: '32px',
         boxShadow: 'var(--shadow-elevated)'
       }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <h2 style={{ fontSize: '1.8rem', color: 'var(--color-primary)', marginBottom: '8px' }}>
+          <h2 style={{ fontSize: '1.8rem', color: 'var(--accent-primary)', marginBottom: '8px' }}>
             🌍 Plan Your Dream Trip
           </h2>
-          <p style={{ color: 'var(--color-text-light)', fontSize: '0.95rem' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
             Tell us where you're going, and your AI Concierge will craft a personalized itinerary, fetch real-time weather, and provide local insights.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div>
-            <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.9rem', color: '#E2E8F0', fontWeight: 500 }}>
-              Destination <span style={{ color: 'var(--color-accent)' }}>*</span>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500 }}>
+              Destination <span style={{ color: 'var(--accent-primary)' }}>*</span>
             </label>
             <input
               type="text"
@@ -92,20 +92,20 @@ export const TripSetupView: React.FC<TripSetupViewProps> = ({ onSetupComplete })
                 width: '100%',
                 padding: '14px 16px',
                 borderRadius: 'var(--radius-md)',
-                background: 'rgba(15, 23, 42, 0.6)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                color: '#fff',
+                background: 'var(--bg-tertiary)',
+                border: '1px solid var(--border-primary)',
+                color: 'var(--text-primary)',
                 fontSize: '1rem',
                 outline: 'none',
                 transition: 'border-color 0.2s ease'
               }}
-              onFocus={e => (e.target.style.borderColor = 'var(--color-primary)')}
-              onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.15)')}
+              onFocus={e => (e.target.style.borderColor = 'var(--accent-primary)')}
+              onBlur={e => (e.target.style.borderColor = 'var(--border-primary)')}
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.9rem', color: '#E2E8F0', fontWeight: 500 }}>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500 }}>
               Hotel / Stay Name (Optional)
             </label>
             <input
@@ -118,21 +118,21 @@ export const TripSetupView: React.FC<TripSetupViewProps> = ({ onSetupComplete })
                 width: '100%',
                 padding: '14px 16px',
                 borderRadius: 'var(--radius-md)',
-                background: 'rgba(15, 23, 42, 0.6)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                color: '#fff',
+                background: 'var(--bg-tertiary)',
+                border: '1px solid var(--border-primary)',
+                color: 'var(--text-primary)',
                 fontSize: '1rem',
                 outline: 'none',
                 transition: 'border-color 0.2s ease'
               }}
-              onFocus={e => (e.target.style.borderColor = 'var(--color-primary)')}
-              onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.15)')}
+              onFocus={e => (e.target.style.borderColor = 'var(--accent-primary)')}
+              onBlur={e => (e.target.style.borderColor = 'var(--border-primary)')}
             />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div>
-              <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.9rem', color: '#E2E8F0', fontWeight: 500 }}>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500 }}>
                 Check-in Date (Optional)
               </label>
               <input
@@ -144,18 +144,18 @@ export const TripSetupView: React.FC<TripSetupViewProps> = ({ onSetupComplete })
                   width: '100%',
                   padding: '14px 16px',
                   borderRadius: 'var(--radius-md)',
-                  background: 'rgba(15, 23, 42, 0.6)',
-                  border: '1px solid rgba(255,255,255,0.15)',
-                  color: '#fff',
+                  background: 'var(--bg-tertiary)',
+                  border: '1px solid var(--border-primary)',
+                  color: 'var(--text-primary)',
                   fontSize: '1rem',
                   outline: 'none',
                   transition: 'border-color 0.2s ease',
-                  colorScheme: 'dark'
+                  colorScheme: 'light dark'
                 }}
               />
             </div>
             <div>
-              <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.9rem', color: '#E2E8F0', fontWeight: 500 }}>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500 }}>
                 Check-out Date (Optional)
               </label>
               <input
@@ -167,20 +167,20 @@ export const TripSetupView: React.FC<TripSetupViewProps> = ({ onSetupComplete })
                   width: '100%',
                   padding: '14px 16px',
                   borderRadius: 'var(--radius-md)',
-                  background: 'rgba(15, 23, 42, 0.6)',
-                  border: '1px solid rgba(255,255,255,0.15)',
-                  color: '#fff',
+                  background: 'var(--bg-tertiary)',
+                  border: '1px solid var(--border-primary)',
+                  color: 'var(--text-primary)',
                   fontSize: '1rem',
                   outline: 'none',
                   transition: 'border-color 0.2s ease',
-                  colorScheme: 'dark'
+                  colorScheme: 'light dark'
                 }}
               />
             </div>
           </div>
 
           <div>
-            <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.9rem', color: '#E2E8F0', fontWeight: 500 }}>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500 }}>
               Guest Name (Optional)
             </label>
             <input
@@ -193,15 +193,15 @@ export const TripSetupView: React.FC<TripSetupViewProps> = ({ onSetupComplete })
                 width: '100%',
                 padding: '14px 16px',
                 borderRadius: 'var(--radius-md)',
-                background: 'rgba(15, 23, 42, 0.6)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                color: '#fff',
+                background: 'var(--bg-tertiary)',
+                border: '1px solid var(--border-primary)',
+                color: 'var(--text-primary)',
                 fontSize: '1rem',
                 outline: 'none',
                 transition: 'border-color 0.2s ease'
               }}
-              onFocus={e => (e.target.style.borderColor = 'var(--color-primary)')}
-              onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.15)')}
+              onFocus={e => (e.target.style.borderColor = 'var(--accent-primary)')}
+              onBlur={e => (e.target.style.borderColor = 'var(--border-primary)')}
             />
           </div>
 
@@ -218,7 +218,7 @@ export const TripSetupView: React.FC<TripSetupViewProps> = ({ onSetupComplete })
               style={{
                 flex: 1,
                 padding: '14px',
-                background: loading ? 'var(--color-primary-dark)' : 'var(--color-primary)',
+                background: loading ? 'var(--accent-secondary)' : 'var(--accent-primary)',
                 color: '#FFF',
                 border: 'none',
                 borderRadius: 'var(--radius-md)',
@@ -247,22 +247,22 @@ export const TripSetupView: React.FC<TripSetupViewProps> = ({ onSetupComplete })
         </form>
 
         <div style={{ marginTop: '32px', textAlign: 'center', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem', marginBottom: '12px' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '12px' }}>
             Want to see the original Goa demo mode?
           </p>
           <button 
             onClick={handleReset}
             style={{
               background: 'transparent',
-              border: '1px solid rgba(255,255,255,0.2)',
-              color: '#fff',
+              border: '1px solid var(--border-primary)',
+              color: 'var(--text-primary)',
               padding: '8px 16px',
               borderRadius: 'var(--radius-sm)',
               fontSize: '0.85rem',
               cursor: 'pointer',
               transition: 'all 0.2s ease'
             }}
-            onMouseOver={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+            onMouseOver={e => e.currentTarget.style.background = 'var(--bg-tertiary)'}
             onMouseOut={e => e.currentTarget.style.background = 'transparent'}
           >
             Reset to Demo Mode

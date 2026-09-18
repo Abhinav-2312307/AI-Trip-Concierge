@@ -35,14 +35,13 @@ export const AlertsHub: React.FC<AlertsHubProps> = ({
       <div className="glass-card" style={{
         padding: '20px 24px',
         marginBottom: '20px',
-        background: '#FFFFFF',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
               <span style={{
                 background: 'rgba(208, 91, 59, 0.1)',
-                color: 'var(--color-terracotta-500)',
+                color: 'var(--accent-primary)',
                 fontSize: '0.74rem',
                 fontWeight: 700,
                 padding: '2px 8px',
@@ -51,10 +50,10 @@ export const AlertsHub: React.FC<AlertsHubProps> = ({
                 Active Stay: {hotelName}
               </span>
             </div>
-            <h2 className="font-serif" style={{ fontSize: '1.45rem', fontWeight: 700, color: '#101F35', margin: 0 }}>
+            <h2 className="font-serif" style={{ fontSize: '1.45rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
               Proactive Guest Alerts
             </h2>
-            <p style={{ color: '#64748B', fontSize: '0.86rem', marginTop: '2px', marginBottom: 0 }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.86rem', marginTop: '2px', marginBottom: 0 }}>
               Real-time contextual notifications for check-in milestones, weather advisories, and coastal conditions.
             </p>
           </div>
@@ -70,8 +69,8 @@ export const AlertsHub: React.FC<AlertsHubProps> = ({
                 textAlign: 'left',
                 padding: '10px 12px',
                 borderRadius: 'var(--radius-xs)',
-                background: 'var(--color-sand-50)',
-                border: '1px solid var(--card-border)',
+                background: 'var(--bg-tertiary)',
+                border: '1px solid var(--border-primary)',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
                 display: 'flex',
@@ -79,18 +78,18 @@ export const AlertsHub: React.FC<AlertsHubProps> = ({
                 gap: '2px',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'var(--color-terracotta-500)';
-                e.currentTarget.style.background = '#FFFFFF';
+                e.currentTarget.style.borderColor = 'var(--border-focus)';
+                e.currentTarget.style.background = 'var(--bg-card)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'var(--card-border)';
-                e.currentTarget.style.background = 'var(--color-sand-50)';
+                e.currentTarget.style.borderColor = 'var(--border-primary)';
+                e.currentTarget.style.background = 'var(--bg-tertiary)';
               }}
             >
-              <span style={{ fontSize: '0.84rem', fontWeight: 600, color: '#101F35' }}>
+              <span style={{ fontSize: '0.84rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                 {t.label}
               </span>
-              <span style={{ fontSize: '0.74rem', color: '#64748B', lineHeight: 1.3 }}>
+              <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', lineHeight: 1.3 }}>
                 {t.desc}
               </span>
             </button>
@@ -101,7 +100,7 @@ export const AlertsHub: React.FC<AlertsHubProps> = ({
       {/* Active Alerts List */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#101F35', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span>Active Notifications</span>
             <span className="badge-pill badge-ocean" style={{ fontSize: '0.72rem' }}>
               {alerts.length}
@@ -110,7 +109,7 @@ export const AlertsHub: React.FC<AlertsHubProps> = ({
         </div>
 
         {alerts.length === 0 ? (
-          <div className="glass-card" style={{ padding: '32px', textAlign: 'center', color: '#64748B', fontSize: '0.88rem', background: '#FFFFFF' }}>
+          <div className="glass-card" style={{ padding: '32px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.88rem' }}>
             No active alerts at this moment. Trigger any scenario above to test live simulation.
           </div>
         ) : (
@@ -120,9 +119,8 @@ export const AlertsHub: React.FC<AlertsHubProps> = ({
               className="glass-card"
               style={{
                 padding: '16px 20px',
-                background: '#FFFFFF',
                 borderLeft: `4px solid ${
-                  alert.severity === 'warning' ? '#D05B3B' : (alert.severity === 'info' ? '#1E3A63' : '#265943')
+                  alert.severity === 'warning' ? 'var(--accent-danger)' : (alert.severity === 'info' ? 'var(--accent-secondary)' : 'var(--accent-success)')
                 }`,
                 display: 'flex',
                 flexDirection: 'column',
@@ -133,10 +131,10 @@ export const AlertsHub: React.FC<AlertsHubProps> = ({
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <span style={{ fontSize: '1.5rem' }}>{alert.icon}</span>
                   <div>
-                    <h4 style={{ fontSize: '1.02rem', fontWeight: 700, color: '#101F35', margin: 0 }}>
+                    <h4 style={{ fontSize: '1.02rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
                       {alert.title}
                     </h4>
-                    <span style={{ fontSize: '0.74rem', color: '#94A3B8' }}>
+                    <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
                       {alert.timestamp || 'Just now'} • Verified for {hotelName} Guest{guestName ? `: ${guestName}` : ''}
                     </span>
                   </div>
@@ -147,7 +145,7 @@ export const AlertsHub: React.FC<AlertsHubProps> = ({
                   style={{
                     background: 'transparent',
                     border: 'none',
-                    color: '#94A3B8',
+                    color: 'var(--text-muted)',
                     cursor: 'pointer',
                     fontSize: '0.78rem',
                     padding: '2px 6px'
@@ -157,12 +155,12 @@ export const AlertsHub: React.FC<AlertsHubProps> = ({
                 </button>
               </div>
 
-              <p style={{ fontSize: '0.88rem', color: '#334155', lineHeight: 1.5, background: 'var(--color-sand-50)', padding: '10px 12px', borderRadius: 'var(--radius-xs)', border: '1px solid var(--card-border)', margin: 0 }}>
+              <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.5, background: 'var(--bg-tertiary)', padding: '10px 12px', borderRadius: 'var(--radius-xs)', border: '1px solid var(--border-primary)', margin: 0 }}>
                 {alert.message}
               </p>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-                <div style={{ fontSize: '0.82rem', color: '#D05B3B', fontWeight: 500 }}>
+                <div style={{ fontSize: '0.82rem', color: 'var(--accent-primary)', fontWeight: 500 }}>
                   Suggested Action: <strong>{alert.recommended_action}</strong>
                 </div>
 
