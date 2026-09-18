@@ -1,4 +1,4 @@
-import type { TripContext, ItineraryResponse, Place, SmartAlert, TransportGuideItem, HotelBooking } from '../types';
+import type { TripContext, ItineraryResponse, Place, SmartAlert, TransportGuideItem, HotelBooking, TripSetupRequest } from '../types';
 
 const API_BASE = 'http://localhost:8000/api';
 
@@ -110,5 +110,26 @@ export async function fetchTransportGuide(hotelId?: string): Promise<{ guide: Tr
   const url = hotelId ? `${API_BASE}/transport-guide?hotel_id=${encodeURIComponent(hotelId)}` : `${API_BASE}/transport-guide`;
   const res = await fetch(url);
   if (!res.ok) throw new Error('Failed to fetch transport guide');
+  return res.json();
+}
+
+export async function setupCustomTrip(data: TripSetupRequest): Promise<any> {
+  const res = await fetch(`${API_BASE}/trip/setup`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: 'Failed to setup trip' }));
+    throw new Error(err.detail || 'Failed to setup trip');
+  }
+  return res.json();
+}
+
+export async function clearCustomTrip(): Promise<any> {
+  const res = await fetch(`${API_BASE}/trip/clear`, {
+    method: 'POST',
+  });
+  if (!res.ok) throw new Error('Failed to clear trip');
   return res.json();
 }

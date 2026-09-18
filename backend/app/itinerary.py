@@ -1,24 +1,208 @@
+import os
 import json
+import logging
+import requests
 from datetime import datetime, timedelta
 from typing import List, Dict, Any, Optional
 from .tools import load_data, get_hotel_info, _resolve_distance
+
+logger = logging.getLogger("ai_concierge.itinerary")
+
+
+def _generate_llm_itinerary(
+    destination: str,
+    hotel_name: str,
+    days: int,
+    focus: str,
+    guest_name: Optional[str],
+    start_date: Optional[str],
+    weather: Optional[Dict[str, Any]] = None,
+) -> Optional[Dict[str, Any]]:
+    """Use Gemini to generate a structured itinerary for any destination."""
+    gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+    if not gemini_key or gemini_key.startswith("your_"):
+        return None
+
+    if start_date:
+        try:
+            base_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+        except Exception:
+            base_date = datetime.now().date() + timedelta(days=1)
+    else:
+        base_date = datetime.now().date() + timedelta(days=1)
+
+    weather_info = ""
+    if weather:
+        weather_info = f"Current weather: {weather.get('temperature_c', 'N/A')}°C, {weather.get('condition', 'Unknown')}. {weather.get('evening_forecast', '')}"
+
+    prompt = (
+        f"You are a professional travel planner. Create a detailed {days}-day itinerary for a guest staying at "
+        f"'{hotel_name}' in {destination}.\n\n"
+        f"Focus: {focus}\n"
+        f"{weather_info}\n\n"
+        f"IMPORTANT: Respond ONLY with valid JSON in this exact format (no markdown, no code fences, just pure JSON):\n"
+        f'{{"itinerary": [\n'
+        f'  {{"day_number": 1, "title": "Day title", "theme": "theme emoji + text",\n'
+        f'   "morning": {{"time": "9:00 AM", "activity_title": "Activity name", "place_name": "Actual place name", "area": "Area/neighborhood", "description": "2-line description", "duration": "2 hours", "distance_from_hotel": "3 km", "budget": "₹500-800"}},\n'
+        f'   "afternoon": {{"time": "1:00 PM", "activity_title": "...", "place_name": "...", "area": "...", "description": "...", "duration": "...", "distance_from_hotel": "...", "budget": "..."}},\n'
+        f'   "evening": {{"time": "6:00 PM", "activity_title": "...", "place_name": "...", "area": "...", "description": "...", "duration": "...", "distance_from_hotel": "...", "budget": "..."}}\n'
+        f'  }}\n'
+        f']}}\n\n'
+        f"Rules:\n"
+        f"1. Use REAL places that actually exist in {destination}.\n"
+        f"2. Include specific distances from the hotel.\n"
+        f"3. Budget in local currency (INR for India, USD for US, etc.).\n"
+        f"4. Make the flow realistic — morning to evening, geographically logical.\n"
+        f"5. Include food recommendations for each meal time.\n"
+        f"6. Mix popular tourist spots with local hidden gems."
+    )
+
+    try:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={gemini_key}"
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": {"temperature": 0.5, "maxOutputTokens": 3000}
+        }
+        res = requests.post(url, json=payload, timeout=20)
+        if res.status_code != 200:
+            logger.warning(f"Gemini itinerary API returned {res.status_code}")
+            return None
+
+        data = res.json()
+        raw_text = data["candidates"][0]["content"]["parts"][0]["text"]
+
+        # Strip markdown code fences if present
+        cleaned = raw_text.strip()
+        if cleaned.startswith("```"):
+            # Remove first line (```json) and last line (```)
+            lines = cleaned.split("\n")
+            cleaned = "\n".join(lines[1:-1] if lines[-1].strip() == "```" else lines[1:])
+
+        parsed = json.loads(cleaned)
+        raw_days = parsed.get("itinerary", [])
+
+        # Convert to the frontend-compatible format
+        formatted_days = []
+        for i, day in enumerate(raw_days[:days]):
+            day_date = base_date + timedelta(days=i)
+            formatted_day = {
+                "day_number": day.get("day_number", i + 1),
+                "title": day.get("title", f"Day {i + 1}"),
+                "theme": day.get("theme", "🌟 Exploration"),
+                "date": day_date.strftime("%Y-%m-%d"),
+                "date_formatted": day_date.strftime("%a, %b %d"),
+                "full_date_formatted": day_date.strftime("%A, %B %d, %Y"),
+            }
+
+            for slot_key in ["morning", "afternoon", "evening"]:
+                slot_data = day.get(slot_key, {})
+                formatted_day[slot_key] = {
+                    "time": slot_data.get("time", "TBD"),
+                    "place": {
+                        "id": f"llm-{destination.lower().replace(' ', '-')}-{i}-{slot_key}",
+                        "name": slot_data.get("place_name", slot_data.get("activity_title", "Local Spot")),
+                        "category": _guess_category(slot_key, slot_data.get("activity_title", "")),
+                        "area": slot_data.get("area", destination),
+                        "region": destination,
+                        "price_range": slot_data.get("budget", "Varies"),
+                        "vibe": slot_data.get("description", "")[:60],
+                        "distance_from_hotel": slot_data.get("distance_from_hotel", "Nearby"),
+                        "best_time": slot_key.capitalize(),
+                        "duration": slot_data.get("duration", "2 hours"),
+                        "description": slot_data.get("description", ""),
+                        "image_url": "",
+                        "tags": [destination, slot_key],
+                    },
+                    "activity_title": slot_data.get("activity_title", "Explore"),
+                    "description": slot_data.get("description", ""),
+                    "duration": slot_data.get("duration", "2 hours"),
+                    "distance_from_hotel": slot_data.get("distance_from_hotel", "Nearby"),
+                    "budget": slot_data.get("budget", "Varies"),
+                }
+
+            formatted_days.append(formatted_day)
+
+        display_name = guest_name.strip() if guest_name and guest_name.strip() else "Traveler"
+        return {
+            "hotel_id": "custom",
+            "guest_name": display_name,
+            "hotel": hotel_name,
+            "total_days": len(formatted_days),
+            "start_date": base_date.strftime("%Y-%m-%d"),
+            "itinerary": formatted_days,
+            "summary": f"A curated {len(formatted_days)}-day itinerary for {destination}, tailored from {hotel_name}. Generated with real-time AI intelligence.",
+            "is_llm_generated": True,
+        }
+
+    except json.JSONDecodeError as e:
+        logger.error(f"Failed to parse Gemini itinerary JSON: {e}")
+        return None
+    except Exception as e:
+        logger.error(f"LLM itinerary generation failed: {e}")
+        return None
+
+
+def _guess_category(slot: str, title: str) -> str:
+    """Guess place category from slot and title."""
+    title_lower = title.lower()
+    if any(w in title_lower for w in ["restaurant", "dinner", "lunch", "café", "cafe", "food", "eat", "dining"]):
+        return "restaurant"
+    if any(w in title_lower for w in ["beach", "lake", "river", "waterfall"]):
+        return "beach"
+    if any(w in title_lower for w in ["temple", "museum", "fort", "palace", "heritage", "church", "monument"]):
+        return "culture"
+    if any(w in title_lower for w in ["trek", "hike", "adventure", "rafting", "paragliding", "safari"]):
+        return "activity"
+    if slot == "evening":
+        return "restaurant"
+    return "activity"
+
 
 def generate_itinerary(
     hotel_id: Optional[str] = "taj-fort-aguada",
     days: int = 3,
     focus: str = "balanced",
     guest_name: Optional[str] = None,
-    start_date: Optional[str] = None
+    start_date: Optional[str] = None,
+    custom_trip: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """
-    Generate a realistic, personalized day-by-day Goa itinerary tailored to the active hotel.
-    Prioritizes nearby attractions, realistic sequencing, and verified places in the knowledge base.
+    Generate a day-by-day itinerary.
+    For custom trips: uses Gemini LLM to generate destination-specific plans.
+    For Goa hotels: uses curated verified knowledge base.
     """
+    # Custom trip mode — use LLM
+    if custom_trip:
+        llm_result = _generate_llm_itinerary(
+            destination=custom_trip.get("destination", "Unknown"),
+            hotel_name=custom_trip.get("hotel_name", "My Hotel"),
+            days=days,
+            focus=focus,
+            guest_name=guest_name,
+            start_date=start_date or custom_trip.get("check_in"),
+            weather=custom_trip.get("weather"),
+        )
+        if llm_result:
+            return llm_result
+
+        # Fallback: return a minimal placeholder
+        dest = custom_trip.get("destination", "your destination")
+        return {
+            "hotel_id": "custom",
+            "guest_name": guest_name or "Traveler",
+            "hotel": custom_trip.get("hotel_name", "My Hotel"),
+            "total_days": 0,
+            "itinerary": [],
+            "summary": f"Itinerary generation for {dest} requires an active Gemini API key. Please add one in your .env file.",
+            "is_llm_generated": False,
+        }
+
+    # Goa demo mode — use curated data
     active_h_id = hotel_id or "taj-fort-aguada"
     hotel = get_hotel_info(active_h_id)
     data = load_data()
     raw_places = data.get("places", [])
-    
+
     # Map places with distance computed for this hotel
     places = {}
     for p in raw_places:
@@ -38,6 +222,7 @@ def generate_itinerary(
     hotel_name = hotel.get("name", "Taj Fort Aguada Resort & Spa, Goa")
     hotel_area = hotel.get("area", "Candolim, Goa")
     hotel_region = hotel.get("region", "North Goa")
+
 
     # Build hotel-specific sequence plans
     if active_h_id == "the-leela-goa":

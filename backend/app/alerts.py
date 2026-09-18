@@ -2,8 +2,73 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime
 from .tools import load_data, get_hotel_info
 
-def get_active_alerts(hotel_id: Optional[str] = "taj-fort-aguada") -> List[Dict[str, Any]]:
+def get_active_alerts(hotel_id: Optional[str] = "taj-fort-aguada", custom_trip: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
     """Retrieve proactive alerts dynamically customized for the active hotel booking."""
+    alerts = []
+
+    # 1. Custom Trip Alerts (Real Weather Data)
+    if custom_trip:
+        hotel_name = custom_trip.get("hotel_name", "My Hotel")
+        dest_short = custom_trip.get("destination_short", "your destination")
+        check_in = custom_trip.get("check_in", "")
+        weather = custom_trip.get("weather", {})
+
+        # Digital Check-in Key & Welcome Pass Alert
+        alerts.append({
+            "id": f"alert-checkin-custom",
+            "type": "concierge",
+            "severity": "info",
+            "icon": "🔑",
+            "title": f"Welcome to {hotel_name}",
+            "message": f"🏨 Your room at {hotel_name} is prepared with personalized welcome refreshments. Concierge services are active for {dest_short}.",
+            "recommended_action": f"Ask Concierge for check-in details",
+            "timestamp": "9:00 AM"
+        })
+
+        # Weather / Rain Alert
+        precip_prob = weather.get("precipitation_probability", 0)
+        condition = weather.get("condition", "Unknown").lower()
+
+        if precip_prob > 40 or "rain" in condition or "shower" in condition:
+            alerts.append({
+                "id": f"alert-weather-custom",
+                "type": "weather",
+                "severity": "warning",
+                "icon": "🌧️",
+                "title": f"Rain Advisory - {dest_short}",
+                "message": f"🌧️ Heads up — {condition} expected in {dest_short}. There is a {precip_prob}% chance of precipitation. Consider planning indoor activities or early sightseeing.",
+                "recommended_action": "Ask Concierge for indoor recommendations",
+                "timestamp": "2:00 PM"
+            })
+        elif "clear" in condition or "sun" in condition or "fair" in condition:
+             alerts.append({
+                "id": f"alert-weather-custom",
+                "type": "weather",
+                "severity": "tip",
+                "icon": "☀️",
+                "title": f"Clear Skies over {dest_short}",
+                "message": f"☀️ Beautiful clear weather conditions today in {dest_short}. It's a perfect day for outdoor sightseeing and exploration.",
+                "recommended_action": "Ask Concierge for outdoor activities",
+                "timestamp": "10:00 AM"
+            })
+
+        # Golden Hour Experience Countdown
+        sunset = weather.get("sunset_time", "")
+        if sunset:
+            alerts.append({
+                "id": f"alert-sunset-custom",
+                "type": "experience",
+                "severity": "tip",
+                "icon": "🌅",
+                "title": f"Golden Hour Countdown - {dest_short}",
+                "message": f"🌅 Sunset in {dest_short} today is at {sunset}. Peak golden light begins about 45 minutes before. Secure prime sunset viewing spots soon!",
+                "recommended_action": "Ask Concierge for sunset viewing spots",
+                "timestamp": "4:00 PM"
+            })
+
+        return alerts
+
+    # 2. Goa Demo Mode Alerts
     active_h_id = hotel_id or "taj-fort-aguada"
     hotel = get_hotel_info(active_h_id)
     hotel_name = hotel.get("name", "Taj Fort Aguada")
@@ -12,9 +77,7 @@ def get_active_alerts(hotel_id: Optional[str] = "taj-fort-aguada") -> List[Dict[
     conf_code = hotel.get("confirmation_code", "CONF-DEMO")
     check_in_time = hotel.get("check_in_time", "3:00 PM")
 
-    alerts = []
-
-    # 1. Digital Check-in Key & Welcome Pass Alert
+    # Digital Check-in Key & Welcome Pass Alert
     alerts.append({
         "id": f"alert-checkin-{active_h_id}",
         "type": "concierge",
@@ -27,7 +90,7 @@ def get_active_alerts(hotel_id: Optional[str] = "taj-fort-aguada") -> List[Dict[
         "timestamp": "9:00 AM"
     })
 
-    # 2. Area Weather / Rain Alert
+    # Area Weather / Rain Alert
     if "cavelossim" in hotel_area.lower() or "mobor" in hotel_area.lower():
         alerts.append({
             "id": f"alert-weather-{active_h_id}",
@@ -77,7 +140,7 @@ def get_active_alerts(hotel_id: Optional[str] = "taj-fort-aguada") -> List[Dict[
             "timestamp": "2:00 PM"
         })
 
-    # 3. Golden Hour Experience Countdown
+    # Golden Hour Experience Countdown
     if "cavelossim" in hotel_area.lower() or "mobor" in hotel_area.lower():
         alerts.append({
             "id": f"alert-sunset-{active_h_id}",

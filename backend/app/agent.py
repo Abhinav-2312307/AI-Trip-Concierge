@@ -19,30 +19,54 @@ from .tools import (
 load_dotenv()
 logger = logging.getLogger("ai_concierge.agent")
 
-def get_system_prompt(hotel_id: str = "taj-fort-aguada", guest_name: Optional[str] = None) -> str:
-    hotel = get_hotel_info(hotel_id)
-    hotel_name = hotel.get("name", "Taj Fort Aguada Resort & Spa, Goa")
-    hotel_area = hotel.get("area", "Sinquerim, Candolim")
-    hotel_region = hotel.get("region", "North Goa")
-    room_type = hotel.get("room_type", "Luxury Suite")
-    conf_code = hotel.get("confirmation_code", "CONF-DEMO")
-    check_in_time = hotel.get("check_in_time", "3:00 PM")
-    check_out_time = hotel.get("check_out_time", "12:00 PM")
-    amenities_str = ", ".join(hotel.get("amenities", [])[:5])
-
+def get_system_prompt(hotel_id: str = "taj-fort-aguada", guest_name: Optional[str] = None, custom_trip: Optional[Dict[str, Any]] = None) -> str:
+    """Generate a system prompt — universal for custom trips, Goa-specific for demo mode."""
     guest_intro = f"The esteemed guest is {guest_name.strip()}." if guest_name and guest_name.strip() else "The guest is our esteemed traveler."
-    
-    return (
-        f"You are the exclusive AI Trip Concierge for the guest staying at {hotel_name}, located in {hotel_area}, {hotel_region}.\n"
-        f"{guest_intro} Reservation: {room_type} (Confirmation: {conf_code}).\n"
-        f"Hotel Details: Check-in: {check_in_time}, Check-out: {check_out_time}. Key Amenities: {amenities_str}.\n\n"
-        f"Crucial Concierge Guidelines:\n"
-        f"1. GEOGRAPHIC GROUNDING: When the guest asks for recommendations 'near me', 'nearby', 'near my hotel', or 'close to my stay', ALWAYS use {hotel_name} in {hotel_area} as the origin.\n"
-        f"2. HOTEL CONTEXT: Never confuse this hotel with any other property. Do not recommend Candolim spots as 'nearby' if the guest is staying at The Leela in South Goa or W Goa in Vagator.\n"
-        f"3. AUTHENTIC KNOWLEDGE: Always recommend authentic Goa places with accurate details (pricing, signature dishes, travel time from hotel).\n"
-        f"4. CHECK-IN INQUIRIES: When asked about check-in guidance, provide check-in time ({check_in_time}), check-out time ({check_out_time}), digital key services, welcome amenities, and luggage storage assistance.\n"
-        f"5. TONE & HOSPITALITY: Keep responses warm, polished, hospitable, and concise."
-    )
+
+    if custom_trip:
+        # Universal destination mode
+        dest = custom_trip.get("destination", "Unknown")
+        dest_short = custom_trip.get("destination_short", dest)
+        hotel_name = custom_trip.get("hotel_name", "My Hotel")
+        weather = custom_trip.get("weather", {})
+        weather_text = f"Current weather: {weather.get('temperature_c', 'N/A')}°C, {weather.get('condition', 'Unknown')}. Humidity: {weather.get('humidity', 'N/A')}. {weather.get('evening_forecast', '')}"
+
+        return (
+            f"You are an expert AI Trip Concierge for a guest staying at {hotel_name} in {dest}.\n"
+            f"{guest_intro}\n"
+            f"Destination: {dest}\n"
+            f"{weather_text}\n\n"
+            f"Critical Concierge Rules:\n"
+            f"1. DESTINATION EXPERT: You are an expert travel concierge for {dest_short}. Provide accurate, specific recommendations for restaurants, attractions, activities, and experiences in {dest_short}.\n"
+            f"2. REAL & SPECIFIC: Recommend REAL places that actually exist in {dest_short}. Include specific names, approximate distances, pricing, and what makes each place special.\n"
+            f"3. WEATHER-AWARE: Use the real weather data above to give contextual advice (e.g., suggest indoor activities during rain, warm clothing in cold weather).\n"
+            f"4. LOCAL EXPERTISE: Share local tips — best times to visit, local customs, hidden gems, transport advice, and food specialties of {dest_short}.\n"
+            f"5. STRUCTURED RESPONSES: Format responses with clear headers, bullet points, and emojis for readability.\n"
+            f"6. TONE: Keep responses warm, polished, hospitable, and concise."
+        )
+    else:
+        # Goa demo mode
+        hotel = get_hotel_info(hotel_id)
+        hotel_name = hotel.get("name", "Taj Fort Aguada Resort & Spa, Goa")
+        hotel_area = hotel.get("area", "Sinquerim, Candolim")
+        hotel_region = hotel.get("region", "North Goa")
+        room_type = hotel.get("room_type", "Luxury Suite")
+        conf_code = hotel.get("confirmation_code", "CONF-DEMO")
+        check_in_time = hotel.get("check_in_time", "3:00 PM")
+        check_out_time = hotel.get("check_out_time", "12:00 PM")
+        amenities_str = ", ".join(hotel.get("amenities", [])[:5])
+
+        return (
+            f"You are the exclusive AI Trip Concierge for the guest staying at {hotel_name}, located in {hotel_area}, {hotel_region}.\n"
+            f"{guest_intro} Reservation: {room_type} (Confirmation: {conf_code}).\n"
+            f"Hotel Details: Check-in: {check_in_time}, Check-out: {check_out_time}. Key Amenities: {amenities_str}.\n\n"
+            f"Crucial Concierge Guidelines:\n"
+            f"1. GEOGRAPHIC GROUNDING: When the guest asks for recommendations 'near me', 'nearby', 'near my hotel', or 'close to my stay', ALWAYS use {hotel_name} in {hotel_area} as the origin.\n"
+            f"2. HOTEL CONTEXT: Never confuse this hotel with any other property.\n"
+            f"3. AUTHENTIC KNOWLEDGE: Always recommend authentic Goa places with accurate details (pricing, signature dishes, travel time from hotel).\n"
+            f"4. CHECK-IN INQUIRIES: Provide check-in time ({check_in_time}), check-out time ({check_out_time}), and guidance.\n"
+            f"5. TONE & HOSPITALITY: Keep responses warm, polished, hospitable, and concise."
+        )
 
 class AIConciergeAgent:
     def __init__(self):
@@ -64,7 +88,8 @@ class AIConciergeAgent:
         user_message: str,
         chat_history: Optional[List[Dict[str, str]]] = None,
         guest_name: Optional[str] = None,
-        hotel_id: Optional[str] = "taj-fort-aguada"
+        hotel_id: Optional[str] = "taj-fort-aguada",
+        custom_trip: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """Process user message using available LLM provider or built-in intelligent offline engine."""
         active_h_id = hotel_id or "taj-fort-aguada"
@@ -73,73 +98,109 @@ class AIConciergeAgent:
         # 1. Try Google Gemini (Free Tier from Google AI Studio)
         if self.gemini_key and self.gemini_key.strip() and not self.gemini_key.startswith("your_"):
             try:
-                return self._chat_gemini(user_message, history, guest_name=guest_name, hotel_id=active_h_id)
+                return self._chat_gemini(user_message, history, guest_name=guest_name, hotel_id=active_h_id, custom_trip=custom_trip)
             except Exception as e:
                 logger.warning(f"Gemini API execution error: {e}. Falling back to smart tool engine.")
 
         # 2. Try Anthropic Claude
         if self.claude_client:
             try:
-                return self._chat_claude(user_message, history, guest_name=guest_name, hotel_id=active_h_id)
+                return self._chat_claude(user_message, history, guest_name=guest_name, hotel_id=active_h_id, custom_trip=custom_trip)
             except Exception as e:
                 logger.warning(f"Claude API execution error: {e}. Falling back to smart tool engine.")
 
         # 3. Try Groq (Free Fast Tier)
         if self.groq_key and self.groq_key.strip() and not self.groq_key.startswith("your_"):
             try:
-                return self._chat_groq(user_message, history, guest_name=guest_name, hotel_id=active_h_id)
+                return self._chat_groq(user_message, history, guest_name=guest_name, hotel_id=active_h_id, custom_trip=custom_trip)
             except Exception as e:
                 logger.warning(f"Groq API execution error: {e}. Falling back to smart tool engine.")
 
         # 4. Built-in Intelligent Offline Semantic Fallback (100% Zero-Key Guarantee)
-        return self._chat_fallback(user_message, history, guest_name=guest_name, hotel_id=active_h_id)
+        return self._chat_fallback(user_message, history, guest_name=guest_name, hotel_id=active_h_id, custom_trip=custom_trip)
 
     def _chat_gemini(
         self,
         user_message: str,
         chat_history: List[Dict[str, str]],
         guest_name: Optional[str] = None,
-        hotel_id: str = "taj-fort-aguada"
+        hotel_id: str = "taj-fort-aguada",
+        custom_trip: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
-        """Call Google Gemini API with grounded hotel knowledge."""
-        hotel = get_hotel_info(hotel_id)
-        hotel_name = hotel.get("name", "Taj Fort Aguada")
-        system_prompt = get_system_prompt(hotel_id, guest_name)
+        """Call Google Gemini API — universal for custom trips, grounded for Goa."""
+        system_prompt = get_system_prompt(hotel_id, guest_name, custom_trip=custom_trip)
 
-        # Retrieve relevant ground knowledge
-        near_places = search_restaurants(hotel_id=hotel_id, near_hotel=True)
-        near_acts = search_activities(hotel_id=hotel_id)
-        knowledge_context = json.dumps({
-            "hotel": hotel,
-            "nearby_restaurants": near_places[:3],
-            "nearby_activities": near_acts[:3],
-            "weather": get_weather_and_tide_info(hotel_id=hotel_id)
-        }, ensure_ascii=False)
+        if custom_trip:
+            # Universal mode: let Gemini generate location-specific knowledge
+            dest = custom_trip.get("destination", "Unknown")
+            dest_short = custom_trip.get("destination_short", dest)
+            hotel_name = custom_trip.get("hotel_name", "My Hotel")
+            weather = custom_trip.get("weather", {})
 
-        prompt = (
-            f"{system_prompt}\n\n"
-            f"VERIFIED GOA KNOWLEDGE FOR THIS HOTEL:\n{knowledge_context}\n\n"
-            f"User Question: {user_message}\n\n"
-            f"Answer the guest warmly and recommend specific verified venues from the knowledge context above:"
-        )
+            prompt = (
+                f"{system_prompt}\n\n"
+                f"REAL-TIME WEATHER DATA FOR {dest_short.upper()}:\n"
+                f"Temperature: {weather.get('temperature_c', 'N/A')}°C (Feels like: {weather.get('feels_like_c', 'N/A')}°C)\n"
+                f"Condition: {weather.get('condition', 'Unknown')}\n"
+                f"Humidity: {weather.get('humidity', 'N/A')}\n"
+                f"Wind: {weather.get('wind_speed_kmph', 0)} km/h\n"
+                f"Sunset: {weather.get('sunset_time', 'N/A')}\n"
+                f"Precipitation: {weather.get('precipitation_probability', 0)}%\n\n"
+                f"Guest is staying at: {hotel_name} in {dest}\n\n"
+                f"User Question: {user_message}\n\n"
+                f"Provide specific, real recommendations for {dest_short}. Include actual place names, approximate distances, pricing in local currency, and what makes each place special. Use weather data to give contextual advice."
+            )
+        else:
+            # Goa grounded mode
+            hotel = get_hotel_info(hotel_id)
+            hotel_name = hotel.get("name", "Taj Fort Aguada")
+            near_places = search_restaurants(hotel_id=hotel_id, near_hotel=True)
+            near_acts = search_activities(hotel_id=hotel_id)
+            knowledge_context = json.dumps({
+                "hotel": hotel,
+                "nearby_restaurants": near_places[:3],
+                "nearby_activities": near_acts[:3],
+                "weather": get_weather_and_tide_info(hotel_id=hotel_id)
+            }, ensure_ascii=False)
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={self.gemini_key}"
+            prompt = (
+                f"{system_prompt}\n\n"
+                f"VERIFIED GOA KNOWLEDGE FOR THIS HOTEL:\n{knowledge_context}\n\n"
+                f"User Question: {user_message}\n\n"
+                f"Answer the guest warmly and recommend specific verified venues from the knowledge context above:"
+            )
+
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key={self.gemini_key}"
         payload = {
             "contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {"temperature": 0.3, "maxOutputTokens": 800}
+            "generationConfig": {"temperature": 0.4, "maxOutputTokens": 1200}
         }
-        res = requests.post(url, json=payload, timeout=12)
+        res = requests.post(url, json=payload, timeout=15)
         if res.status_code == 200:
             data = res.json()
             reply_text = data["candidates"][0]["content"]["parts"][0]["text"]
-            cards = (near_places[:2] if any(w in user_message.lower() for w in ["dinner", "food", "eat", "restaurant"]) else near_acts[:2])
-            return {
-                "reply": reply_text,
-                "tool_calls": [{"tool": "search_restaurants" if cards == near_places[:2] else "search_activities", "input": {"hotel_id": hotel_id}}],
-                "cards": cards,
-                "provider": "Google Gemini 1.5 Flash (Free AI Studio Key)",
-                "hotel_origin": f"{hotel_name}, {hotel.get('area')}"
-            }
+
+            if custom_trip:
+                return {
+                    "reply": reply_text,
+                    "tool_calls": [{"tool": "gemini_universal_search", "input": {"destination": custom_trip.get('destination_short', ''), "query": user_message}}],
+                    "cards": [],
+                    "provider": "Google Gemini 2.0 Flash (Real-Time Destination Intelligence)",
+                    "hotel_origin": f"{custom_trip.get('hotel_name', 'My Hotel')}, {custom_trip.get('destination_short', '')}"
+                }
+            else:
+                hotel = get_hotel_info(hotel_id)
+                hotel_name = hotel.get("name", "Taj Fort Aguada")
+                near_places = search_restaurants(hotel_id=hotel_id, near_hotel=True)
+                near_acts = search_activities(hotel_id=hotel_id)
+                cards = (near_places[:2] if any(w in user_message.lower() for w in ["dinner", "food", "eat", "restaurant"]) else near_acts[:2])
+                return {
+                    "reply": reply_text,
+                    "tool_calls": [{"tool": "search_restaurants" if cards == near_places[:2] else "search_activities", "input": {"hotel_id": hotel_id}}],
+                    "cards": cards,
+                    "provider": "Google Gemini 2.0 Flash (Free AI Studio Key)",
+                    "hotel_origin": f"{hotel_name}, {hotel.get('area')}"
+                }
         else:
             raise Exception(f"Gemini API returned status {res.status_code}: {res.text}")
 
@@ -148,20 +209,30 @@ class AIConciergeAgent:
         user_message: str,
         chat_history: List[Dict[str, str]],
         guest_name: Optional[str] = None,
-        hotel_id: str = "taj-fort-aguada"
+        hotel_id: str = "taj-fort-aguada",
+        custom_trip: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """Call Groq Cloud API with grounded context."""
-        hotel = get_hotel_info(hotel_id)
-        hotel_name = hotel.get("name", "Taj Fort Aguada")
-        system_prompt = get_system_prompt(hotel_id, guest_name)
+        system_prompt = get_system_prompt(hotel_id, guest_name, custom_trip=custom_trip)
 
-        near_places = search_restaurants(hotel_id=hotel_id, near_hotel=True)
-        near_acts = search_activities(hotel_id=hotel_id)
-        knowledge_context = json.dumps({
-            "hotel": hotel,
-            "nearby_restaurants": near_places[:3],
-            "nearby_activities": near_acts[:3]
-        }, ensure_ascii=False)
+        if custom_trip:
+            hotel_name = custom_trip.get("hotel_name", "My Hotel")
+            weather = custom_trip.get("weather", {})
+            knowledge_context = json.dumps({
+                "destination": custom_trip.get("destination", ""),
+                "hotel_name": hotel_name,
+                "weather": weather,
+            }, ensure_ascii=False)
+        else:
+            hotel = get_hotel_info(hotel_id)
+            hotel_name = hotel.get("name", "Taj Fort Aguada")
+            near_places = search_restaurants(hotel_id=hotel_id, near_hotel=True)
+            near_acts = search_activities(hotel_id=hotel_id)
+            knowledge_context = json.dumps({
+                "hotel": hotel,
+                "nearby_restaurants": near_places[:3],
+                "nearby_activities": near_acts[:3]
+            }, ensure_ascii=False)
 
         headers = {
             "Authorization": f"Bearer {self.groq_key}",
@@ -194,14 +265,26 @@ class AIConciergeAgent:
                 if res.status_code == 200:
                     data = res.json()
                     reply_text = data["choices"][0]["message"]["content"]
-                    cards = (near_places[:2] if any(w in user_message.lower() for w in ["dinner", "food", "eat", "restaurant"]) else near_acts[:2])
-                    return {
-                        "reply": reply_text,
-                        "tool_calls": [{"tool": "search_restaurants", "input": {"hotel_id": hotel_id}}],
-                        "cards": cards,
-                        "provider": f"Groq AI ({model_name})",
-                        "hotel_origin": f"{hotel_name}, {hotel.get('area')}"
-                    }
+                    if custom_trip:
+                        return {
+                            "reply": reply_text,
+                            "tool_calls": [],
+                            "cards": [],
+                            "provider": f"Groq AI ({model_name})",
+                            "hotel_origin": f"{hotel_name}, {custom_trip.get('destination_short', '')}"
+                        }
+                    else:
+                        hotel = get_hotel_info(hotel_id)
+                        near_places = search_restaurants(hotel_id=hotel_id, near_hotel=True)
+                        near_acts = search_activities(hotel_id=hotel_id)
+                        cards = (near_places[:2] if any(w in user_message.lower() for w in ["dinner", "food", "eat", "restaurant"]) else near_acts[:2])
+                        return {
+                            "reply": reply_text,
+                            "tool_calls": [{"tool": "search_restaurants", "input": {"hotel_id": hotel_id}}],
+                            "cards": cards,
+                            "provider": f"Groq AI ({model_name})",
+                            "hotel_origin": f"{hotel_name}, {hotel.get('area')}"
+                        }
                 else:
                     last_error = f"Status {res.status_code}: {res.text}"
             except Exception as e:
@@ -214,12 +297,16 @@ class AIConciergeAgent:
         user_message: str,
         chat_history: List[Dict[str, str]],
         guest_name: Optional[str] = None,
-        hotel_id: str = "taj-fort-aguada"
+        hotel_id: str = "taj-fort-aguada",
+        custom_trip: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """Execute conversational flow with Anthropic Claude and tool calling."""
-        system_prompt = get_system_prompt(hotel_id, guest_name)
-        hotel = get_hotel_info(hotel_id)
-        hotel_name = hotel.get("name", "Taj Fort Aguada")
+        system_prompt = get_system_prompt(hotel_id, guest_name, custom_trip=custom_trip)
+        if custom_trip:
+            hotel_name = custom_trip.get("hotel_name", "My Hotel")
+        else:
+            hotel = get_hotel_info(hotel_id)
+            hotel_name = hotel.get("name", "Taj Fort Aguada")
 
         messages = []
         for msg in chat_history[-6:]:
@@ -311,10 +398,39 @@ class AIConciergeAgent:
         user_message: str,
         chat_history: List[Dict[str, str]],
         guest_name: Optional[str] = None,
-        hotel_id: str = "taj-fort-aguada"
+        hotel_id: str = "taj-fort-aguada",
+        custom_trip: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
-        """Intelligent semantic tool dispatcher fallback grounded in active hotel context."""
+        """Intelligent semantic tool dispatcher fallback."""
         msg = user_message.lower().strip()
+
+        # For custom trips without any API key, give a helpful message
+        if custom_trip:
+            dest = custom_trip.get("destination", "your destination")
+            dest_short = custom_trip.get("destination_short", dest)
+            hotel_name = custom_trip.get("hotel_name", "My Hotel")
+            weather = custom_trip.get("weather", {})
+            greeting = f"Namaste {guest_name.strip()}!" if guest_name and guest_name.strip() else "Namaste!"
+
+            reply = (
+                f"{greeting} I'm your concierge at **{hotel_name}** in **{dest}**.\n\n"
+                f"🌤️ **Current Weather**: {weather.get('temperature_c', 'N/A')}°C, {weather.get('condition', 'Unknown')} "
+                f"(Humidity: {weather.get('humidity', 'N/A')})\n\n"
+                f"To provide you with the best recommendations for {dest_short}, I'd recommend setting up a Gemini API key "
+                f"(free at https://aistudio.google.com/) which enables AI-powered local recommendations.\n\n"
+                f"In the meantime, here are general tips for {dest_short}:\n"
+                f"• Check popular review sites for top-rated restaurants nearby\n"
+                f"• Ask your hotel front desk for local activity recommendations\n"
+                f"• The weather is currently {weather.get('condition', 'fair').lower()}, plan accordingly!"
+            )
+            return {
+                "reply": reply,
+                "tool_calls": [],
+                "cards": [],
+                "provider": "AI Concierge (Offline Mode — add Gemini key for full intelligence)",
+                "hotel_origin": f"{hotel_name}, {dest_short}"
+            }
+
         hotel = get_hotel_info(hotel_id)
         hotel_name = hotel.get("name", "Taj Fort Aguada")
         hotel_area = hotel.get("area", "Candolim")
