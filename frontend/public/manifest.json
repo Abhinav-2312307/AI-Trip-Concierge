@@ -1,0 +1,19 @@
+{
+  "name": "AI Trip Concierge — Goa Luxury Companion",
+  "short_name": "GoaConcierge",
+  "description": "Your 24/7 AI-powered luxury hotel companion in Goa. Itinerary planning, sunset radar, taxi estimator, offline support, and bespoke concierge guidance.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B1626",
+  "theme_color": "#0B1626",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/app-icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["travel", "lifestyle", "utilities"]
+}
