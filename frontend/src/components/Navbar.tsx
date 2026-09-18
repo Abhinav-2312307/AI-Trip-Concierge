@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Compass, Bell, MapPin, Bike, CalendarDays, MessageSquareText, Compass as DirectoryIcon, User, Hotel, ChevronDown, Check, Menu } from 'lucide-react';
+import { Compass, Bell, MapPin, Bike, ChevronDown, Check, Menu } from 'lucide-react';
 import type { TripContext, HotelBooking } from '../types';
 
 interface NavbarProps {
@@ -208,6 +208,21 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Actions */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {guestName && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: 'rgba(255,255,255,0.12)',
+              padding: '4px 10px',
+              borderRadius: 'var(--radius-pill)',
+              fontSize: '0.78rem',
+              color: '#FFFFFF',
+              fontWeight: 600
+            }}>
+              <span>👤 {guestName}</span>
+            </div>
+          )}
           
           {/* Theme Toggle */}
           <button

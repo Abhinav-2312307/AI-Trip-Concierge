@@ -303,3 +303,145 @@ body {
     padding: 0 16px;
   }
 }
+
+/* ==========================================================================
+   Premium Micro-Animations & Skeleton Shimmers
+   ========================================================================== */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--bg-tertiary) 0%,
+    var(--border-primary) 50%,
+    var(--bg-tertiary) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite ease-in-out;
+  border-radius: var(--radius-xs);
+}
+
+.card-interactive {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+
+.card-interactive:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-elevated);
+}
+
+/* Voice Waveform & Speech Visualizer */
+@keyframes wavePulse {
+  0%, 100% {
+    height: 6px;
+  }
+  50% {
+    height: 22px;
+  }
+}
+
+.wave-bar {
+  width: 3.5px;
+  background: var(--accent-primary);
+  border-radius: 4px;
+  animation: wavePulse 0.9s ease-in-out infinite;
+}
+.wave-bar:nth-child(1) { animation-delay: 0.0s; }
+.wave-bar:nth-child(2) { animation-delay: 0.25s; }
+.wave-bar:nth-child(3) { animation-delay: 0.5s; }
+.wave-bar:nth-child(4) { animation-delay: 0.18s; }
+.wave-bar:nth-child(5) { animation-delay: 0.38s; }
+
+@keyframes micHalo {
+  0% {
+    box-shadow: 0 0 0 0 rgba(208, 91, 59, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(208, 91, 59, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(208, 91, 59, 0);
+  }
+}
+
+.recording-pulse {
+  animation: micHalo 1.5s infinite ease-out;
+}
+
+/* AI Typing Dots */
+@keyframes typingBounce {
+  0%, 80%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  40% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+
+.typing-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--accent-primary);
+  border-radius: 50%;
+  display: inline-block;
+  animation: typingBounce 1.3s infinite ease-in-out both;
+}
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+.typing-dot:nth-child(3) { animation-delay: 0s; }
+
+/* ==========================================================================
+   Luxury Print & PDF Styles
+   ========================================================================== */
+
+@media print {
+  header,
+  footer,
+  nav,
+  .no-print,
+  button,
+  .app-container > div:first-child:not(.printable-itinerary) {
+    display: none !important;
+  }
+
+  body {
+    background: #FFFFFF !important;
+    color: #111827 !important;
+    font-size: 11pt !important;
+  }
+
+  .app-container {
+    max-width: 100% !important;
+    padding: 0 12mm !important;
+    margin: 0 !important;
+  }
+
+  .glass-card {
+    box-shadow: none !important;
+    border: 1px solid #E5E7EB !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    margin-bottom: 16px !important;
+    background: #FFFFFF !important;
+  }
+
+  .print-header {
+    display: block !important;
+  }
+
+  a {
+    text-decoration: none !important;
+    color: #111827 !important;
+  }
+}
+

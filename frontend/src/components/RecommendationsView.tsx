@@ -61,20 +61,21 @@ export const RecommendationsView: React.FC<RecommendationsViewProps> = ({
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: '14px',
-        background: '#FFFFFF',
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border-primary)',
       }}>
         <div>
-          <h2 className="font-serif" style={{ fontSize: '1.45rem', fontWeight: 700, color: '#101F35', margin: 0 }}>
+          <h2 className="font-serif" style={{ fontSize: '1.45rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
             Goa Places & Recommendations
           </h2>
-          <p style={{ color: '#64748B', fontSize: '0.88rem', marginTop: '2px', marginBottom: 0 }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: '2px', marginBottom: 0 }}>
             Verified dining, beaches, and sights with travel distances calculated from <strong>{hotelName}</strong> ({hotelArea}).
           </p>
         </div>
 
         {/* Search Input */}
         <div style={{ position: 'relative', width: '280px' }}>
-          <Search size={15} color="#94A3B8" style={{ position: 'absolute', top: '11px', left: '12px' }} />
+          <Search size={15} color="var(--text-muted)" style={{ position: 'absolute', top: '11px', left: '12px' }} />
           <input
             type="text"
             placeholder="Search dish, spot, or vibe..."
@@ -84,10 +85,11 @@ export const RecommendationsView: React.FC<RecommendationsViewProps> = ({
               width: '100%',
               padding: '8px 12px 8px 34px',
               borderRadius: 'var(--radius-xs)',
-              border: '1px solid var(--card-border)',
+              border: '1px solid var(--border-primary)',
               outline: 'none',
               fontSize: '0.86rem',
-              background: 'var(--color-sand-50)'
+              background: 'var(--bg-tertiary)',
+              color: 'var(--text-primary)',
             }}
           />
         </div>
@@ -112,11 +114,11 @@ export const RecommendationsView: React.FC<RecommendationsViewProps> = ({
               padding: '7px 14px',
               borderRadius: 'var(--radius-xs)',
               border: '1px solid',
-              borderColor: selectedCategory === c.id ? 'var(--color-ocean-900)' : 'var(--card-border)',
-              background: selectedCategory === c.id ? 'var(--color-ocean-900)' : '#FFFFFF',
-              color: selectedCategory === c.id ? '#FFFFFF' : '#475569',
+              borderColor: selectedCategory === c.id ? 'var(--accent-secondary)' : 'var(--border-primary)',
+              background: selectedCategory === c.id ? 'var(--accent-secondary)' : 'var(--bg-card)',
+              color: selectedCategory === c.id ? '#FFFFFF' : 'var(--text-secondary)',
               fontSize: '0.84rem',
-              fontWeight: 500,
+              fontWeight: 600,
               cursor: 'pointer',
               transition: 'all 0.15s ease'
             }}
@@ -134,7 +136,7 @@ export const RecommendationsView: React.FC<RecommendationsViewProps> = ({
         marginBottom: '20px',
         alignItems: 'center'
       }}>
-        <span style={{ fontSize: '0.76rem', fontWeight: 600, color: '#64748B', marginRight: '4px' }}>
+        <span style={{ fontSize: '0.76rem', fontWeight: 600, color: 'var(--text-muted)', marginRight: '4px' }}>
           Area:
         </span>
         {areas.map((a) => (
@@ -148,8 +150,8 @@ export const RecommendationsView: React.FC<RecommendationsViewProps> = ({
               fontSize: '0.76rem',
               fontWeight: 500,
               cursor: 'pointer',
-              background: selectedArea === a ? 'var(--color-terracotta-500)' : 'var(--color-sand-100)',
-              color: selectedArea === a ? '#FFFFFF' : '#475569',
+              background: selectedArea === a ? 'var(--accent-primary)' : 'var(--bg-tertiary)',
+              color: selectedArea === a ? '#FFFFFF' : 'var(--text-secondary)',
               transition: 'all 0.12s ease'
             }}
           >
@@ -158,13 +160,45 @@ export const RecommendationsView: React.FC<RecommendationsViewProps> = ({
         ))}
       </div>
 
-      {/* Grid of Places */}
+      {/* Grid of Places with Skeleton Shimmer */}
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '36px', color: '#64748B', fontSize: '0.88rem' }}>
-          Loading curated places from {hotelName}...
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+          gap: '16px'
+        }}>
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div
+              key={i}
+              className="glass-card"
+              style={{
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border-primary)',
+                minHeight: '360px'
+              }}
+            >
+              <div>
+                <div className="skeleton-shimmer" style={{ width: '100%', height: '160px' }} />
+                <div style={{ padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div className="skeleton-shimmer" style={{ width: '65%', height: '20px' }} />
+                  <div className="skeleton-shimmer" style={{ width: '40%', height: '13px' }} />
+                  <div className="skeleton-shimmer" style={{ width: '100%', height: '14px' }} />
+                  <div className="skeleton-shimmer" style={{ width: '85%', height: '14px' }} />
+                  <div className="skeleton-shimmer" style={{ width: '90%', height: '28px', marginTop: '6px' }} />
+                </div>
+              </div>
+              <div style={{ padding: '12px 18px', borderTop: '1px solid var(--border-primary)' }}>
+                <div className="skeleton-shimmer" style={{ width: '100%', height: '32px', borderRadius: '4px' }} />
+              </div>
+            </div>
+          ))}
         </div>
       ) : places.length === 0 ? (
-        <div className="glass-card" style={{ padding: '36px', textAlign: 'center', color: '#64748B', fontSize: '0.88rem', background: '#FFFFFF' }}>
+        <div className="glass-card" style={{ padding: '36px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.88rem', background: 'var(--bg-card)' }}>
           No places match your selected filters.
         </div>
       ) : (
@@ -176,13 +210,14 @@ export const RecommendationsView: React.FC<RecommendationsViewProps> = ({
           {places.map((place) => (
             <div
               key={place.id}
-              className="glass-card"
+              className="glass-card card-interactive"
               style={{
                 overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                background: '#FFFFFF'
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border-primary)',
               }}
             >
               <div>
@@ -225,19 +260,19 @@ export const RecommendationsView: React.FC<RecommendationsViewProps> = ({
 
                 {/* Details */}
                 <div style={{ padding: '16px 18px' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#101F35', marginBottom: '2px' }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '2px' }}>
                     {place.name}
                   </h3>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: '#64748B', marginBottom: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '8px' }}>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontWeight: 500 }}>
-                      <MapPin size={11} color="#D05B3B" /> {place.area}
+                      <MapPin size={11} color="var(--accent-primary)" /> {place.area}
                     </span>
                     <span>•</span>
                     <span>{place.price_range}</span>
                   </div>
 
-                  <p style={{ fontSize: '0.84rem', color: '#475569', lineHeight: 1.45, marginBottom: '12px' }}>
+                  <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.45, marginBottom: '12px' }}>
                     {place.description}
                   </p>
 
@@ -253,11 +288,11 @@ export const RecommendationsView: React.FC<RecommendationsViewProps> = ({
                   )}
 
                   <div style={{
-                    background: 'var(--color-sand-100)',
+                    background: 'var(--bg-tertiary)',
                     padding: '6px 10px',
                     borderRadius: 'var(--radius-xs)',
                     fontSize: '0.76rem',
-                    color: '#475569',
+                    color: 'var(--text-secondary)',
                   }}>
                     <strong>Atmosphere:</strong> {place.vibe}
                   </div>
@@ -267,8 +302,8 @@ export const RecommendationsView: React.FC<RecommendationsViewProps> = ({
               {/* Action Button */}
               <div style={{
                 padding: '12px 18px',
-                borderTop: '1px solid var(--card-border)',
-                background: 'var(--color-sand-50)',
+                borderTop: '1px solid var(--border-primary)',
+                background: 'var(--bg-tertiary)',
               }}>
                 <button
                   onClick={() => onAskConcierge(`Tell me more about ${place.name} and how to visit from ${hotelName}.`)}
@@ -277,7 +312,9 @@ export const RecommendationsView: React.FC<RecommendationsViewProps> = ({
                     width: '100%',
                     fontSize: '0.78rem',
                     padding: '7px 10px',
-                    borderRadius: 'var(--radius-xs)'
+                    borderRadius: 'var(--radius-xs)',
+                    background: 'var(--accent-secondary)',
+                    borderColor: 'var(--accent-secondary)'
                   }}
                 >
                   <MessageSquare size={12} /> Ask AI Concierge

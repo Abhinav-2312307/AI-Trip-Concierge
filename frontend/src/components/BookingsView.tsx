@@ -40,7 +40,6 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
         flexWrap: 'wrap',
         justifyContent: 'space-between',
         alignItems: 'center',
-        alignItems: 'center',
         gap: '16px',
       }}>
         <div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { TripSetupRequest } from '../types';
-import { setupCustomTrip, fetchTripContext, fetchAlerts, clearCustomTrip } from '../services/api';
+import type { TripSetupRequest } from '../types';
+import { setupCustomTrip, fetchTripContext, clearCustomTrip } from '../services/api';
 
 interface TripSetupViewProps {
   onSetupComplete: (context: any) => void;
