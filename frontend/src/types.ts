@@ -129,19 +129,33 @@ export interface TripContext {
   days_until_checkin?: number;
   duration: string;
   weather_summary: {
-    area: string;
+    area?: string;
     temperature_c: number;
+    feels_like_c?: number;
     condition: string;
-    evening_forecast: string;
+    evening_forecast?: string;
     humidity: string;
-    sunset_time: string;
-    golden_hour_start: string;
-    sea_condition: string;
-    tide_schedule: {
+    wind_speed_kmph?: number;
+    precipitation_probability?: number;
+    sunset_time?: string;
+    golden_hour_start?: string;
+    sea_condition?: string;
+    tide_schedule?: {
       low_tide: string;
       high_tide: string;
     };
-    is_simulated_demo: boolean;
+    is_simulated_demo?: boolean;
+    is_real_data?: boolean;
+    timestamp?: string;
   };
   active_alerts_count: number;
+  is_custom_trip?: boolean;
+}
+
+export interface TripSetupRequest {
+  destination: string;
+  hotel_name?: string;
+  check_in?: string;
+  check_out?: string;
+  guest_name?: string;
 }

@@ -36,7 +36,7 @@ export const App: React.FC = () => {
   });
   const [bookings, setBookings] = useState<HotelBooking[]>([]);
   const [tripContext, setTripContext] = useState<TripContext | null>(null);
-  const [activeTab, setActiveTab] = useState<string>('bookings');
+  const [activeTab, setActiveTab] = useState<string>('overview');
   const [itineraryData, setItineraryData] = useState<ItineraryResponse | null>(null);
   const [itineraryLoading, setItineraryLoading] = useState<boolean>(false);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
