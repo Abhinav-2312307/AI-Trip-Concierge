@@ -28,9 +28,30 @@
   --color-gold-700: #946E13;
   --color-gold-50: #FCF8EE;
 
-  --card-bg: #FFFFFF;
-  --card-border: #E8E2D8;
-  --card-border-hover: #D0C5B4;
+  /* Semantic Theme Variables (Light default) */
+  --bg-primary: var(--color-sand-50);
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: var(--color-sand-100);
+  --bg-chat-user: var(--color-ocean-900);
+  --bg-chat-ai: #FFFFFF;
+  --bg-card: #FFFFFF;
+  
+  --text-primary: var(--color-ocean-950);
+  --text-secondary: #64748B;
+  --text-muted: #94A3B8;
+  --text-inverse: #FFFFFF;
+  --text-chat-user: #FFFFFF;
+  --text-chat-ai: #1E293B;
+
+  --border-primary: #E8E2D8;
+  --border-secondary: #D0C5B4;
+  --border-focus: var(--color-terracotta-500);
+
+  --accent-primary: var(--color-terracotta-500);
+  --accent-secondary: var(--color-ocean-900);
+  --accent-success: #10B981;
+  --accent-warning: #FDBA74;
+  --accent-danger: #D05B3B;
 
   --shadow-subtle: 0 1px 3px rgba(16, 31, 53, 0.04), 0 4px 12px rgba(16, 31, 53, 0.03);
   --shadow-card: 0 2px 8px rgba(16, 31, 53, 0.05), 0 8px 24px rgba(16, 31, 53, 0.04);
@@ -43,6 +64,36 @@
   --radius-pill: 9999px;
 }
 
+[data-theme='dark'] {
+  --bg-primary: #0F172A;
+  --bg-secondary: #1E293B;
+  --bg-tertiary: #334155;
+  --bg-chat-user: var(--color-terracotta-500);
+  --bg-chat-ai: #1E293B;
+  --bg-card: #1E293B;
+  
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --text-inverse: #0F172A;
+  --text-chat-user: #FFFFFF;
+  --text-chat-ai: #F8FAFC;
+
+  --border-primary: #334155;
+  --border-secondary: #475569;
+  --border-focus: var(--color-sunset-500);
+
+  --accent-primary: var(--color-sunset-500);
+  --accent-secondary: #60A5FA;
+  --accent-success: #34D399;
+  --accent-warning: #FBBF24;
+  --accent-danger: #EF4444;
+
+  --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.25), 0 8px 24px rgba(0, 0, 0, 0.2);
+  --shadow-elevated: 0 8px 28px rgba(0, 0, 0, 0.4);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -51,12 +102,13 @@
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-sand-50);
-  color: var(--color-ocean-950);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Scrollbars */
@@ -91,15 +143,15 @@ body {
 
 /* Refined Cards */
 .glass-card {
-  background: #FFFFFF;
-  border: 1px solid var(--card-border);
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
 }
 
 .glass-card:hover {
-  border-color: var(--card-border-hover);
+  border-color: var(--border-secondary);
   box-shadow: var(--shadow-elevated);
 }
 
@@ -151,20 +203,20 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  background: #FFFFFF;
-  color: var(--color-ocean-900);
+  background: var(--bg-card);
+  color: var(--text-primary);
   font-weight: 500;
   font-size: 0.86rem;
   padding: 8px 15px;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--card-border);
+  border: 1px solid var(--border-primary);
   cursor: pointer;
   transition: all 0.18s ease;
 }
 
 .btn-secondary:hover {
-  background: var(--color-sand-50);
-  border-color: var(--color-sand-300);
+  background: var(--bg-tertiary);
+  border-color: var(--border-secondary);
 }
 
 /* Badges */
@@ -229,20 +281,20 @@ body {
   font-size: 0.88rem;
   border: none;
   background: transparent;
-  color: #94A3B8;
+  color: var(--text-muted);
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.18s ease;
 }
 
 .tab-button:hover {
-  color: #FFFFFF;
-  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
 }
 
 .tab-button.active {
-  color: #FFFFFF;
-  background: rgba(255, 255, 255, 0.15);
+  color: var(--text-inverse);
+  background: var(--accent-secondary);
   font-weight: 600;
 }
 
@@ -251,3 +303,145 @@ body {
     padding: 0 16px;
   }
 }
+
+/* ==========================================================================
+   Premium Micro-Animations & Skeleton Shimmers
+   ========================================================================== */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--bg-tertiary) 0%,
+    var(--border-primary) 50%,
+    var(--bg-tertiary) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite ease-in-out;
+  border-radius: var(--radius-xs);
+}
+
+.card-interactive {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+
+.card-interactive:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-elevated);
+}
+
+/* Voice Waveform & Speech Visualizer */
+@keyframes wavePulse {
+  0%, 100% {
+    height: 6px;
+  }
+  50% {
+    height: 22px;
+  }
+}
+
+.wave-bar {
+  width: 3.5px;
+  background: var(--accent-primary);
+  border-radius: 4px;
+  animation: wavePulse 0.9s ease-in-out infinite;
+}
+.wave-bar:nth-child(1) { animation-delay: 0.0s; }
+.wave-bar:nth-child(2) { animation-delay: 0.25s; }
+.wave-bar:nth-child(3) { animation-delay: 0.5s; }
+.wave-bar:nth-child(4) { animation-delay: 0.18s; }
+.wave-bar:nth-child(5) { animation-delay: 0.38s; }
+
+@keyframes micHalo {
+  0% {
+    box-shadow: 0 0 0 0 rgba(208, 91, 59, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(208, 91, 59, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(208, 91, 59, 0);
+  }
+}
+
+.recording-pulse {
+  animation: micHalo 1.5s infinite ease-out;
+}
+
+/* AI Typing Dots */
+@keyframes typingBounce {
+  0%, 80%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  40% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+
+.typing-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--accent-primary);
+  border-radius: 50%;
+  display: inline-block;
+  animation: typingBounce 1.3s infinite ease-in-out both;
+}
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+.typing-dot:nth-child(3) { animation-delay: 0s; }
+
+/* ==========================================================================
+   Luxury Print & PDF Styles
+   ========================================================================== */
+
+@media print {
+  header,
+  footer,
+  nav,
+  .no-print,
+  button,
+  .app-container > div:first-child:not(.printable-itinerary) {
+    display: none !important;
+  }
+
+  body {
+    background: #FFFFFF !important;
+    color: #111827 !important;
+    font-size: 11pt !important;
+  }
+
+  .app-container {
+    max-width: 100% !important;
+    padding: 0 12mm !important;
+    margin: 0 !important;
+  }
+
+  .glass-card {
+    box-shadow: none !important;
+    border: 1px solid #E5E7EB !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    margin-bottom: 16px !important;
+    background: #FFFFFF !important;
+  }
+
+  .print-header {
+    display: block !important;
+  }
+
+  a {
+    text-decoration: none !important;
+    color: #111827 !important;
+  }
+}
+

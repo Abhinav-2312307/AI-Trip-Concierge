@@ -41,13 +41,12 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
         justifyContent: 'space-between',
         alignItems: 'center',
         gap: '16px',
-        background: '#FFFFFF',
       }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
             <span style={{
-              background: 'var(--color-sand-100)',
-              color: '#1E3A63',
+              background: 'var(--bg-tertiary)',
+              color: 'var(--text-primary)',
               fontSize: '0.74rem',
               fontWeight: 700,
               padding: '2px 8px',
@@ -56,16 +55,16 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
               alignItems: 'center',
               gap: '4px'
             }}>
-              <Compass size={12} color="#D05B3B" /> Post-Booking Travel Hub
+              <Compass size={12} color="var(--accent-primary)" /> Post-Booking Travel Hub
             </span>
-            <span style={{ fontSize: '0.78rem', color: '#64748B' }}>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
               • {bookings.length} Verified Goa Reservations
             </span>
           </div>
-          <h2 className="font-serif" style={{ fontSize: '1.65rem', fontWeight: 700, color: '#101F35', margin: 0 }}>
+          <h2 className="font-serif" style={{ fontSize: '1.65rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
             My Hotel Bookings & Travel History
           </h2>
-          <p style={{ color: '#64748B', fontSize: '0.88rem', marginTop: '4px', marginBottom: 0 }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: '4px', marginBottom: 0 }}>
             Select any hotel reservation below to activate its personalized AI Trip Concierge, itinerary, and coastal alerts.
           </p>
         </div>
@@ -73,10 +72,10 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
         {/* Region Filter Buttons */}
         <div style={{
           display: 'flex',
-          background: 'var(--color-sand-100)',
+          background: 'var(--bg-tertiary)',
           padding: '3px',
           borderRadius: 'var(--radius-sm)',
-          border: '1px solid var(--card-border)',
+          border: '1px solid var(--border-primary)',
         }}>
           {['all', 'North Goa', 'South Goa'].map((reg) => (
             <button
@@ -89,8 +88,8 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                 fontSize: '0.82rem',
                 fontWeight: 600,
                 cursor: 'pointer',
-                background: regionFilter === reg ? 'var(--color-ocean-900)' : 'transparent',
-                color: regionFilter === reg ? '#FFFFFF' : '#475569',
+                background: regionFilter === reg ? 'var(--accent-secondary)' : 'transparent',
+                color: regionFilter === reg ? '#FFFFFF' : 'var(--text-secondary)',
                 transition: 'all 0.15s ease'
               }}
             >
@@ -102,9 +101,9 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
 
       {/* Active Trip Banner Indicator */}
       {activeHotel && (
-        <div style={{
-          background: 'linear-gradient(135deg, #101F35 0%, #172D4D 100%)',
-          color: '#FFFFFF',
+        <div className="glass-card" style={{
+          background: 'var(--bg-tertiary)',
+          color: 'var(--text-primary)',
           borderRadius: 'var(--radius-sm)',
           padding: '16px 22px',
           marginBottom: '24px',
@@ -113,7 +112,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
           alignItems: 'center',
           flexWrap: 'wrap',
           gap: '14px',
-          border: '1px solid rgba(226, 132, 69, 0.4)',
+          border: '1px solid var(--accent-primary)',
           boxShadow: 'var(--shadow-subtle)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -121,7 +120,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
               width: '42px',
               height: '42px',
               borderRadius: 'var(--radius-xs)',
-              background: 'var(--color-terracotta-500)',
+              background: 'var(--accent-primary)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -130,16 +129,16 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
               🏨
             </div>
             <div>
-              <div style={{ fontSize: '0.74rem', textTransform: 'uppercase', letterSpacing: '0.04em', color: '#FDBA74', fontWeight: 700 }}>
+              <div style={{ fontSize: '0.74rem', textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--accent-primary)', fontWeight: 700 }}>
                 Active Trip Selected
               </div>
-              <h3 className="font-serif" style={{ fontSize: '1.2rem', fontWeight: 700, margin: '2px 0 0', color: '#FFFFFF' }}>
+              <h3 className="font-serif" style={{ fontSize: '1.2rem', fontWeight: 700, margin: '2px 0 0', color: 'var(--text-primary)' }}>
                 {activeHotel.name} • {activeHotel.area}
               </h3>
-              <div style={{ fontSize: '0.78rem', color: '#CBD5E1', display: 'flex', alignItems: 'center', gap: '10px', marginTop: '2px' }}>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '10px', marginTop: '2px' }}>
                 <span>📅 {activeHotel.check_in_formatted} – {activeHotel.check_out_formatted}</span>
                 <span>•</span>
-                <span>Ref: <code style={{ color: '#FDBA74' }}>{activeHotel.confirmation_code}</code></span>
+                <span>Ref: <code style={{ color: 'var(--accent-primary)' }}>{activeHotel.confirmation_code}</code></span>
               </div>
             </div>
           </div>
@@ -149,14 +148,14 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
               onClick={() => onPlanTrip(activeHotel.id)}
               className="btn-secondary"
               style={{
-                background: 'rgba(255, 255, 255, 0.1)',
-                borderColor: 'rgba(255, 255, 255, 0.2)',
-                color: '#FFFFFF',
+                background: 'var(--bg-card)',
+                borderColor: 'var(--border-primary)',
+                color: 'var(--text-primary)',
                 fontSize: '0.82rem',
                 padding: '7px 14px'
               }}
             >
-              <Sparkles size={13} color="#FDBA74" /> View Itinerary
+              <Sparkles size={13} color="var(--accent-primary)" /> View Itinerary
             </button>
 
             <button
@@ -191,7 +190,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                border: isActive ? '2px solid var(--color-terracotta-500)' : '1px solid var(--card-border)',
+                border: isActive ? '2px solid var(--accent-primary)' : '1px solid var(--border-primary)',
                 boxShadow: isActive ? '0 8px 24px rgba(208, 91, 59, 0.15)' : 'var(--shadow-card)',
                 transition: 'all 0.2s ease',
                 position: 'relative'
@@ -249,7 +248,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                       position: 'absolute',
                       top: '10px',
                       right: '10px',
-                      background: 'var(--color-terracotta-500)',
+                      background: 'var(--accent-primary)',
                       color: '#FFFFFF',
                       fontSize: '0.72rem',
                       fontWeight: 700,
@@ -264,7 +263,6 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                     </div>
                   )}
 
-                  {/* Bottom Hotel Location */}
                   <div style={{
                     position: 'absolute',
                     bottom: '10px',
@@ -272,7 +270,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                     right: '12px',
                     color: '#FFFFFF'
                   }}>
-                    <div style={{ fontSize: '0.75rem', color: '#FDBA74', display: 'flex', alignItems: 'center', gap: '3px', fontWeight: 600 }}>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--accent-primary)', display: 'flex', alignItems: 'center', gap: '3px', fontWeight: 600 }}>
                       <MapPin size={11} /> {hotel.area}
                     </div>
                     <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: '2px 0 0', lineHeight: 1.3, color: '#FFFFFF' }}>
@@ -288,40 +286,40 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                     display: 'grid',
                     gridTemplateColumns: '1fr 1fr',
                     gap: '10px',
-                    background: 'var(--color-sand-50)',
+                    background: 'var(--bg-tertiary)',
                     padding: '12px 14px',
                     borderRadius: 'var(--radius-xs)',
-                    border: '1px solid var(--card-border)',
+                    border: '1px solid var(--border-primary)',
                     fontSize: '0.82rem',
                     marginBottom: '14px'
                   }}>
                     <div>
-                      <span style={{ fontSize: '0.72rem', color: '#64748B', display: 'block' }}>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block' }}>
                         Trip Dates
                       </span>
-                      <strong style={{ color: '#101F35', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
-                        <Calendar size={13} color="#D05B3B" /> {hotel.check_in_formatted} – {hotel.check_out_formatted}
+                      <strong style={{ color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
+                        <Calendar size={13} color="var(--accent-primary)" /> {hotel.check_in_formatted} – {hotel.check_out_formatted}
                       </strong>
                     </div>
 
                     <div>
-                      <span style={{ fontSize: '0.72rem', color: '#64748B', display: 'block' }}>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block' }}>
                         Guests & Duration
                       </span>
-                      <strong style={{ color: '#101F35', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
-                        <Users size={13} color="#2C5282" /> {guestName ? `${guestName} (2 Guests)` : '2 Guests'} • 3 Nights
+                      <strong style={{ color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
+                        <Users size={13} color="var(--accent-secondary)" /> {guestName ? `${guestName} (2 Guests)` : '2 Guests'} • 3 Nights
                       </strong>
                     </div>
                   </div>
 
                   {/* Suite Type & Ref */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', color: '#475569', marginBottom: '12px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '12px' }}>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <ShieldCheck size={13} color="#10B981" />
+                      <ShieldCheck size={13} color="var(--accent-success)" />
                       <span>{hotel.room_type}</span>
                     </span>
-                    <span style={{ fontSize: '0.76rem', color: '#64748B' }}>
-                      Ref: <code style={{ color: '#101F35', fontWeight: 600 }}>{hotel.confirmation_code}</code>
+                    <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>
+                      Ref: <code style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{hotel.confirmation_code}</code>
                     </span>
                   </div>
 
@@ -329,13 +327,13 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                   {hotel.highlights && hotel.highlights.length > 0 && (
                     <div style={{
                       fontSize: '0.8rem',
-                      color: '#475569',
+                      color: 'var(--text-secondary)',
                       lineHeight: 1.4,
                       marginBottom: '14px',
-                      background: 'var(--color-sand-100)',
+                      background: 'var(--bg-tertiary)',
                       padding: '8px 12px',
                       borderRadius: 'var(--radius-xs)',
-                      borderLeft: '3px solid var(--color-ocean-900)'
+                      borderLeft: '3px solid var(--accent-secondary)'
                     }}>
                       {hotel.highlights[0]}
                     </div>
@@ -349,7 +347,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                       </span>
                     ))}
                     {hotel.amenities.length > 3 && (
-                      <span style={{ fontSize: '0.72rem', color: '#64748B', alignSelf: 'center', paddingLeft: '4px' }}>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', alignSelf: 'center', paddingLeft: '4px' }}>
                         +{hotel.amenities.length - 3} more
                       </span>
                     )}
@@ -360,8 +358,8 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
               {/* Action Buttons Bar */}
               <div style={{
                 padding: '14px 20px',
-                background: 'var(--color-sand-50)',
-                borderTop: '1px solid var(--card-border)',
+                background: 'var(--bg-tertiary)',
+                borderTop: '1px solid var(--border-primary)',
                 display: 'flex',
                 gap: '8px',
                 flexWrap: 'wrap'
@@ -395,7 +393,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                     gap: '4px'
                   }}
                 >
-                  <Sparkles size={13} color="#D05B3B" /> Itinerary
+                  <Sparkles size={13} color="var(--accent-primary)" /> Itinerary
                 </button>
 
                 <button

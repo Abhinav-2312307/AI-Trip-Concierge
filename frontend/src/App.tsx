@@ -49,7 +49,21 @@ export const App: React.FC = () => {
   const [selectedBookingForModal, setSelectedBookingForModal] = useState<HotelBooking | null>(null);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState<boolean>(false);
 
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    return (localStorage.getItem('concierge_theme') as 'light' | 'dark') || 'light';
+  });
+
   const activeHotel = bookings.find(b => b.id === activeHotelId) || tripContext?.hotel || bookings[0] || null;
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    localStorage.setItem('concierge_theme', newTheme);
+  };
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
   const getWelcomeGreeting = (name: string, hotel?: HotelBooking | null) => {
     const greeting = name.trim() ? `Namaste ${name.trim()}!` : 'Namaste!';
@@ -322,6 +336,8 @@ export const App: React.FC = () => {
         onSwitchHotel={(id) => handleSwitchHotel(id)}
         onOpenTransport={() => setIsTransportOpen(true)}
         onSimulateAlert={() => handleSimulateAlert('rain_baga')}
+        theme={theme}
+        toggleTheme={toggleTheme}
       />
 
       {/* Main Content Body */}
