@@ -1,522 +1,747 @@
-import React, { useState } from 'react';
-import { Compass, Bell, MapPin, Bike, ChevronDown, Check, Menu, Map as MapIcon, Calculator, CheckSquare, Car } from 'lucide-react';
-import type { TripContext, HotelBooking } from '../types';
+import React, { useState, useRef, useEffect } from 'react';
+import { 
+  Compass, 
+  ChevronDown, 
+  Sparkles, 
+  Bell, 
+  Menu, 
+  X, 
+  Bookmark, 
+  LogOut, 
+  Zap, 
+  Calendar,
+  Building
+} from 'lucide-react';
+import type { TripContext, HotelBooking, User, Booking } from '../types';
 import type { SupportedLanguage } from '../utils/i18n';
-import { LANGUAGE_OPTIONS, t } from '../utils/i18n';
 
 interface NavbarProps {
+  currentView: string;
+  setCurrentView: (view: string) => void;
+  currentUser: User | null;
+  currentBooking: Booking | null;
+  onOpenAuthModal: (mode: 'login' | 'signup') => void;
+  onLogout: () => void;
+  onJudgeDemo: () => void;
   tripContext: TripContext | null;
-  guestName: string;
   activeTab: string;
   setActiveTab: (tab: string) => void;
   unreadAlertCount: number;
   bookings: HotelBooking[];
   activeHotelId: string;
   onSwitchHotel: (hotelId: string) => void;
-  onOpenTransport: () => void;
-  onOpenTransitEstimator: () => void;
-  onOpenBudget: () => void;
-  onOpenPacking: () => void;
-  onSimulateAlert: () => void;
-  theme: 'light' | 'dark';
-  toggleTheme: () => void;
-  lang: SupportedLanguage;
-  onLanguageChange: (lang: SupportedLanguage) => void;
+  lang?: SupportedLanguage;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
+  currentView,
+  setCurrentView,
+  currentUser,
+  currentBooking,
+  onOpenAuthModal,
+  onLogout,
+  onJudgeDemo,
   tripContext,
-  guestName,
   activeTab,
   setActiveTab,
   unreadAlertCount,
   bookings,
   activeHotelId,
   onSwitchHotel,
-  onOpenTransport,
-  onOpenTransitEstimator,
-  onOpenBudget,
-  onOpenPacking,
-  onSimulateAlert,
-  theme,
-  toggleTheme,
-  lang,
-  onLanguageChange,
 }) => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
-  const [isUtilityMenuOpen, setIsUtilityMenuOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
-  const activeHotel = bookings.find((b) => b.id === activeHotelId) || tripContext?.hotel || bookings[0];
-  const currentLangOption = LANGUAGE_OPTIONS.find(l => l.code === lang) || LANGUAGE_OPTIONS[0];
+  const hasActiveBooking = !!currentBooking;
+  const isDashboard = currentView === 'dashboard';
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 40);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const guestDisplayName = currentUser?.name || currentBooking?.guestName || 'Aditya';
+  const userInitial = guestDisplayName.charAt(0).toUpperCase() || 'A';
+
+  const handleNavClick = (view: string, tab?: string) => {
+    setCurrentView(view);
+    if (tab) setActiveTab(tab);
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <header style={{
-      position: 'relative',
+      position: 'sticky',
       top: 0,
       width: '100%',
-      zIndex: 50,
-      padding: '20px 0',
-      background: 'transparent'
+      height: '74px',
+      zIndex: 100,
+      background: isScrolled
+        ? 'rgba(11, 22, 38, 0.92)'
+        : 'rgba(11, 22, 38, 0.55)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
+      boxShadow: isScrolled ? '0 10px 30px rgba(0, 0, 0, 0.35)' : 'none',
+      transition: 'all 0.3s ease'
     }}>
-      <div className="app-container" style={{
+      <div style={{
+        maxWidth: '1440px',
+        margin: '0 auto',
+        height: '100%',
+        padding: '0 clamp(16px, 3.5vw, 48px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: '12px'
+        gap: '24px'
       }}>
         
-        {/* Brand & Active Hotel Quick-Switch */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div
-            style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
-            onClick={() => setActiveTab('overview')}
-            title="Go to Itinerary Overview"
-          >
-            <div style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              background: 'rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255,255,255,0.3)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-            }}>
-              <Compass size={22} color="#FFFFFF" strokeWidth={1.5} />
-            </div>
+        {/* ── LEFT: Modern Sunset Brand Logo ── */}
+        <div
+          onClick={() => handleNavClick(hasActiveBooking ? 'dashboard' : 'landing', 'overview')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            cursor: 'pointer',
+            userSelect: 'none'
+          }}
+          title="AI Trip Concierge"
+        >
+          <div style={{
+            width: '38px',
+            height: '38px',
+            borderRadius: '11px',
+            background: 'linear-gradient(135deg, #FF6B4A 0%, #E28445 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 4px 14px rgba(255, 107, 74, 0.45)',
+            flexShrink: 0
+          }}>
+            <Compass size={22} color="#FFFFFF" strokeWidth={2.4} />
           </div>
 
-          {/* Active Hotel Quick-Switch */}
-          {activeHotel && (
-            <div style={{ position: 'relative' }}>
-              <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                style={{
-                  background: 'rgba(11, 22, 38, 0.45)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  borderRadius: '30px',
-                  padding: '6px 14px',
-                  color: '#FFFFFF',
-                  fontSize: '0.8rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                }}
-                onMouseOver={e => e.currentTarget.style.background = 'rgba(11, 22, 38, 0.65)'}
-                onMouseOut={e => e.currentTarget.style.background = 'rgba(11, 22, 38, 0.45)'}
-              >
-                <MapPin size={14} color="#FDBA74" />
-                <span style={{ fontWeight: 500, maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {activeHotel.name}
-                </span>
-                <ChevronDown size={14} color="#CBD5E1" />
-              </button>
-
-              {/* Dropdown Menu */}
-              {isDropdownOpen && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '120%',
-                    left: 0,
-                    width: '280px',
-                    background: 'var(--bg-card)',
-                    borderRadius: 'var(--radius-md)',
-                    boxShadow: '0 12px 40px rgba(0,0,0,0.2)',
-                    zIndex: 60,
-                    padding: '8px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '4px',
-                    border: '1px solid var(--border-primary)'
-                  }}
-                >
-                  <div style={{ padding: '8px 12px', fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
-                    Select Stay
-                  </div>
-
-                  {bookings.map((b) => (
-                    <button
-                      key={b.id}
-                      onClick={() => {
-                         onSwitchHotel(b.id);
-                         setIsDropdownOpen(false);
-                      }}
-                      style={{
-                        textAlign: 'left',
-                        background: b.id === activeHotelId ? 'var(--bg-tertiary)' : 'transparent',
-                        border: 'none',
-                        borderRadius: 'var(--radius-sm)',
-                        padding: '10px 12px',
-                        color: 'var(--text-primary)',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        transition: 'background 0.2s'
-                      }}
-                      onMouseOver={e => { if(b.id !== activeHotelId) e.currentTarget.style.background = 'var(--bg-tertiary)' }}
-                      onMouseOut={e => { if(b.id !== activeHotelId) e.currentTarget.style.background = 'transparent' }}
-                    >
-                      <div>
-                        <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>{b.name}</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{b.area}</div>
-                      </div>
-                      {b.id === activeHotelId && <Check size={16} color="#D05B3B" />}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+          <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
+            <span style={{
+              color: '#FFFFFF',
+              fontWeight: 800,
+              fontSize: '1.15rem',
+              letterSpacing: '-0.02em',
+              fontFamily: 'var(--font-sans)',
+            }}>
+              AI Trip Concierge
+            </span>
+            <span style={{
+              color: '#FDBA74',
+              fontSize: '11px',
+              fontWeight: 600,
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase'
+            }}>
+              Goa Traveller OS
+            </span>
+          </div>
         </div>
 
-        {/* Center Nav Tabs */}
+        {/* ── CENTER: Clean Modern Navigation Links ── */}
         <nav style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
-          background: 'rgba(11, 22, 38, 0.45)',
-          backdropFilter: 'blur(10px)',
-          padding: '6px',
-          borderRadius: '30px',
-          border: '1px solid rgba(255, 255, 255, 0.15)',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-        }}>
+          gap: 'clamp(12px, 2vw, 28px)'
+        }} className="desktop-nav-center">
+          
+          {/* 1. Home */}
           <button
-            className={`tab-button ${activeTab === 'bookings' ? 'active' : ''}`}
-            onClick={() => setActiveTab('bookings')}
-            style={navBtnStyle(activeTab === 'bookings')}
+            onClick={() => handleNavClick('landing')}
+            style={{
+              background: currentView === 'landing' ? 'rgba(255, 255, 255, 0.14)' : 'transparent',
+              border: 'none',
+              borderRadius: '9999px',
+              padding: '7px 16px',
+              color: currentView === 'landing' ? '#FFFFFF' : 'rgba(255, 255, 255, 0.75)',
+              fontSize: '0.92rem',
+              fontWeight: currentView === 'landing' ? 700 : 500,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              if (currentView !== 'landing') e.currentTarget.style.color = '#FFFFFF';
+            }}
+            onMouseLeave={(e) => {
+              if (currentView !== 'landing') e.currentTarget.style.color = 'rgba(255, 255, 255, 0.75)';
+            }}
           >
-            {t('bookings', lang)}
+            Home
           </button>
 
-          <button
-            className={`tab-button ${activeTab === 'overview' ? 'active' : ''}`}
-            onClick={() => setActiveTab('overview')}
-            style={navBtnStyle(activeTab === 'overview')}
-          >
-            {t('itinerary', lang)}
-          </button>
-
-          <button
-            className={`tab-button ${activeTab === 'chat' ? 'active' : ''}`}
-            onClick={() => setActiveTab('chat')}
-            style={navBtnStyle(activeTab === 'chat')}
-          >
-            {t('chat', lang)}
-          </button>
-
-          <button
-            className={`tab-button ${activeTab === 'directory' ? 'active' : ''}`}
-            onClick={() => setActiveTab('directory')}
-            style={navBtnStyle(activeTab === 'directory')}
-          >
-            {t('directory', lang)}
-          </button>
-
-          <button
-            className={`tab-button ${activeTab === 'map' ? 'active' : ''}`}
-            onClick={() => setActiveTab('map')}
-            style={navBtnStyle(activeTab === 'map')}
-          >
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-              <MapIcon size={13} /> {t('map', lang)}
-            </span>
-          </button>
-        </nav>
-
-        {/* Right Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          {guestName && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: 'rgba(255,255,255,0.12)',
-              padding: '5px 12px',
-              borderRadius: 'var(--radius-pill)',
-              fontSize: '0.78rem',
-              color: '#FFFFFF',
-              fontWeight: 600
-            }}>
-              <span>👤 {guestName}</span>
-            </div>
+          {/* 2. My Trips — ONLY AFTER SIGN IN */}
+          {(currentUser || hasActiveBooking) && (
+            <button
+              onClick={() => handleNavClick('dashboard', 'bookings')}
+              style={{
+                background: isDashboard && activeTab === 'bookings' ? 'rgba(255, 255, 255, 0.14)' : 'transparent',
+                border: 'none',
+                borderRadius: '9999px',
+                padding: '7px 16px',
+                color: isDashboard && activeTab === 'bookings' ? '#FFFFFF' : 'rgba(255, 255, 255, 0.75)',
+                fontSize: '0.92rem',
+                fontWeight: isDashboard && activeTab === 'bookings' ? 700 : 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                if (!(isDashboard && activeTab === 'bookings')) e.currentTarget.style.color = '#FFFFFF';
+              }}
+              onMouseLeave={(e) => {
+                if (!(isDashboard && activeTab === 'bookings')) e.currentTarget.style.color = 'rgba(255, 255, 255, 0.75)';
+              }}
+            >
+              My Trips
+            </button>
           )}
 
-          {/* Language Selector Dropdown */}
-          <div style={{ position: 'relative' }}>
-            <button
-              onClick={() => setIsLanguageOpen(!isLanguageOpen)}
-              style={{
-                background: 'rgba(255,255,255,0.15)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255,255,255,0.3)',
-                color: '#FFFFFF',
-                cursor: 'pointer',
-                padding: '7px 12px',
-                borderRadius: '30px',
-                transition: 'all 0.2s',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontSize: '0.8rem',
-                fontWeight: 600
-              }}
-              title="Change Language"
-            >
-              <span>{currentLangOption.flag}</span>
-              <span>{currentLangOption.code.toUpperCase()}</span>
-              <ChevronDown size={12} color="#CBD5E1" />
-            </button>
-
-            {isLanguageOpen && (
-              <div style={{
-                position: 'absolute',
-                top: '125%',
-                right: 0,
-                width: '170px',
-                background: 'var(--bg-card)',
-                borderRadius: 'var(--radius-md)',
-                boxShadow: '0 12px 30px rgba(0,0,0,0.25)',
-                zIndex: 70,
-                padding: '6px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '2px',
-                border: '1px solid var(--border-primary)'
-              }}>
-                <div style={{ padding: '6px 8px', fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', fontWeight: 700 }}>
-                  Language / भाषा
-                </div>
-                {LANGUAGE_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.code}
-                    onClick={() => {
-                      onLanguageChange(opt.code);
-                      setIsLanguageOpen(false);
-                    }}
-                    style={{
-                      background: opt.code === lang ? 'var(--bg-tertiary)' : 'transparent',
-                      border: 'none',
-                      padding: '8px 10px',
-                      borderRadius: 'var(--radius-sm)',
-                      color: 'var(--text-primary)',
-                      fontSize: '0.82rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      cursor: 'pointer',
-                      textAlign: 'left'
-                    }}
-                  >
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span>{opt.flag}</span>
-                      <span>{opt.nativeLabel}</span>
-                    </span>
-                    {opt.code === lang && <Check size={14} color="#E07A5F" />}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-          
-          {/* Theme Toggle */}
+          {/* 3. Explore Goa */}
           <button
-            onClick={toggleTheme}
+            onClick={() => handleNavClick('explore')}
             style={{
-              background: 'rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255,255,255,0.3)',
-              color: '#FFFFFF',
+              background: (currentView === 'explore' || currentView === 'hotel-details') ? 'rgba(255, 255, 255, 0.14)' : 'transparent',
+              border: 'none',
+              borderRadius: '9999px',
+              padding: '7px 16px',
+              color: (currentView === 'explore' || currentView === 'hotel-details') ? '#FFFFFF' : 'rgba(255, 255, 255, 0.75)',
+              fontSize: '0.92rem',
+              fontWeight: (currentView === 'explore' || currentView === 'hotel-details') ? 700 : 500,
               cursor: 'pointer',
-              padding: '9px',
-              borderRadius: '50%',
-              transition: 'all 0.2s',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
+              transition: 'all 0.2s ease'
             }}
-            title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+            onMouseEnter={(e) => {
+              if (currentView !== 'explore' && currentView !== 'hotel-details') e.currentTarget.style.color = '#FFFFFF';
+            }}
+            onMouseLeave={(e) => {
+              if (currentView !== 'explore' && currentView !== 'hotel-details') e.currentTarget.style.color = 'rgba(255, 255, 255, 0.75)';
+            }}
           >
-            {theme === 'light' ? (
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-            ) : (
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-            )}
+            Explore Goa
           </button>
 
-          {/* Coastal Alerts Button */}
+          {/* 4. Experiences */}
           <button
-            onClick={() => setActiveTab('alerts')}
-            style={{
-              position: 'relative',
-              background: 'rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255,255,255,0.3)',
-              color: '#FFFFFF',
-              cursor: 'pointer',
-              padding: '9px',
-              borderRadius: '50%',
-              transition: 'all 0.2s',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+            onClick={() => {
+              if (hasActiveBooking || currentUser) {
+                handleNavClick('dashboard', 'directory');
+              } else {
+                onOpenAuthModal('login');
+              }
             }}
-            title={t('alerts', lang)}
+            style={{
+              background: isDashboard && activeTab === 'directory' ? 'rgba(255, 255, 255, 0.14)' : 'transparent',
+              border: 'none',
+              borderRadius: '9999px',
+              padding: '7px 16px',
+              color: isDashboard && activeTab === 'directory' ? '#FFFFFF' : 'rgba(255, 255, 255, 0.75)',
+              fontSize: '0.92rem',
+              fontWeight: isDashboard && activeTab === 'directory' ? 700 : 500,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              if (!(isDashboard && activeTab === 'directory')) e.currentTarget.style.color = '#FFFFFF';
+            }}
+            onMouseLeave={(e) => {
+              if (!(isDashboard && activeTab === 'directory')) e.currentTarget.style.color = 'rgba(255, 255, 255, 0.75)';
+            }}
           >
-            <Bell size={17} />
-            {unreadAlertCount > 0 && (
-              <span style={{
-                position: 'absolute',
-                top: '-2px',
-                right: '-2px',
-                background: '#F87171',
-                color: '#FFF',
-                fontSize: '0.65rem',
-                fontWeight: 'bold',
-                width: '18px',
-                height: '18px',
+            Experiences
+          </button>
+
+          {/* 5. Travel Guides */}
+          <button
+            onClick={() => {
+              if (hasActiveBooking || currentUser) {
+                handleNavClick('dashboard', 'map');
+              } else {
+                onOpenAuthModal('login');
+              }
+            }}
+            style={{
+              background: isDashboard && activeTab === 'map' ? 'rgba(255, 255, 255, 0.14)' : 'transparent',
+              border: 'none',
+              borderRadius: '9999px',
+              padding: '7px 16px',
+              color: isDashboard && activeTab === 'map' ? '#FFFFFF' : 'rgba(255, 255, 255, 0.75)',
+              fontSize: '0.92rem',
+              fontWeight: isDashboard && activeTab === 'map' ? 700 : 500,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              if (!(isDashboard && activeTab === 'map')) e.currentTarget.style.color = '#FFFFFF';
+            }}
+            onMouseLeave={(e) => {
+              if (!(isDashboard && activeTab === 'map')) e.currentTarget.style.color = 'rgba(255, 255, 255, 0.75)';
+            }}
+          >
+            Travel Guides
+          </button>
+
+        </nav>
+
+        {/* ── RIGHT: Glowing Pill CTA + Notification + User Avatar ── */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }} ref={menuRef}>
+          
+          {/* Glowing Dark Pill Ask AI Concierge Button */}
+          <button
+            onClick={() => {
+              if (hasActiveBooking || currentUser) {
+                handleNavClick('dashboard', 'chat');
+              } else {
+                onOpenAuthModal('login');
+              }
+            }}
+            style={{
+              background: 'rgba(255, 255, 255, 0.08)',
+              border: '1px solid rgba(255, 255, 255, 0.22)',
+              borderRadius: '9999px',
+              padding: '8px 18px',
+              color: '#FFFFFF',
+              fontSize: '0.86rem',
+              fontWeight: 600,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '7px',
+              cursor: 'pointer',
+              boxShadow: '0 0 12px rgba(255, 107, 74, 0.15)',
+              transition: 'all 0.25s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.16)';
+              e.currentTarget.style.borderColor = 'rgba(255, 107, 74, 0.6)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.22)';
+            }}
+          >
+            <Sparkles size={14} color="#FF9A76" />
+            <span>Ask AI Concierge</span>
+          </button>
+
+          {/* Notification Bell with Badge (only when signed in) */}
+          {(currentUser || hasActiveBooking) && (
+            <button
+              onClick={() => handleNavClick('dashboard', 'alerts')}
+              style={{
+                position: 'relative',
+                background: 'rgba(255, 255, 255, 0.08)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                color: '#FFFFFF',
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                borderRadius: '50%',
-                border: '2px solid #FFFFFF'
-              }}>
-                {unreadAlertCount}
-              </span>
-            )}
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+              title={unreadAlertCount > 0 ? `${unreadAlertCount} new notifications` : 'Notifications'}
+            >
+              <Bell size={15} />
+              {unreadAlertCount > 0 && (
+                <span style={{
+                  position: 'absolute',
+                  top: '-2px',
+                  right: '-2px',
+                  width: '15px',
+                  height: '15px',
+                  borderRadius: '50%',
+                  background: '#FF6B4A',
+                  color: '#FFFFFF',
+                  fontSize: '9px',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '2px solid #0B1626'
+                }}>
+                  {unreadAlertCount}
+                </span>
+              )}
+            </button>
+          )}
+
+          {/* Signed In: Profile Pill with Dropdown | Signed Out: Sign In Button */}
+          {currentUser || hasActiveBooking ? (
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.18)',
+                  borderRadius: '9999px',
+                  padding: '4px 12px 4px 4px',
+                  color: '#FFFFFF',
+                  fontSize: '0.86rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <div style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #FF6B4A 0%, #E28445 100%)',
+                  color: '#FFFFFF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '0.8rem',
+                  fontWeight: 800
+                }}>
+                  {userInitial}
+                </div>
+
+                <span>{guestDisplayName.split(' ')[0]}</span>
+                <ChevronDown size={13} color="#CBD5E1" />
+              </button>
+
+              {/* Floating Luxury Profile Dropdown */}
+              {isProfileMenuOpen && (
+                <div style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 12px)',
+                  right: 0,
+                  width: '250px',
+                  background: '#FFFFFF',
+                  borderRadius: '14px',
+                  border: '1px solid rgba(0, 0, 0, 0.1)',
+                  boxShadow: '0 20px 48px rgba(0, 0, 0, 0.25)',
+                  padding: '10px',
+                  zIndex: 150,
+                  animation: 'fadeIn 0.18s ease'
+                }}>
+                  <div style={{
+                    padding: '10px 12px',
+                    borderBottom: '1px solid #F1ECE4',
+                    marginBottom: '8px'
+                  }}>
+                    <div style={{ fontSize: '0.92rem', fontWeight: 800, color: '#0B1626' }}>
+                      {guestDisplayName}
+                    </div>
+                    <div style={{ fontSize: '0.78rem', color: '#64748B', marginTop: '2px' }}>
+                      {currentBooking?.hotelName || tripContext?.hotel?.name || 'Taj Fort Aguada Guest'}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      handleNavClick('dashboard', 'overview');
+                      setIsProfileMenuOpen(false);
+                    }}
+                    style={dropdownItemStyle}
+                  >
+                    <Calendar size={15} color="#FF6B4A" />
+                    <span>My Trip Journal</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      handleNavClick('dashboard', 'bookings');
+                      setIsProfileMenuOpen(false);
+                    }}
+                    style={dropdownItemStyle}
+                  >
+                    <Bookmark size={15} color="#238C87" />
+                    <span>My Bookings</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      handleNavClick('dashboard', 'alerts');
+                      setIsProfileMenuOpen(false);
+                    }}
+                    style={dropdownItemStyle}
+                  >
+                    <Bell size={15} color="#C9A45C" />
+                    <span>Trip Notifications</span>
+                  </button>
+
+                  {/* Switch Active Hotel Stay */}
+                  {bookings.length > 0 && (
+                    <div style={{
+                      padding: '8px 12px 4px',
+                      borderTop: '1px solid #F1ECE4',
+                      marginTop: '6px'
+                    }}>
+                      <div style={{
+                        fontSize: '0.68rem',
+                        fontWeight: 700,
+                        color: '#94A3B8',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.08em',
+                        marginBottom: '6px'
+                      }}>
+                        Switch Resort Hub
+                      </div>
+                      {bookings.map(h => (
+                        <button
+                          key={h.id}
+                          onClick={() => {
+                            onSwitchHotel(h.id);
+                            setIsProfileMenuOpen(false);
+                          }}
+                          style={{
+                            ...dropdownItemStyle,
+                            padding: '6px 8px',
+                            fontSize: '0.8rem',
+                            background: activeHotelId === h.id ? '#FFF5F0' : 'transparent',
+                            color: activeHotelId === h.id ? '#FF6B4A' : '#475569',
+                            fontWeight: activeHotelId === h.id ? 700 : 500
+                          }}
+                        >
+                          <Building size={13} color={activeHotelId === h.id ? '#FF6B4A' : '#94A3B8'} />
+                          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{h.name.split(',')[0]}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  <div style={{ borderTop: '1px solid #F1ECE4', margin: '6px 0' }} />
+
+                  {/* Seed Demo Quick Trigger */}
+                  <button
+                    onClick={() => {
+                      onJudgeDemo();
+                      setIsProfileMenuOpen(false);
+                    }}
+                    style={{
+                      ...dropdownItemStyle,
+                      color: '#FF6B4A'
+                    }}
+                  >
+                    <Zap size={15} color="#FF6B4A" />
+                    <span>⚡ Seed Demo Trip</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      onLogout();
+                      setIsProfileMenuOpen(false);
+                    }}
+                    style={{
+                      ...dropdownItemStyle,
+                      color: '#EF4444'
+                    }}
+                  >
+                    <LogOut size={15} color="#EF4444" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={() => onOpenAuthModal('login')}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: 'linear-gradient(135deg, #FF6B4A 0%, #FF8A65 100%)',
+                color: '#FFFFFF',
+                border: 'none',
+                borderRadius: '9999px',
+                padding: '8px 20px',
+                fontSize: '0.86rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                boxShadow: '0 4px 14px rgba(255, 107, 74, 0.35)',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = '0 6px 18px rgba(255, 107, 74, 0.45)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 14px rgba(255, 107, 74, 0.35)';
+              }}
+            >
+              <span>Sign In</span>
+            </button>
+          )}
+          {/* Mobile Menu Hamburger */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="mobile-nav-toggle"
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#FFFFFF',
+              cursor: 'pointer',
+              display: 'none',
+              padding: '6px'
+            }}
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
 
-          {/* Luxury Concierge Tools Menu */}
-          <div style={{ position: 'relative' }}>
-             <button
-               onClick={() => setIsUtilityMenuOpen(!isUtilityMenuOpen)}
-               style={{
-                 background: 'rgba(255,255,255,0.15)',
-                 backdropFilter: 'blur(10px)',
-                 border: '1px solid rgba(255,255,255,0.3)',
-                 color: '#FFFFFF',
-                 cursor: 'pointer',
-                 padding: '9px',
-                 borderRadius: '50%',
-                 transition: 'all 0.2s',
-                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                 display: 'flex',
-                 alignItems: 'center',
-                 justifyContent: 'center'
-               }}
-               title="Concierge Luxury Tools"
-             >
-               <Menu size={17} />
-             </button>
-
-             {isUtilityMenuOpen && (
-               <div style={{
-                 position: 'absolute',
-                 top: '125%',
-                 right: 0,
-                 width: '230px',
-                 background: 'var(--bg-card)',
-                 borderRadius: 'var(--radius-md)',
-                 boxShadow: '0 12px 40px rgba(0,0,0,0.25)',
-                 zIndex: 70,
-                 padding: '8px',
-                 display: 'flex',
-                 flexDirection: 'column',
-                 gap: '4px',
-                 border: '1px solid var(--border-primary)'
-               }}>
-                 <div style={{ padding: '6px 10px', fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>
-                   Guest Services & Tools
-                 </div>
-                 
-                 <button onClick={() => { onOpenTransitEstimator(); setIsUtilityMenuOpen(false); }}
-                   style={menuBtnStyle}>
-                   <Car size={15} color="#F59E0B" />
-                   <div>
-                     <div style={{ fontWeight: 600 }}>{t('transitGuide', lang)} / Taxi</div>
-                     <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>GoaMiles & private rates</div>
-                   </div>
-                 </button>
-
-                 <button onClick={() => { onOpenBudget(); setIsUtilityMenuOpen(false); }}
-                   style={menuBtnStyle}>
-                   <Calculator size={15} color="#10B981" />
-                   <div>
-                     <div style={{ fontWeight: 600 }}>{t('budgetCalculator', lang)}</div>
-                     <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Multi-currency & split bill</div>
-                   </div>
-                 </button>
-
-                 <button onClick={() => { onOpenPacking(); setIsUtilityMenuOpen(false); }}
-                   style={menuBtnStyle}>
-                   <CheckSquare size={15} color="#3B82F6" />
-                   <div>
-                     <div style={{ fontWeight: 600 }}>{t('packingList', lang)}</div>
-                     <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Tropical checklist with progress</div>
-                   </div>
-                 </button>
-
-                 <button onClick={() => { onOpenTransport(); setIsUtilityMenuOpen(false); }}
-                   style={menuBtnStyle}>
-                   <Bike size={15} color="#8B5CF6" />
-                   <div>
-                     <div style={{ fontWeight: 600 }}>Scooter & Pilot Guide</div>
-                     <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Rules, pricing & rentals</div>
-                   </div>
-                 </button>
-
-                 <div style={{ height: '1px', background: 'var(--border-primary)', margin: '4px 0' }} />
-
-                 <button onClick={() => { onSimulateAlert(); setIsUtilityMenuOpen(false); }}
-                   style={{ ...menuBtnStyle, opacity: 0.85 }}>
-                   <Bell size={15} color="#E07A5F" />
-                   <div>
-                     <div style={{ fontWeight: 600 }}>Simulate Live Alert</div>
-                     <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Test instant push advice</div>
-                   </div>
-                 </button>
-               </div>
-             )}
-          </div>
         </div>
 
       </div>
+
+      {/* ── MOBILE DRAWER ── */}
+      {isMobileMenuOpen && (
+        <div style={{
+          position: 'fixed',
+          top: '74px',
+          left: 0,
+          width: '100vw',
+          height: 'calc(100vh - 74px)',
+          background: '#0B1626',
+          color: '#FFFFFF',
+          padding: '32px 24px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          zIndex: 200,
+          overflowY: 'auto'
+        }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div style={{
+              fontSize: '0.76rem',
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              color: '#FF6B4A',
+              fontWeight: 800
+            }}>
+              NAVIGATION
+            </div>
+
+            {[
+              { label: 'Home', view: 'landing' },
+              { label: 'Plan Trip (Journal)', view: 'dashboard', tab: 'overview' },
+              { label: 'Explore Stays', view: 'explore' },
+              { label: 'Experiences & Dining', view: 'dashboard', tab: 'directory' },
+              { label: 'Travel Guides & Map', view: 'dashboard', tab: 'map' },
+              { label: 'AI Concierge', view: 'dashboard', tab: 'chat' },
+              { label: 'Trip Alerts', view: 'dashboard', tab: 'alerts' },
+            ].map((item, i) => (
+              <button
+                key={i}
+                onClick={() => handleNavClick(item.view, item.tab)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  textAlign: 'left',
+                  color: '#FFFFFF',
+                  fontSize: '1.4rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.12)', paddingTop: '20px' }}>
+            <button
+              onClick={() => {
+                onJudgeDemo();
+                setIsMobileMenuOpen(false);
+              }}
+              style={{
+                width: '100%',
+                background: 'linear-gradient(135deg, #FF6B4A 0%, #E28445 100%)',
+                color: '#FFFFFF',
+                border: 'none',
+                padding: '13px',
+                borderRadius: '8px',
+                fontSize: '0.94rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                marginBottom: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px'
+              }}
+            >
+              <Zap size={16} /> ⚡ Seed Demo Trip
+            </button>
+
+            {currentUser && (
+              <button
+                onClick={() => {
+                  onLogout();
+                  setIsMobileMenuOpen(false);
+                }}
+                style={{
+                  width: '100%',
+                  background: 'transparent',
+                  color: '#EF4444',
+                  border: '1px solid rgba(239, 68, 68, 0.4)',
+                  padding: '10px',
+                  borderRadius: '8px',
+                  fontSize: '0.88rem',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                Sign Out
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Responsive Breakpoints CSS */}
+      <style>{`
+        @media (max-width: 900px) {
+          .desktop-nav-center {
+            display: none !important;
+          }
+          .mobile-nav-toggle {
+            display: block !important;
+          }
+        }
+      `}</style>
+
     </header>
   );
 };
 
-const navBtnStyle = (isActive: boolean) => ({
-  color: isActive ? '#0B1626' : '#FFFFFF',
-  background: isActive ? '#FFFFFF' : 'transparent',
-  borderRadius: '24px',
-  padding: '7px 16px',
-  fontSize: '0.82rem',
-  fontWeight: isActive ? 700 : 500,
-  transition: 'all 0.2s ease',
-  cursor: 'pointer',
+const dropdownItemStyle: React.CSSProperties = {
+  width: '100%',
+  background: 'none',
   border: 'none',
-  display: 'inline-flex',
-  alignItems: 'center'
-});
-
-const menuBtnStyle = {
-  background: 'transparent',
-  border: 'none',
-  padding: '8px 10px',
-  textAlign: 'left' as const,
-  fontSize: '0.82rem',
-  color: 'var(--text-primary)',
+  textAlign: 'left',
+  padding: '9px 12px',
+  borderRadius: '8px',
+  fontSize: '0.86rem',
+  fontWeight: 600,
+  color: '#0B1626',
   cursor: 'pointer',
-  borderRadius: 'var(--radius-sm)',
   display: 'flex',
   alignItems: 'center',
   gap: '10px',

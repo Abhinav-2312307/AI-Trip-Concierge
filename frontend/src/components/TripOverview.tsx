@@ -1,254 +1,358 @@
 import React, { useState } from 'react';
-import { Sparkles, Utensils, Waves, MapPin, Search, Car, Calculator, CheckSquare } from 'lucide-react';
-import type { TripContext } from '../types';
-import type { SupportedLanguage } from '../utils/i18n';
-import { t } from '../utils/i18n';
+import { 
+  ArrowRight, 
+  Navigation, 
+  Crosshair 
+} from 'lucide-react';
+import type { TripContext, Booking } from '../types';
 
 interface TripOverviewProps {
   tripContext: TripContext | null;
   guestName: string;
+  currentBooking?: Booking | null;
   onUpdateGuestName: (name: string) => void;
   onQuickAction: (action: string) => void;
   onGenerateItineraryClick: () => void;
-  onSwitchBookingClick: () => void;
   onOpenTransitEstimator?: () => void;
   onOpenBudget?: () => void;
   onOpenPacking?: () => void;
-  lang?: SupportedLanguage;
+  userCoords?: { lat: number; lng: number } | null;
+  userArea?: string;
+  onEnableGps?: () => void;
 }
 
 export const TripOverview: React.FC<TripOverviewProps> = ({
   tripContext,
   guestName,
-  onUpdateGuestName,
+  currentBooking,
   onQuickAction,
   onGenerateItineraryClick,
-  onOpenTransitEstimator,
-  onOpenBudget,
-  onOpenPacking,
-  lang = 'en',
+  userCoords,
+  userArea,
+  onEnableGps,
 }) => {
-  const [isEditingName, setIsEditingName] = useState(false);
-  const [nameInput, setNameInput] = useState(guestName);
+  const [chatPrompt, setChatPrompt] = useState<string>('');
 
   const hotel = tripContext?.hotel;
+  const activeGuestName = guestName || currentBooking?.guestName || 'Aditya';
+  const hotelName = currentBooking?.hotelName || hotel?.name || 'Taj Fort Aguada Resort & Spa';
+  const hotelArea = currentBooking?.hotelLocation || hotel?.area || 'Sinquerim, Candolim';
+  const bookingId = currentBooking?.id || hotel?.confirmation_code || 'GOA-TAJ-89421';
+  const checkIn = currentBooking?.checkInFormatted || hotel?.check_in_formatted || 'Sep 18, 2026';
+  const checkOut = currentBooking?.checkOutFormatted || hotel?.check_out_formatted || 'Sep 21, 2026';
+  const roomName = currentBooking?.room?.name || hotel?.room_type || 'Deluxe Sea View Suite';
 
-  const handleSaveName = (e: React.FormEvent) => {
+  const handleAskSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onUpdateGuestName(nameInput.trim());
-    setIsEditingName(false);
+    if (!chatPrompt.trim()) return;
+    onQuickAction(chatPrompt.trim());
+    setChatPrompt('');
   };
 
   return (
-    <div className="full-bleed animate-fade-in" style={{
-      marginTop: '-80px', // Pull up under the navbar
-      marginBottom: '32px',
+    <div style={{
       position: 'relative',
-      height: '75vh',
-      minHeight: '560px',
-      maxHeight: '850px',
-      overflow: 'hidden'
+      width: '100vw',
+      marginLeft: 'calc(-50vw + 50%)',
+      marginRight: 'calc(-50vw + 50%)',
+      minHeight: '62vh',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'flex-end',
+      overflow: 'hidden',
+      marginBottom: '48px',
+      color: '#FFFFFF'
     }}>
-      
-      {/* Immersive Background Image */}
+      {/* ── 1. Edge-to-Edge Full-Bleed Goa Photography ── */}
       <div style={{
         position: 'absolute',
         top: 0,
         left: 0,
         width: '100%',
         height: '100%',
-        backgroundImage: 'url(https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=2000&auto=format&fit=crop)',
+        backgroundImage: 'url(https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=2400&auto=format&fit=crop)',
         backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundPosition: 'center 42%',
         zIndex: 1
       }} />
 
-      {/* Gradient Overlay for Text Readability */}
+      {/* ── 2. Sophisticated Navy Gradient Overlay ── */}
       <div style={{
         position: 'absolute',
         top: 0,
         left: 0,
         width: '100%',
         height: '100%',
-        background: 'linear-gradient(to bottom, rgba(11, 22, 38, 0.45) 0%, rgba(11, 22, 38, 0.25) 50%, var(--bg-primary) 100%)',
+        background: 'linear-gradient(to bottom, rgba(11, 22, 38, 0.45) 0%, rgba(11, 22, 38, 0.25) 35%, rgba(11, 22, 38, 0.85) 80%, #0B1626 100%)',
         zIndex: 2
       }} />
 
-      {/* Hero Content Container */}
-      <div className="app-container" style={{
+      {/* ── 3. Hero Content Container ── */}
+      <div style={{
         position: 'relative',
         zIndex: 3,
-        height: '100%',
+        maxWidth: '1280px',
+        width: '100%',
+        margin: '0 auto',
+        padding: '96px 24px 44px',
+        boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'flex-end',
-        paddingBottom: '40px'
+        justifyContent: 'flex-end'
       }}>
         
-        {/* Welcome Header */}
-        <div style={{ maxWidth: '820px', marginBottom: '28px' }}>
-          {isEditingName ? (
-            <form onSubmit={handleSaveName} style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-              <input
-                type="text"
-                value={nameInput}
-                onChange={(e) => setNameInput(e.target.value)}
-                placeholder="Enter your name"
-                autoFocus
-                style={{
-                  background: 'var(--bg-card)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid var(--border-primary)',
-                  color: 'var(--text-primary)',
-                  padding: '12px 20px',
-                  borderRadius: '30px',
-                  fontSize: '1.2rem',
-                  outline: 'none',
-                  fontFamily: 'var(--font-serif)'
-                }}
-              />
-              <button type="submit" className="btn-terracotta" style={{ borderRadius: '30px', padding: '0 24px' }}>Save</button>
-            </form>
+        {/* Subtle Upper Context Bar */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '12px',
+          fontSize: '0.78rem',
+          fontWeight: 600,
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+          color: '#FED7AA',
+          marginBottom: '16px'
+        }}>
+          <span>{hotelName.toUpperCase()} · {hotelArea.toUpperCase()}</span>
+          <span style={{ color: 'rgba(255, 255, 255, 0.3)' }}>|</span>
+          <span>{checkIn} — {checkOut} · {roomName}</span>
+          <span style={{ color: 'rgba(255, 255, 255, 0.3)' }}>|</span>
+          <span style={{ color: '#FDBA74' }}>BOOKING {bookingId}</span>
+
+          {userCoords ? (
+            <span style={{
+              background: 'rgba(16, 185, 129, 0.2)',
+              color: '#A7F3D0',
+              border: '1px solid rgba(16, 185, 129, 0.4)',
+              borderRadius: '6px',
+              padding: '2px 8px',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}>
+              <Crosshair size={11} /> GPS Near {userArea || 'Sinquerim'}
+            </span>
           ) : (
-            <h1 className="font-serif" 
-                style={{ 
-                  fontSize: 'clamp(2.6rem, 5.5vw, 4.5rem)', 
-                  fontWeight: 600, 
-                  lineHeight: 1.1, 
-                  color: 'var(--text-primary)', 
-                  margin: '0 0 14px 0',
-                  textShadow: '0 4px 20px rgba(0,0,0,0.15)'
+            onEnableGps && (
+              <button
+                onClick={onEnableGps}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.25)',
+                  color: '#FFFFFF',
+                  borderRadius: '6px',
+                  padding: '2px 8px',
+                  fontSize: '0.72rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px'
                 }}
-                onClick={() => {
-                  setNameInput(guestName);
-                  setIsEditingName(true);
-                }}
-                title="Click to edit name"
-            >
-              {guestName ? `${t('welcomeToGoa', lang)}, ${guestName}.` : `${t('welcomeToGoa', lang)}.`}
-            </h1>
+              >
+                <Navigation size={11} /> Enable Live GPS
+              </button>
+            )
           )}
-          
-          <p style={{ 
-            fontSize: '1.15rem', 
-            color: 'var(--text-secondary)', 
-            margin: 0, 
-            maxWidth: '650px', 
-            lineHeight: 1.6,
-            fontWeight: 500
-          }}>
-            {t('conciergeSubtitle', lang)} Current Stay: <strong>{hotel?.name || 'Taj Fort Aguada'}</strong> ({hotel?.area || 'Sinquerim'}).
-          </p>
         </div>
 
-        {/* Glassmorphic Quick Actions */}
-        <div style={{
-          background: 'var(--bg-card)',
-          backdropFilter: 'blur(16px)',
-          border: '1px solid var(--border-primary)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '20px 24px',
-          boxShadow: 'var(--shadow-card)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '12px'
-        }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', paddingRight: '8px' }}>
-              Ask Concierge:
-            </span>
-            
-            <button onClick={onGenerateItineraryClick} className="btn-terracotta" style={{ borderRadius: '30px', fontSize: '0.85rem' }}>
-              <Sparkles size={15} /> {t('autoPlanDay', lang)}
-            </button>
-            
-            <button onClick={() => onQuickAction("What's a good place for dinner near me tonight?")} 
-              style={{ ...actionBtnStyle, color: 'var(--accent-primary)' }}>
-              <Utensils size={14} /> {t('dinnerPrompt', lang)}
-            </button>
-            
-            <button onClick={() => onQuickAction("Suggest a quiet, scenic beach close to my stay.")} 
-              style={{ ...actionBtnStyle, color: 'var(--accent-secondary)' }}>
-              <Waves size={14} /> {t('beachesPrompt', lang)}
-            </button>
-            
-            <button onClick={() => onQuickAction("What can I do near my hotel?")} 
-              style={{ ...actionBtnStyle, color: '#10B981' }}>
-              <MapPin size={14} /> {t('explorePrompt', lang)}
-            </button>
-            
-            <button onClick={() => onQuickAction("What are some hidden gems in Goa?")} 
-              style={{ ...actionBtnStyle, color: '#8B5CF6' }}>
-              <Search size={14} /> {t('hiddenGemsPrompt', lang)}
-            </button>
+        {/* Editorial Heading Block */}
+        <div style={{ maxWidth: '800px', marginBottom: '28px' }}>
+          <div style={{
+            fontSize: '0.8rem',
+            fontWeight: 700,
+            letterSpacing: '0.14em',
+            textTransform: 'uppercase',
+            color: '#E28445',
+            marginBottom: '8px'
+          }}>
+            Welcome, {activeGuestName}
           </div>
 
-          {/* Quick Travel Utilities Row */}
-          {(onOpenTransitEstimator || onOpenBudget || onOpenPacking) && (
-            <div style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '8px',
-              paddingTop: '8px',
-              borderTop: '1px solid var(--border-primary)',
-              alignItems: 'center'
-            }}>
-              <span style={{ fontSize: '0.74rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)', fontWeight: 700, paddingRight: '6px' }}>
-                Trip Tools:
-              </span>
+          <h1 style={{
+            fontSize: 'clamp(2.5rem, 5.2vw, 4.2rem)',
+            fontFamily: 'Playfair Display, Georgia, serif',
+            fontWeight: 700,
+            lineHeight: 1.08,
+            color: '#FBF8F3',
+            margin: '0 0 16px 0',
+            letterSpacing: '-0.02em',
+            textShadow: '0 4px 24px rgba(0,0,0,0.4)'
+          }}>
+            Your Goa stay starts here.
+          </h1>
 
-              {onOpenTransitEstimator && (
-                <button onClick={onOpenTransitEstimator} style={utilityBtnStyle}>
-                  <Car size={13} color="#F59E0B" /> {t('transitGuide', lang)} & Taxi Rates
-                </button>
-              )}
+          <p style={{
+            fontSize: '1.1rem',
+            lineHeight: 1.6,
+            color: '#E2E8F0',
+            maxWidth: '620px',
+            margin: '0 0 24px 0',
+            fontWeight: 400
+          }}>
+            Your stay at <strong>{hotelName}</strong> is confirmed. Your 24/7 concierge is now curating your days, secret beaches, and sunset tables.
+          </p>
 
-              {onOpenBudget && (
-                <button onClick={onOpenBudget} style={utilityBtnStyle}>
-                  <Calculator size={13} color="#10B981" /> {t('budgetCalculator', lang)}
-                </button>
-              )}
+          {/* Primary Action Buttons */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+            <button
+              onClick={onGenerateItineraryClick}
+              style={{
+                background: '#D05B3B',
+                color: '#FFFFFF',
+                border: 'none',
+                padding: '13px 26px',
+                borderRadius: '8px',
+                fontSize: '0.94rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: '0 4px 16px rgba(208, 91, 59, 0.4)',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#B94D32';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#D05B3B';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              <span>Plan my day</span>
+              <ArrowRight size={15} />
+            </button>
 
-              {onOpenPacking && (
-                <button onClick={onOpenPacking} style={utilityBtnStyle}>
-                  <CheckSquare size={13} color="#3B82F6" /> {t('packingList', lang)}
-                </button>
-              )}
-            </div>
-          )}
+            <button
+              onClick={() => onQuickAction("What can I do near my hotel?")}
+              style={{
+                background: 'rgba(255, 255, 255, 0.08)',
+                color: '#FFFFFF',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                padding: '12px 20px',
+                borderRadius: '8px',
+                fontSize: '0.92rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                backdropFilter: 'blur(8px)',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.16)'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)'}
+            >
+              Explore nearby
+            </button>
+          </div>
         </div>
-        
+
+        {/* ── 4. Floating Concierge Bar & 3 Quiet Suggestions ── */}
+        <div style={{
+          background: 'rgba(16, 28, 47, 0.85)',
+          backdropFilter: 'blur(16px)',
+          border: '1px solid rgba(255, 255, 255, 0.12)',
+          borderRadius: '14px',
+          padding: '14px 18px',
+          boxShadow: '0 12px 32px rgba(0,0,0,0.4)',
+          maxWidth: '840px',
+          width: '100%'
+        }}>
+          <form onSubmit={handleAskSubmit} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ color: '#E28445', fontSize: '1.1rem', paddingLeft: '4px' }}>✦</span>
+            
+            <input
+              type="text"
+              value={chatPrompt}
+              onChange={(e) => setChatPrompt(e.target.value)}
+              placeholder="What would you like to do in Goa today?"
+              style={{
+                flex: 1,
+                background: 'transparent',
+                border: 'none',
+                outline: 'none',
+                color: '#FFFFFF',
+                fontSize: '0.96rem',
+                fontFamily: 'inherit'
+              }}
+            />
+
+            <button
+              type="submit"
+              style={{
+                background: '#D05B3B',
+                color: '#FFFFFF',
+                border: 'none',
+                padding: '9px 18px',
+                borderRadius: '8px',
+                fontSize: '0.88rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <span>Ask</span>
+              <ArrowRight size={14} />
+            </button>
+          </form>
+
+          {/* 3 Quiet Suggestions */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
+            marginTop: '10px',
+            paddingTop: '10px',
+            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+            fontSize: '0.8rem',
+            color: '#94A3B8',
+            flexWrap: 'wrap'
+          }}>
+            <span style={{ fontSize: '0.74rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: '#64748B' }}>
+              Suggestions:
+            </span>
+
+            <button
+              onClick={() => onQuickAction("Where should I eat tonight?")}
+              style={suggestionBtnStyle}
+            >
+              Dinner nearby
+            </button>
+
+            <button
+              onClick={() => onQuickAction("Plan my evening.")}
+              style={suggestionBtnStyle}
+            >
+              Plan my evening
+            </button>
+
+            <button
+              onClick={() => onQuickAction("What beaches are near me for sunset?")}
+              style={suggestionBtnStyle}
+            >
+              Best beach for sunset
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   );
 };
 
-const actionBtnStyle = {
-  background: 'var(--bg-tertiary)',
-  border: '1px solid var(--border-primary)',
-  padding: '8px 16px',
-  borderRadius: '30px',
-  fontSize: '0.85rem',
-  fontWeight: 600,
+const suggestionBtnStyle: React.CSSProperties = {
+  background: 'none',
+  border: 'none',
+  color: '#CBD5E1',
   cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  gap: '6px',
-  boxShadow: 'var(--shadow-subtle)',
-  transition: 'transform 0.2s, box-shadow 0.2s'
-};
-
-const utilityBtnStyle = {
-  background: 'transparent',
-  border: '1px solid var(--border-primary)',
-  color: 'var(--text-primary)',
-  padding: '5px 12px',
-  borderRadius: '20px',
-  fontSize: '0.78rem',
+  fontSize: '0.82rem',
   fontWeight: 500,
-  cursor: 'pointer',
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '6px',
-  transition: 'all 0.15s ease'
+  padding: '2px 6px',
+  borderRadius: '4px',
+  transition: 'color 0.15s ease'
 };

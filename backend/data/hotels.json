@@ -1,0 +1,368 @@
+[
+  {
+    "id": "taj-fort-aguada",
+    "name": "Taj Fort Aguada Resort & Spa",
+    "area": "Sinquerim / Candolim",
+    "region": "North Goa",
+    "latitude": 15.4952,
+    "longitude": 73.7667,
+    "rating": 4.8,
+    "reviewCount": 3420,
+    "description": "Perched on the cliffside overlooking the Arabian Sea, this legendary 5-star heritage resort is built on the ramparts of a 16th-century Portuguese fortress. Features panoramic ocean sunsets, Jiva Ayurvedic spa, and private beachfront access.",
+    "images": [
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "amenities": [
+      "Private Beach Access",
+      "Infinity Ocean Pool",
+      "Jiva Ayurvedic Spa",
+      "24/7 AI & Butler Concierge",
+      "Fine Dining Seafood Grill",
+      "Historic Fort Trail",
+      "Fitness Center",
+      "Free High-Speed Wi-Fi"
+    ],
+    "startingPrice": 22000,
+    "propertyType": "Luxury Heritage Resort",
+    "rooms": [
+      {
+        "id": "taj-room-1",
+        "name": "Superior Garden View Room",
+        "capacity": 2,
+        "pricePerNight": 22000
+      },
+      {
+        "id": "taj-room-2",
+        "name": "Deluxe Sea View Suite",
+        "capacity": 3,
+        "pricePerNight": 29000
+      },
+      {
+        "id": "taj-room-3",
+        "name": "Presidential Oceanfront Villa with Plunge Pool",
+        "capacity": 4,
+        "pricePerNight": 54000
+      }
+    ],
+    "address": "Sinquerim Beach, Candolim, Bardez, Goa 403515, India",
+    "coordinates": {"lat": 15.4952, "lng": 73.7667},
+    "image_url": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
+    "room_type": "Deluxe Sea View Suite",
+    "check_in_time": "3:00 PM",
+    "check_out_time": "12:00 PM",
+    "confirmation_code": "GOA-TAJ-89421",
+    "guests_count": 2,
+    "highlights": [
+      "Direct beachfront location adjoining historic 17th-century Fort Aguada",
+      "Panoramic Arabian Sea sunsets from private suite balconies",
+      "Complimentary heritage walking tours and oceanfront cocktails"
+    ]
+  },
+  {
+    "id": "w-goa",
+    "name": "W Goa",
+    "area": "Vagator",
+    "region": "North Goa",
+    "latitude": 15.6022,
+    "longitude": 73.7345,
+    "rating": 4.7,
+    "reviewCount": 2180,
+    "description": "Nestled beneath the dramatic red cliffs of Chapora Fort, W Goa brings vibrant luxury, avant-garde design, high-energy mixology, and direct access to the golden sands of Vagator Beach.",
+    "images": [
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "amenities": [
+      "Rockpool Cliff Sunset Lounge",
+      "AWAY® Spa",
+      "WET® Outdoor Pool",
+      "FIT 24/7 Gym",
+      "Spice Traders Pan-Asian Restaurant",
+      "Living Room Bar & DJ Sessions",
+      "Private Beach Pathway",
+      "Valet Parking"
+    ],
+    "startingPrice": 26000,
+    "propertyType": "5-Star Lifestyle Resort",
+    "rooms": [
+      {
+        "id": "w-room-1",
+        "name": "Wonderful King Room",
+        "capacity": 2,
+        "pricePerNight": 26000
+      },
+      {
+        "id": "w-room-2",
+        "name": "Spectacular Ocean View Room",
+        "capacity": 2,
+        "pricePerNight": 34000
+      },
+      {
+        "id": "w-room-3",
+        "name": "Fabulous Villa with Private Plunge Pool",
+        "capacity": 4,
+        "pricePerNight": 58000
+      }
+    ],
+    "address": "Vagator Beach, Bardez, Goa 403509, India",
+    "coordinates": {"lat": 15.6022, "lng": 73.7345},
+    "image_url": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+    "room_type": "Fabulous Villa with Private Plunge Pool",
+    "check_in_time": "3:00 PM",
+    "check_out_time": "12:00 PM",
+    "confirmation_code": "GOA-WGOA-77102",
+    "guests_count": 2,
+    "highlights": [
+      "Cliffside sunset lounge nestled right beneath historic Chapora Fort",
+      "High-energy music programming, bespoke mixology, and avant-garde luxury",
+      "Steps away from Little Vagator beach and chic North Goa cafes"
+    ]
+  },
+  {
+    "id": "the-westin-goa",
+    "name": "The Westin Goa",
+    "area": "Anjuna",
+    "region": "North Goa",
+    "latitude": 15.5865,
+    "longitude": 73.7483,
+    "rating": 4.6,
+    "reviewCount": 1850,
+    "description": "A tranquil wellness sanctuary situated in the pulsating heart of Anjuna. Boasts the signature Heavenly® Bed, Heavenly Spa, palm-fringed outdoor pools, and easy access to Anjuna Flea Market and coastal night markets.",
+    "images": [
+      "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "amenities": [
+      "Heavenly Spa by Westin",
+      "Lagoon Pool with Swim-up Bar",
+      "WestinWORKOUT® Fitness Studio",
+      "The Market All-Day Diner",
+      "Anjuna Beach Shuttle",
+      "Yoga Lawn",
+      "Electric Car Charging",
+      "High-Speed Wi-Fi"
+    ],
+    "startingPrice": 18500,
+    "propertyType": "Luxury Wellness Resort",
+    "rooms": [
+      {
+        "id": "westin-room-1",
+        "name": "Deluxe Patio Room",
+        "capacity": 2,
+        "pricePerNight": 18500
+      },
+      {
+        "id": "westin-room-2",
+        "name": "Premium Pool View Room",
+        "capacity": 3,
+        "pricePerNight": 24000
+      },
+      {
+        "id": "westin-room-3",
+        "name": "Family Suite with Private Balcony",
+        "capacity": 4,
+        "pricePerNight": 38000
+      }
+    ],
+    "address": "DMC Marg, Anjuna, Bardez, Goa 403509, India",
+    "coordinates": {"lat": 15.5865, "lng": 73.7483},
+    "image_url": "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1200&q=80",
+    "room_type": "Premium Pool View Room",
+    "check_in_time": "3:00 PM",
+    "check_out_time": "11:00 AM",
+    "confirmation_code": "GOA-WSTN-41908",
+    "guests_count": 2,
+    "highlights": [
+      "Westin signature wellness and tranquil tropical landscape in Anjuna",
+      "Minutes from famous Anjuna beach cafes and vibrant night venues",
+      "Expansive multi-tier outdoor lagoon pool and holistic spa therapies"
+    ]
+  },
+  {
+    "id": "itc-grand-goa",
+    "name": "ITC Grand Goa Resort & Spa",
+    "area": "Arossim",
+    "region": "South Goa",
+    "latitude": 15.3340,
+    "longitude": 73.8967,
+    "rating": 4.9,
+    "reviewCount": 2940,
+    "description": "Set across 45 acres of lush landscaped gardens with serene lagoons and direct access to pristine Arossim Beach. Features Indo-Portuguese village architecture and the renowned Kaya Kalp Spa.",
+    "images": [
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "amenities": [
+      "Direct Arossim Beach Access",
+      "Multi-Tier Lagoon Swimming Pool",
+      "Kaya Kalp Ayurvedic Spa",
+      "Ottimo Italian Restaurant",
+      "Kebabs & Kurries Fine Dining",
+      "Kids Activity Club",
+      "Tennis Courts & Water Sports",
+      "24/7 Room Dining"
+    ],
+    "startingPrice": 24000,
+    "propertyType": "5-Star Luxury Beach Resort",
+    "rooms": [
+      {
+        "id": "itc-room-1",
+        "name": "Garden View King Room with Balcony",
+        "capacity": 2,
+        "pricePerNight": 24000
+      },
+      {
+        "id": "itc-room-2",
+        "name": "Lagoon View Premium Suite",
+        "capacity": 3,
+        "pricePerNight": 32000
+      },
+      {
+        "id": "itc-room-3",
+        "name": "Sea Facing Presidential Suite",
+        "capacity": 4,
+        "pricePerNight": 52000
+      }
+    ],
+    "address": "Arossim Beach Road, Cansaulim, Salcete, Goa 403712, India",
+    "coordinates": {"lat": 15.3340, "lng": 73.8967},
+    "image_url": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80",
+    "room_type": "Lagoon View Premium Suite",
+    "check_in_time": "3:00 PM",
+    "check_out_time": "12:00 PM",
+    "confirmation_code": "GOA-ITCG-65231",
+    "guests_count": 2,
+    "highlights": [
+      "45 acres of scenic waterways, swaying coconut groves, and private beach frontage",
+      "Largest multi-level lagoon swimming pool in South Goa",
+      "Award-winning authentic Goan & Indian specialty dining at Kebabs & Kurries"
+    ]
+  },
+  {
+    "id": "alila-diwa",
+    "name": "Alila Diwa Goa",
+    "area": "Majorda",
+    "region": "South Goa",
+    "latitude": 15.3134,
+    "longitude": 73.9168,
+    "rating": 4.8,
+    "reviewCount": 2610,
+    "description": "Overlooking verdant paddy fields and whispering palms in South Goa's cultural haven of Majorda. Features eco-conscious contemporary Goan architecture, an iconic infinity pool, and the secluded Diwa Club.",
+    "images": [
+      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "amenities": [
+      "Paddy Field Infinity Pool",
+      "Spa Alila Holistic Wellness",
+      "Vivo All-Day Diner",
+      "Edge Bar & Tropical Lounge",
+      "Complimentary Shuttle to Majorda Beach",
+      "Diwa Club Private Pool & Butler",
+      "Mini Boutique Cinema",
+      "Bicycle Rentals"
+    ],
+    "startingPrice": 19500,
+    "propertyType": "Eco-Luxury Resort",
+    "rooms": [
+      {
+        "id": "alila-room-1",
+        "name": "Terrace King Room",
+        "capacity": 2,
+        "pricePerNight": 19500
+      },
+      {
+        "id": "alila-room-2",
+        "name": "Diwa Club Suite with Courtyard",
+        "capacity": 3,
+        "pricePerNight": 28000
+      },
+      {
+        "id": "alila-room-3",
+        "name": "Alila Presidential Suite with Private Terrace",
+        "capacity": 4,
+        "pricePerNight": 49000
+      }
+    ],
+    "address": "48/10, Adao Waddo, Majorda, Salcete, Goa 403713, India",
+    "coordinates": {"lat": 15.3134, "lng": 73.9168},
+    "image_url": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80",
+    "room_type": "Diwa Club Suite with Courtyard",
+    "check_in_time": "3:00 PM",
+    "check_out_time": "12:00 PM",
+    "confirmation_code": "GOA-ALIL-51204",
+    "guests_count": 2,
+    "highlights": [
+      "Overlooks verdant green paddy fields and whispering coconut palms",
+      "5 minutes from the expansive golden sands of Majorda & Utorda beaches",
+      "Exclusive Diwa Club wing with personalized butler service"
+    ]
+  },
+  {
+    "id": "park-hyatt-goa",
+    "name": "Park Hyatt Goa Resort and Spa",
+    "area": "Cansaulim / Arossim",
+    "region": "South Goa",
+    "latitude": 15.3395,
+    "longitude": 73.8998,
+    "rating": 4.8,
+    "reviewCount": 2350,
+    "description": "An opulent beach resort designed as an enchanting Indo-Portuguese village, with glistening waterways, lagoons, landscaped gardens, and direct access to pristine silver-sand beaches of South Goa.",
+    "images": [
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "amenities": [
+      "Direct Beachfront Access",
+      "Serpentine Swimming Pool with Waterslide",
+      "Sereno Spa & Ayurvedic Center",
+      "Da Luigi Trattoria Italian",
+      "Palms Seafood Beach Grill",
+      "Kids Camp Hyatt",
+      "Sunset Beach Cabanas",
+      "Concierge Yacht Charters"
+    ],
+    "startingPrice": 23500,
+    "propertyType": "5-Star Seaside Resort",
+    "rooms": [
+      {
+        "id": "hyatt-room-1",
+        "name": "Park King Garden View",
+        "capacity": 2,
+        "pricePerNight": 23500
+      },
+      {
+        "id": "hyatt-room-2",
+        "name": "Park Suite with Lagoon View",
+        "capacity": 3,
+        "pricePerNight": 31000
+      },
+      {
+        "id": "hyatt-room-3",
+        "name": "Sea View Villa Suite with Sun Deck",
+        "capacity": 4,
+        "pricePerNight": 51000
+      }
+    ],
+    "address": "Arossim Beach, Cansaulim, Salcete, Goa 403712, India",
+    "coordinates": {"lat": 15.3395, "lng": 73.8998},
+    "image_url": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
+    "room_type": "Park Suite with Lagoon View",
+    "check_in_time": "3:00 PM",
+    "check_out_time": "12:00 PM",
+    "confirmation_code": "GOA-PHYT-92015",
+    "guests_count": 2,
+    "highlights": [
+      "Stunning village layout connected by canals and arched Portuguese bridges",
+      "Spectacular free-form swimming pool with waterslides and poolside bar",
+      "Romantic sunset dinners directly on the uncrowded sands of Arossim Beach"
+    ]
+  }
+]

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Sunset, Waves, Sparkles, AlertCircle } from 'lucide-react';
+import { Sunset, Waves, Sun, ArrowRight } from 'lucide-react';
 import type { HotelBooking } from '../types';
 import type { SupportedLanguage } from '../utils/i18n';
-import { t } from '../utils/i18n';
 
 interface CoastalConditionsWidgetProps {
   activeHotel: HotelBooking | null;
@@ -13,19 +12,15 @@ interface CoastalConditionsWidgetProps {
 export const CoastalConditionsWidget: React.FC<CoastalConditionsWidgetProps> = ({
   activeHotel,
   onAskConcierge,
-  lang = 'en',
 }) => {
-  const [timeLeft, setTimeLeft] = useState<{ hours: number; minutes: number; seconds: number; isPast: boolean }>({
+  const [timeLeft, setTimeLeft] = useState<{ hours: number; minutes: number; isPast: boolean }>({
     hours: 0,
     minutes: 0,
-    seconds: 0,
     isPast: false,
   });
 
-  const hotelName = activeHotel?.name || 'Taj Fort Aguada Resort & Spa';
   const hotelId = activeHotel?.id || 'taj-fort-aguada';
 
-  // Goa average sunset is ~18:35 IST
   useEffect(() => {
     const updateCountdown = () => {
       const now = new Date();
@@ -34,181 +29,124 @@ export const CoastalConditionsWidget: React.FC<CoastalConditionsWidgetProps> = (
 
       let diff = sunset.getTime() - now.getTime();
       if (diff <= 0) {
-        setTimeLeft({ hours: 0, minutes: 0, seconds: 0, isPast: true });
+        setTimeLeft({ hours: 0, minutes: 0, isPast: true });
       } else {
         const hours = Math.floor(diff / (1000 * 60 * 60));
         diff -= hours * (1000 * 60 * 60);
         const minutes = Math.floor(diff / (1000 * 60));
-        diff -= minutes * (1000 * 60);
-        const seconds = Math.floor(diff / 1000);
-        setTimeLeft({ hours, minutes, seconds, isPast: false });
+        setTimeLeft({ hours, minutes, isPast: false });
       }
     };
 
     updateCountdown();
-    const timer = setInterval(updateCountdown, 1000);
+    const timer = setInterval(updateCountdown, 1000 * 30);
     return () => clearInterval(timer);
   }, []);
 
-  const getBestSunsetVantage = () => {
+  const getSunsetSpot = () => {
     switch (hotelId) {
       case 'taj-fort-aguada':
-        return {
-          spot: 'Aguada Fort Cliff & SFX Deck',
-          distance: 'Adjoining Resort',
-          vibe: 'Historic Portuguese battlements overlooking the vast Arabian Sea horizon.',
-        };
+        return 'Aguada Fort Cliff & Bastion';
       case 'w-goa':
-        return {
-          spot: 'Rockpool Sunset Deck at Chapora',
-          distance: 'Inside Resort (Vagator)',
-          vibe: 'High-energy DJ lounge carved into the red laterite cliffside.',
-        };
-      case 'the-leela-goa':
-        return {
-          spot: 'Mobor Beach & River Sal Confluence',
-          distance: 'Private Hotel Beachfront',
-          vibe: 'Serene, unhurried sunset reflections where the river meets the sea.',
-        };
+        return 'Rockpool Chapora Cliffside';
       case 'alila-diwa':
-        return {
-          spot: 'Courtyard Infinity Pool & Gonsua Beach',
-          distance: '5 mins shuttle / pool deck',
-          vibe: 'Lush coconut groves silhouetted against pastel evening skies.',
-        };
+        return 'Gonsua Beachfront Lounge';
       default:
-        return {
-          spot: 'Sinquerim Beach Headland',
-          distance: 'Near Hotel',
-          vibe: 'Spectacular sunset vantage point with ocean breeze.',
-        };
+        return 'Sinquerim Beach Headland';
     }
   };
 
-  const vantage = getBestSunsetVantage();
-
   return (
-    <div className="glass-card card-interactive" style={{
-      background: 'var(--bg-card)',
-      border: '1px solid var(--border-primary)',
-      borderRadius: 'var(--radius-md)',
-      padding: '20px 24px',
-      marginBottom: '24px',
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-      gap: '20px',
+    <div style={{
+      background: '#FFFFFF',
+      borderRadius: '14px',
+      border: '1px solid rgba(11, 22, 38, 0.08)',
+      boxShadow: '0 2px 12px rgba(11, 22, 38, 0.03)',
+      padding: '16px 24px',
+      display: 'flex',
       alignItems: 'center',
+      justifyContent: 'space-between',
+      flexWrap: 'wrap',
+      gap: '20px'
     }}>
-      {/* Sunset Countdown Column */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
-        <div style={{
-          width: '46px',
-          height: '46px',
-          borderRadius: 'var(--radius-sm)',
-          background: 'linear-gradient(135deg, #E28445 0%, #D05B3B 100%)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#FFFFFF',
-          flexShrink: 0,
-          boxShadow: '0 4px 14px rgba(208, 91, 59, 0.35)',
-        }}>
-          <Sunset size={24} />
-        </div>
+      
+      {/* Label */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981' }} />
+        <span style={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#D05B3B' }}>
+          Coastal Conditions
+        </span>
+      </div>
 
+      {/* Metric 1: Temp & Sky */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <Sun size={16} color="#F59E0B" />
         <div>
-          <div style={{ fontSize: '0.74rem', textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--accent-primary)', fontWeight: 700 }}>
-            {timeLeft.isPast ? 'Goa Sunset Concluded' : `${t('sunsetCountdown', lang)} (18:35 IST)`}
-          </div>
-
-          {!timeLeft.isPast ? (
-            <div style={{
-              fontSize: '1.45rem',
-              fontWeight: 800,
-              color: 'var(--text-primary)',
-              fontFamily: 'monospace',
-              letterSpacing: '0.02em',
-              marginTop: '2px',
-            }}>
-              {String(timeLeft.hours).padStart(2, '0')}h : {String(timeLeft.minutes).padStart(2, '0')}m : {String(timeLeft.seconds).padStart(2, '0')}s
-            </div>
-          ) : (
-            <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '2px' }}>
-              Dusk in Goa • Evening dining & shacks are lively!
-            </div>
-          )}
-
-          <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-            <span>🌅 <strong>Vantage Point:</strong> {vantage.spot} ({vantage.distance})</span>
-          </div>
+          <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0B1626' }}>29°C · Clear Sky</div>
+          <div style={{ fontSize: '0.74rem', color: '#64748B' }}>Gentle coastal breeze</div>
         </div>
       </div>
 
-      {/* Coastal Swimming & Tide Conditions */}
-      <div style={{
-        background: 'var(--bg-tertiary)',
-        padding: '14px 16px',
-        borderRadius: 'var(--radius-xs)',
-        border: '1px solid var(--border-primary)',
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-            <Waves size={14} color="var(--accent-secondary)" />
-            <span>{t('seaSwimStatus', lang)}</span>
-          </div>
-          <span style={{
-            fontSize: '0.7rem',
-            fontWeight: 700,
-            color: '#065F46',
-            background: '#D1FAE5',
-            padding: '2px 8px',
-            borderRadius: 'var(--radius-pill)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px'
-          }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10B981' }} />
-            {t('safeToSwim', lang)}
-          </span>
-        </div>
+      <div style={{ width: '1px', height: '24px', background: '#E2E8F0' }} className="condition-divider" />
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '0.76rem', color: 'var(--text-secondary)' }}>
-          <div>
-            <span>🌡️ Water Temp: <strong style={{ color: 'var(--text-primary)' }}>28°C (82°F)</strong></span>
-          </div>
-          <div>
-            <span>🌊 Tide: <strong style={{ color: 'var(--text-primary)' }}>Low (0.8m)</strong></span>
-          </div>
-          <div>
-            <span>💨 Sea Breeze: <strong style={{ color: 'var(--text-primary)' }}>14 km/h WSW</strong></span>
-          </div>
-          <div>
-            <span>☀️ UV Index: <strong style={{ color: 'var(--accent-primary)' }}>Moderate (5.2)</strong></span>
-          </div>
+      {/* Metric 2: Sea Swimming */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <Waves size={16} color="#0284C7" />
+        <div>
+          <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0B1626' }}>Calm · Green Flag</div>
+          <div style={{ fontSize: '0.74rem', color: '#64748B' }}>Safe for ocean swimming</div>
         </div>
       </div>
 
-      {/* Action / Ask Concierge Shortcut */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <button
-          onClick={() => onAskConcierge(`What are the top 3 spots to watch today's sunset near ${hotelName}, and can you recommend cocktails and seating tips?`)}
-          className="btn-terracotta"
-          style={{
-            fontSize: '0.82rem',
-            padding: '10px 14px',
-            borderRadius: 'var(--radius-xs)',
-            gap: '6px',
-            width: '100%',
-          }}
-        >
-          <Sparkles size={14} /> Sunset Spots Near Hotel
-        </button>
+      <div style={{ width: '1px', height: '24px', background: '#E2E8F0' }} className="condition-divider" />
 
-        <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <AlertCircle size={12} color="var(--accent-primary)" />
-          <span>Lifeguards active 07:30 AM to 18:45 PM on all hotel beaches.</span>
+      {/* Metric 3: Tide */}
+      <div>
+        <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0B1626' }}>Low Tide (0.4m)</div>
+        <div style={{ fontSize: '0.74rem', color: '#64748B' }}>Next high tide at 19:10</div>
+      </div>
+
+      <div style={{ width: '1px', height: '24px', background: '#E2E8F0' }} className="condition-divider" />
+
+      {/* Metric 4: Sunset */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <Sunset size={16} color="#D05B3B" />
+        <div>
+          <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0B1626' }}>
+            {timeLeft.isPast ? 'Sunset 18:35' : `Sunset in ${timeLeft.hours > 0 ? `${timeLeft.hours}h ` : ''}${timeLeft.minutes}m`}
+          </div>
+          <div style={{ fontSize: '0.74rem', color: '#64748B' }}>{getSunsetSpot()}</div>
         </div>
       </div>
+
+      {/* Action */}
+      <button
+        onClick={() => onAskConcierge("Tell me about today's coastal conditions and best sunset spots.")}
+        style={{
+          background: 'none',
+          border: 'none',
+          color: '#D05B3B',
+          fontSize: '0.84rem',
+          fontWeight: 600,
+          cursor: 'pointer',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '4px',
+          padding: '4px 8px'
+        }}
+      >
+        <span>View details</span>
+        <ArrowRight size={14} />
+      </button>
+
+      {/* Embedded CSS */}
+      <style>{`
+        @media (max-width: 900px) {
+          .condition-divider {
+            display: none !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };

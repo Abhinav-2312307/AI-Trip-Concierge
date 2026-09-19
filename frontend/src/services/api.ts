@@ -1,10 +1,41 @@
-import type { TripContext, ItineraryResponse, Place, SmartAlert, TransportGuideItem, HotelBooking, TripSetupRequest } from '../types';
+import type {
+  TripContext,
+  ItineraryResponse,
+  Place,
+  SmartAlert,
+  TransportGuideItem,
+  HotelBooking,
+  TripSetupRequest
+} from '../types';
 
 const API_BASE = 'http://localhost:8000/api';
 
-export async function fetchBookings(): Promise<{ count: number; hotels: HotelBooking[] }> {
-  const res = await fetch(`${API_BASE}/hotels`);
-  if (!res.ok) throw new Error('Failed to fetch hotel bookings');
+export async function fetchBookings(
+  search?: string,
+  region?: string,
+  area?: string,
+  maxPrice?: number
+): Promise<{ count: number; hotels: HotelBooking[] }> {
+  const params = new URLSearchParams();
+  if (search) params.append('search', search);
+  if (region && region !== 'all' && region !== 'All Goa') params.append('region', region);
+  if (area && area !== 'all' && area !== 'All Localities') params.append('area', area);
+  if (maxPrice) params.append('maxPrice', maxPrice.toString());
+
+  const queryStr = params.toString() ? `?${params.toString()}` : '';
+  const res = await fetch(`${API_BASE}/hotels${queryStr}`);
+  if (!res.ok) throw new Error('Failed to fetch hotels');
+  const data = await res.json();
+  const hotels = data.hotels || data.properties || [];
+  return {
+    count: data.count !== undefined ? data.count : hotels.length,
+    hotels
+  };
+}
+
+export async function fetchHotelDetails(hotelId: string): Promise<HotelBooking> {
+  const res = await fetch(`${API_BASE}/hotels/${encodeURIComponent(hotelId)}`);
+  if (!res.ok) throw new Error(`Failed to fetch hotel details for ${hotelId}`);
   return res.json();
 }
 
@@ -19,7 +50,9 @@ export async function sendChatMessage(
   message: string,
   history: Array<{ role: string; content: string }>,
   guestName?: string,
-  hotelId?: string
+  hotelId?: string,
+  userLat?: number,
+  userLng?: number
 ): Promise<{
   reply: string;
   tool_calls?: Array<{ tool: string; input: Record<string, any> }>;
@@ -34,7 +67,9 @@ export async function sendChatMessage(
       message,
       history,
       guest_name: guestName,
-      hotel_id: hotelId || 'taj-fort-aguada'
+      hotel_id: hotelId || 'taj-fort-aguada',
+      user_lat: userLat,
+      user_lng: userLng
     }),
   });
   if (!res.ok) {
@@ -70,13 +105,17 @@ export async function fetchRecommendations(
   hotelId?: string,
   category?: string,
   area?: string,
-  search?: string
+  search?: string,
+  lat?: number,
+  lng?: number
 ): Promise<{ count: number; places: Place[] }> {
   const params = new URLSearchParams();
   if (hotelId) params.append('hotel_id', hotelId);
   if (category && category !== 'all') params.append('category', category);
   if (area && area !== 'all') params.append('area', area);
   if (search) params.append('search', search);
+  if (lat !== undefined) params.append('lat', lat.toString());
+  if (lng !== undefined) params.append('lng', lng.toString());
 
   const res = await fetch(`${API_BASE}/recommendations?${params.toString()}`);
   if (!res.ok) throw new Error('Failed to fetch recommendations');

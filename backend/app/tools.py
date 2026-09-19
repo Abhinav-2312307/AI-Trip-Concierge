@@ -1,24 +1,51 @@
 import json
 import os
+import math
 from typing import List, Dict, Any, Optional
 from datetime import datetime, timedelta
 
-DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "goa.json")
+GOA_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "goa.json")
+HOTELS_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "hotels.json")
 
 def load_data() -> Dict[str, Any]:
-    with open(DATA_PATH, "r", encoding="utf-8") as f:
+    with open(GOA_DATA_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
-def get_hotels() -> List[Dict[str, Any]]:
-    """Retrieve all available verified Goa hotels and demo reservations with dynamic calendar dates."""
+def load_hotels_raw() -> List[Dict[str, Any]]:
+    if os.path.exists(HOTELS_DATA_PATH):
+        try:
+            with open(HOTELS_DATA_PATH, "r", encoding="utf-8") as f:
+                hotels = json.load(f)
+                if isinstance(hotels, list) and len(hotels) > 0:
+                    return hotels
+        except Exception:
+            pass
     data = load_data()
-    hotels = data.get("hotels", [])
+    return data.get("hotels", [])
+
+def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """Calculate distance between two coordinates in kilometers using Haversine formula."""
+    R = 6371.0  # Earth radius in kilometers
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    a = (math.sin(dlat / 2) ** 2 +
+         math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) *
+         math.sin(dlon / 2) ** 2)
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return round(R * c, 1)
+
+def get_hotels(
+    search: Optional[str] = None,
+    region: Optional[str] = None,
+    area: Optional[str] = None,
+    max_price: Optional[float] = None
+) -> List[Dict[str, Any]]:
+    """Retrieve all verified Goa hotels and demo reservations with dynamic calendar dates and filters."""
+    raw_hotels = load_hotels_raw()
     today = datetime.now().date()
     
-    # Enrich each hotel booking with dynamic dates and formatting
     enriched_hotels = []
-    for idx, hotel in enumerate(hotels):
-        # Slightly staggered check-in dates for realism
+    for idx, hotel in enumerate(raw_hotels):
         check_in_offset = 1 if idx == 0 else (idx + 1)
         check_in_date = today + timedelta(days=check_in_offset)
         check_out_date = check_in_date + timedelta(days=3)
@@ -35,7 +62,33 @@ def get_hotels() -> List[Dict[str, Any]]:
             "status": "Confirmed Sample Reservation"
         })
         enriched_hotels.append(h_copy)
-    return enriched_hotels
+
+    filtered = enriched_hotels
+
+    if search and search.strip():
+        s = search.strip().lower()
+        filtered = [
+            h for h in filtered
+            if s in h.get("name", "").lower()
+            or s in h.get("area", "").lower()
+            or s in h.get("region", "").lower()
+            or s in h.get("description", "").lower()
+            or any(s in a.lower() for a in h.get("amenities", []))
+            or any(s in r.get("name", "").lower() for r in h.get("rooms", []))
+        ]
+
+    if region and region.strip() and region.lower() != "all" and region.lower() != "all goa":
+        r_clean = region.strip().lower()
+        filtered = [h for h in filtered if r_clean in h.get("region", "").lower()]
+
+    if area and area.strip() and area.lower() != "all" and area.lower() != "all localities":
+        a_clean = area.strip().lower()
+        filtered = [h for h in filtered if a_clean in h.get("area", "").lower()]
+
+    if max_price is not None and max_price > 0:
+        filtered = [h for h in filtered if h.get("startingPrice", 0) <= max_price]
+
+    return filtered
 
 def get_hotel_info(hotel_id: Optional[str] = None) -> Dict[str, Any]:
     """Retrieve hotel details for a specific hotel ID or default to Taj Fort Aguada."""
@@ -49,18 +102,47 @@ def get_hotel_info(hotel_id: Optional[str] = None) -> Dict[str, Any]:
             return h
     return hotels[0] if hotels else {}
 
-def _resolve_distance(place: Dict[str, Any], hotel_id: str) -> str:
-    """Resolve realistic distance string from the place's distance_map relative to the active hotel."""
+def _resolve_distance(place: Dict[str, Any], hotel_id: str, user_lat: Optional[float] = None, user_lng: Optional[float] = None) -> str:
+    """Resolve realistic distance string from place to user or active hotel."""
+    # 1. Live GPS distance calculation if user coordinates are provided
+    if user_lat is not None and user_lng is not None:
+        p_lat = place.get("latitude") or (place.get("coordinates", {}).get("lat"))
+        p_lng = place.get("longitude") or (place.get("coordinates", {}).get("lng"))
+        if p_lat is not None and p_lng is not None:
+            dist_km = haversine_distance(user_lat, user_lng, p_lat, p_lng)
+            mins = max(2, int(dist_km * 2.2))
+            if dist_km < 1.0:
+                return f"{int(dist_km * 1000)}m (~{mins} mins walk - Near You)"
+            elif dist_km < 3.0:
+                return f"{dist_km} km (~{mins} mins - Near You)"
+            return f"{dist_km} km (~{mins} mins)"
+
+    # 2. Check predefined distance map
     dist_map = place.get("distance_map", {})
     if hotel_id in dist_map:
         return dist_map[hotel_id]
     
-    # Fallback to general distance_from_hotel if present
+    # 3. Compute Haversine distance between hotel and place
+    h_info = get_hotel_info(hotel_id)
+    h_lat = h_info.get("latitude") or (h_info.get("coordinates", {}).get("lat"))
+    h_lng = h_info.get("longitude") or (h_info.get("coordinates", {}).get("lng"))
+    p_lat = place.get("latitude") or (place.get("coordinates", {}).get("lat"))
+    p_lng = place.get("longitude") or (place.get("coordinates", {}).get("lng"))
+
+    if h_lat and h_lng and p_lat and p_lng:
+        dist_km = haversine_distance(h_lat, h_lng, p_lat, p_lng)
+        mins = max(2, int(dist_km * 2.2))
+        if dist_km < 1.0:
+            return f"{int(dist_km * 1000)}m (~{mins} mins - Near Hotel)"
+        elif dist_km < 3.5:
+            return f"{dist_km} km (~{mins} mins - Near Hotel)"
+        return f"{dist_km} km (~{mins} mins)"
+    
+    # 4. Fallback to general distance_from_hotel if present
     if "distance_from_hotel" in place:
         return place["distance_from_hotel"]
     
-    # Area based fallback
-    h_info = get_hotel_info(hotel_id)
+    # 5. Area based fallback
     h_area = h_info.get("area", "").lower()
     p_area = place.get("area", "").lower()
     if p_area in h_area or h_area in p_area:
@@ -74,9 +156,11 @@ def search_restaurants(
     cuisine: str = "",
     price_range: str = "",
     vibe: str = "",
-    near_hotel: bool = False
+    near_hotel: bool = False,
+    user_lat: Optional[float] = None,
+    user_lng: Optional[float] = None
 ) -> List[Dict[str, Any]]:
-    """Search authentic Goa restaurants in the knowledge base relative to the active hotel."""
+    """Search authentic Goa restaurants relative to hotel or user coordinates."""
     data = load_data()
     places = data.get("places", [])
     restaurants = [p for p in places if p.get("category") == "restaurant"]
@@ -93,7 +177,7 @@ def search_restaurants(
 
     for r in restaurants:
         r_item = dict(r)
-        r_item["distance_from_hotel"] = _resolve_distance(r, active_h_id)
+        r_item["distance_from_hotel"] = _resolve_distance(r, active_h_id, user_lat=user_lat, user_lng=user_lng)
 
         score = 0
         r_name = r.get("name", "").lower()
@@ -104,38 +188,39 @@ def search_restaurants(
         r_desc = r.get("description", "").lower()
         r_dist = r_item["distance_from_hotel"].lower()
 
-        if near_hotel:
-            if "near hotel" in r_dist or "at hotel" in r_dist or "doorstep" in r_dist:
-                score += 8
+        if near_hotel or (user_lat is not None and user_lng is not None):
+            if "near" in r_dist or "doorstep" in r_dist or "at hotel" in r_dist:
+                score += 10
             elif any(hw in r_area for hw in hotel_area_keywords):
                 score += 6
-            elif "km" in r_dist and any(f"{n} km" in r_dist for n in range(1, 8)):
-                score += 4
+            elif "km" in r_dist and any(f"{n} km" in r_dist or f"{n}." in r_dist for n in range(1, 8)):
+                score += 5
 
         if area_lower:
             if area_lower in r_area or area_lower in r.get("region", "").lower():
-                score += 5
+                score += 6
 
         if cuisine_lower:
             if cuisine_lower in r_cuisine:
+                score += 5
+            elif any(cuisine_lower in t for t in r_tags):
                 score += 4
 
         if vibe_lower:
             if vibe_lower in r_vibe or any(vibe_lower in t for t in r_tags):
-                score += 3
+                score += 4
 
         if query_lower:
             if query_lower in r_name:
-                score += 6
+                score += 7
             elif query_lower in r_cuisine or query_lower in r_area:
-                score += 4
+                score += 5
             elif query_lower in r_desc or any(query_lower in t for t in r_tags):
-                score += 2
+                score += 3
 
         if not (query_lower or area_lower or cuisine_lower or vibe_lower or near_hotel):
-            # Prioritize nearby places when no strict filter
-            if "near hotel" in r_dist or "at hotel" in r_dist:
-                score = 3
+            if "near" in r_dist or "doorstep" in r_dist:
+                score = 4
             else:
                 score = 1
 
@@ -144,7 +229,7 @@ def search_restaurants(
 
     results.sort(key=lambda x: x[0], reverse=True)
     return [item[1] for item in results] if results else [
-        {**r, "distance_from_hotel": _resolve_distance(r, active_h_id)} for r in restaurants[:4]
+        {**r, "distance_from_hotel": _resolve_distance(r, active_h_id, user_lat=user_lat, user_lng=user_lng)} for r in restaurants[:4]
     ]
 
 def search_activities(
@@ -153,9 +238,11 @@ def search_activities(
     area: str = "",
     category: str = "",
     time_of_day: str = "",
-    tags: Optional[List[str]] = None
+    tags: Optional[List[str]] = None,
+    user_lat: Optional[float] = None,
+    user_lng: Optional[float] = None
 ) -> List[Dict[str, Any]]:
-    """Search beaches, cultural attractions, nightlife, and activities in Goa relative to the active hotel."""
+    """Search beaches, cultural attractions, nightlife, and activities in Goa."""
     data = load_data()
     places = data.get("places", [])
     active_h_id = hotel_id or "taj-fort-aguada"
@@ -174,7 +261,7 @@ def search_activities(
                 continue
 
         p_item = dict(p)
-        p_item["distance_from_hotel"] = _resolve_distance(p, active_h_id)
+        p_item["distance_from_hotel"] = _resolve_distance(p, active_h_id, user_lat=user_lat, user_lng=user_lng)
 
         score = 0
         p_name = p.get("name", "").lower()
@@ -184,17 +271,16 @@ def search_activities(
         p_best = p.get("best_time", "").lower()
         p_dist = p_item["distance_from_hotel"].lower()
 
-        # Near hotel bonus
-        if "near hotel" in p_dist or "at hotel" in p_dist or "doorstep" in p_dist:
-            score += 4
+        if "near" in p_dist or "doorstep" in p_dist or "at hotel" in p_dist:
+            score += 5
 
         if area_lower:
             if area_lower in p_area or area_lower in p.get("region", "").lower():
-                score += 5
+                score += 6
 
         if time_lower:
             if time_lower in p_best or time_lower in p_desc:
-                score += 3
+                score += 4
 
         if tags:
             for t in tags:
@@ -203,11 +289,11 @@ def search_activities(
 
         if query_lower:
             if query_lower in p_name:
-                score += 6
+                score += 7
             elif query_lower in p_area or query_lower in p.get("category", ""):
-                score += 4
+                score += 5
             elif query_lower in p_desc or any(query_lower in t for t in p_tags):
-                score += 2
+                score += 3
 
         if not (query_lower or area_lower or cat_lower or time_lower or tags):
             score = 1
@@ -217,8 +303,63 @@ def search_activities(
 
     results.sort(key=lambda x: x[0], reverse=True)
     return [item[1] for item in results] if results else [
-        {**p, "distance_from_hotel": _resolve_distance(p, active_h_id)} for p in places[:4]
+        {**p, "distance_from_hotel": _resolve_distance(p, active_h_id, user_lat=user_lat, user_lng=user_lng)} for p in places[:4]
     ]
+
+def search_nearby_places(
+    hotel_id: Optional[str] = "taj-fort-aguada",
+    user_lat: Optional[float] = None,
+    user_lng: Optional[float] = None,
+    lat: Optional[float] = None,
+    lng: Optional[float] = None,
+    category: Optional[str] = None,
+    query: Optional[str] = None,
+    radius_km: Optional[float] = None,
+    limit: int = 6
+) -> List[Dict[str, Any]]:
+    """Retrieve places sorted strictly by distance from user GPS coordinates or active hotel."""
+    data = load_data()
+    places = data.get("places", [])
+    active_h_id = hotel_id or "taj-fort-aguada"
+    active_hotel = get_hotel_info(active_h_id)
+
+    actual_lat = user_lat if user_lat is not None else lat
+    actual_lng = user_lng if user_lng is not None else lng
+
+    ref_lat = actual_lat if actual_lat is not None else active_hotel.get("latitude", 15.4952)
+    ref_lng = actual_lng if actual_lng is not None else active_hotel.get("longitude", 73.7667)
+
+    computed = []
+    for p in places:
+        if category and category.lower() != "all" and p.get("category") != category.lower():
+            continue
+        if query and query.strip():
+            q = query.strip().lower()
+            if not (q in p.get("name", "").lower() or q in p.get("area", "").lower() or q in p.get("description", "").lower() or any(q in t.lower() for t in p.get("tags", []))):
+                continue
+
+        p_lat = p.get("latitude") or p.get("coordinates", {}).get("lat", 15.4952)
+        p_lng = p.get("longitude") or p.get("coordinates", {}).get("lng", 73.7667)
+        dist_km = haversine_distance(ref_lat, ref_lng, p_lat, p_lng)
+
+        if radius_km is not None and dist_km > radius_km:
+            continue
+
+        p_copy = dict(p)
+        p_copy["distance_km"] = round(dist_km, 2)
+        mins = max(2, int(dist_km * 2.2))
+        origin_label = "You" if (actual_lat is not None and actual_lng is not None) else "Hotel"
+        if dist_km < 1.0:
+            p_copy["distance_from_hotel"] = f"{int(dist_km * 1000)}m (~{mins} mins - Near {origin_label})"
+        elif dist_km < 3.5:
+            p_copy["distance_from_hotel"] = f"{round(dist_km, 1)} km (~{mins} mins - Near {origin_label})"
+        else:
+            p_copy["distance_from_hotel"] = f"{round(dist_km, 1)} km (~{mins} mins)"
+        
+        computed.append((dist_km, p_copy))
+
+    computed.sort(key=lambda x: x[0])
+    return [item[1] for item in computed[:limit]]
 
 def get_transport_tips(
     hotel_id: Optional[str] = "taj-fort-aguada",
@@ -262,11 +403,11 @@ def get_weather_and_tide_info(area: Optional[str] = None, hotel_id: Optional[str
     if "cavelossim" in area_lower or "mobor" in area_lower:
         sea_cond = "Calm South Goa Waters (Flags: Green at Mobor Beach)"
         forecast = "Clear evening skies over Sal River; perfect for sunset catamaran cruises"
-    elif "majorda" in area_lower or "utorda" in area_lower:
-        sea_cond = "Mild Surf (Flags: Green at Majorda & Utorda)"
-        forecast = "Pleasant coastal breeze with gentle sunset haze"
-    elif "vagator" in area_lower:
-        sea_cond = "Moderate Swell (Caution around Little Vagator Rocky Outcrops)"
+    elif "majorda" in area_lower or "utorda" in area_lower or "arossim" in area_lower or "cansaulim" in area_lower:
+        sea_cond = "Mild Surf (Flags: Green at Majorda, Utorda & Arossim)"
+        forecast = "Pleasant coastal breeze with gentle sunset haze and optimal beach dining"
+    elif "vagator" in area_lower or "anjuna" in area_lower:
+        sea_cond = "Moderate Swell (Caution around Little Vagator & Anjuna Rocky Outcrops)"
         forecast = "Vibrant clear golden hour over Chapora Fort and cliff decks"
     else:
         sea_cond = "Moderate Swell (Flags: Yellow at Sinquerim, Caution at Vagator Rocks)"
@@ -318,6 +459,17 @@ CLAUDE_TOOLS = [
         }
     },
     {
+        "name": "search_nearby_places",
+        "description": "Discover places closest to the user's current GPS location or booked hotel in Goa, sorted by distance.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "category": {"type": "string", "description": "Filter by restaurant, beach, culture, nightlife, or activity"},
+                "query": {"type": "string", "description": "Optional search term"}
+            }
+        }
+    },
+    {
         "name": "get_transport_tips",
         "description": "Get transportation advice, fare estimates (GoaMiles app cabs, scooter rentals, pilots), and travel directions in Goa.",
         "input_schema": {
@@ -352,8 +504,14 @@ CLAUDE_TOOLS = [
     }
 ]
 
-def execute_tool(name: str, args: Dict[str, Any], hotel_id: str = "taj-fort-aguada") -> Any:
-    """Execute the matching tool function with given arguments and hotel context."""
+def execute_tool(
+    name: str,
+    args: Dict[str, Any],
+    hotel_id: str = "taj-fort-aguada",
+    user_lat: Optional[float] = None,
+    user_lng: Optional[float] = None
+) -> Any:
+    """Execute the matching tool function with given arguments, hotel context, and optional live GPS coordinates."""
     if name == "search_restaurants":
         return search_restaurants(
             hotel_id=hotel_id,
@@ -362,7 +520,9 @@ def execute_tool(name: str, args: Dict[str, Any], hotel_id: str = "taj-fort-agua
             cuisine=args.get("cuisine", ""),
             price_range=args.get("price_range", ""),
             vibe=args.get("vibe", ""),
-            near_hotel=args.get("near_hotel", False)
+            near_hotel=args.get("near_hotel", False),
+            user_lat=user_lat,
+            user_lng=user_lng
         )
     elif name == "search_activities":
         return search_activities(
@@ -370,7 +530,18 @@ def execute_tool(name: str, args: Dict[str, Any], hotel_id: str = "taj-fort-agua
             query=args.get("query", ""),
             area=args.get("area", ""),
             category=args.get("category", ""),
-            time_of_day=args.get("time_of_day", "")
+            time_of_day=args.get("time_of_day", ""),
+            user_lat=user_lat,
+            user_lng=user_lng
+        )
+    elif name == "search_nearby_places":
+        return search_nearby_places(
+            hotel_id=hotel_id,
+            user_lat=user_lat,
+            user_lng=user_lng,
+            category=args.get("category"),
+            query=args.get("query"),
+            limit=args.get("limit", 6)
         )
     elif name == "get_transport_tips":
         h_info = get_hotel_info(hotel_id)

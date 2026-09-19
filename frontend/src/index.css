@@ -1,10 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap');
-
 :root {
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-serif: 'Playfair Display', Georgia, serif;
+  --font-display: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-script: 'Caveat', cursive;
 
-  /* Goa-Inspired Hospitality Palette */
+  /* Editorial Luxury Travel Palette */
+  --color-ivory: #F7F3EC;
+  --color-navy: #0B1B2B;
+  --color-slate: #667085;
+  --color-coral: #E9653D;
+  --color-gold: #C9A45C;
+  --color-teal: #238C87;
+
   --color-sand-50: #FBF9F5;
   --color-sand-100: #F3EFE8;
   --color-sand-200: #E6DFD5;
@@ -443,5 +450,89 @@ body {
     text-decoration: none !important;
     color: #111827 !important;
   }
+}
+
+/* ==========================================================================
+   Editorial Typography & Micro-Interactions
+   ========================================================================== */
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-script {
+  font-family: var(--font-script);
+}
+
+.font-serif-italic {
+  font-family: var(--font-display);
+  font-style: italic;
+}
+
+.nav-link-editorial {
+  position: relative;
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 0;
+  transition: color 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav-link-editorial::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--color-coral);
+  border-radius: 2px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(-50%);
+}
+
+.nav-link-editorial:hover::after,
+.nav-link-editorial.active::after {
+  width: 100%;
+}
+
+.nav-link-editorial.active {
+  font-weight: 600;
+}
+
+/* Outlined Signature CTA Button */
+.btn-concierge-outlined {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  font-weight: 600;
+  padding: 7px 15px;
+  border-radius: 8px;
+  border: 1px solid rgba(233, 101, 61, 0.5);
+  background: rgba(233, 101, 61, 0.06);
+  color: var(--color-coral);
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-concierge-outlined:hover {
+  background: var(--color-coral);
+  color: #FFFFFF;
+  border-color: var(--color-coral);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(233, 101, 61, 0.3);
+}
+
+.btn-concierge-outlined:hover svg {
+  transform: rotate(15deg);
+  transition: transform 0.3s ease;
 }
 
