@@ -2,27 +2,59 @@
   "hotels": [
     {
       "id": "taj-fort-aguada",
-      "name": "Taj Fort Aguada Resort & Spa, Goa",
-      "area": "Sinquerim, Candolim",
+      "name": "Taj Fort Aguada Resort & Spa",
+      "area": "Sinquerim / Candolim",
       "region": "North Goa",
+      "latitude": 15.4952,
+      "longitude": 73.7667,
+      "rating": 4.8,
+      "reviewCount": 3420,
+      "description": "Perched on the cliffside overlooking the Arabian Sea, this legendary 5-star heritage resort is built on the ramparts of a 16th-century Portuguese fortress. Features panoramic ocean sunsets, Jiva Ayurvedic spa, and private beachfront access.",
+      "images": [
+        "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "amenities": [
+        "Private Beach Access",
+        "Infinity Ocean Pool",
+        "Jiva Ayurvedic Spa",
+        "24/7 AI & Butler Concierge",
+        "Fine Dining Seafood Grill",
+        "Historic Fort Trail",
+        "Fitness Center",
+        "Free High-Speed Wi-Fi"
+      ],
+      "startingPrice": 22000,
+      "propertyType": "Luxury Heritage Resort",
+      "rooms": [
+        {
+          "id": "taj-room-1",
+          "name": "Superior Garden View Room",
+          "capacity": 2,
+          "pricePerNight": 22000
+        },
+        {
+          "id": "taj-room-2",
+          "name": "Deluxe Sea View Suite",
+          "capacity": 3,
+          "pricePerNight": 29000
+        },
+        {
+          "id": "taj-room-3",
+          "name": "Presidential Oceanfront Villa with Plunge Pool",
+          "capacity": 4,
+          "pricePerNight": 54000
+        }
+      ],
       "address": "Sinquerim Beach, Candolim, Bardez, Goa 403515, India",
       "coordinates": {"lat": 15.4952, "lng": 73.7667},
       "image_url": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
-      "room_type": "Sea View Luxury Suite",
+      "room_type": "Deluxe Sea View Suite",
       "check_in_time": "3:00 PM",
       "check_out_time": "12:00 PM",
-      "confirmation_code": "TAJ-GOA-89421",
+      "confirmation_code": "GOA-TAJ-89421",
       "guests_count": 2,
-      "status": "Confirmed Sample Reservation",
-      "amenities": [
-        "Infinity Ocean Pool",
-        "Jiva Ayurvedic Spa",
-        "Private Beach Access",
-        "24/7 Concierge",
-        "Sea Shell Restaurant",
-        "SFX Lounge",
-        "Historic Fort Aguada Trail"
-      ],
       "highlights": [
         "Direct beachfront location adjoining historic 17th-century Fort Aguada",
         "Panoramic Arabian Sea sunsets from private suite balconies",
@@ -32,26 +64,58 @@
     {
       "id": "w-goa",
       "name": "W Goa",
-      "area": "Vagator Beach, Vagator",
+      "area": "Vagator",
       "region": "North Goa",
+      "latitude": 15.6022,
+      "longitude": 73.7345,
+      "rating": 4.7,
+      "reviewCount": 2180,
+      "description": "Nestled beneath the dramatic red cliffs of Chapora Fort, W Goa brings vibrant luxury, avant-garde design, high-energy mixology, and direct access to the golden sands of Vagator Beach.",
+      "images": [
+        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "amenities": [
+        "Rockpool Cliff Sunset Lounge",
+        "AWAY® Spa",
+        "WET® Outdoor Pool",
+        "FIT 24/7 Gym",
+        "Spice Traders Pan-Asian Restaurant",
+        "Living Room Bar & DJ Sessions",
+        "Private Beach Pathway",
+        "Valet Parking"
+      ],
+      "startingPrice": 26000,
+      "propertyType": "5-Star Lifestyle Resort",
+      "rooms": [
+        {
+          "id": "w-room-1",
+          "name": "Wonderful King Room",
+          "capacity": 2,
+          "pricePerNight": 26000
+        },
+        {
+          "id": "w-room-2",
+          "name": "Spectacular Ocean View Room",
+          "capacity": 2,
+          "pricePerNight": 34000
+        },
+        {
+          "id": "w-room-3",
+          "name": "Fabulous Villa with Private Plunge Pool",
+          "capacity": 4,
+          "pricePerNight": 58000
+        }
+      ],
       "address": "Vagator Beach, Bardez, Goa 403509, India",
       "coordinates": {"lat": 15.6022, "lng": 73.7345},
       "image_url": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
       "room_type": "Fabulous Villa with Private Plunge Pool",
       "check_in_time": "3:00 PM",
       "check_out_time": "12:00 PM",
-      "confirmation_code": "WGOA-VAG-77102",
+      "confirmation_code": "GOA-WGOA-77102",
       "guests_count": 2,
-      "status": "Confirmed Sample Reservation",
-      "amenities": [
-        "Rockpool Sunset Deck",
-        "AWAY® Spa",
-        "FIT Gym & Yoga Pavilion",
-        "WET® Outdoor Pool",
-        "Spice Traders Pan-Asian Restaurant",
-        "Living Room Bar & DJ Sessions",
-        "Direct Vagator Beach Access"
-      ],
       "highlights": [
         "Cliffside sunset lounge nestled right beneath historic Chapora Fort",
         "High-energy music programming, bespoke mixology, and avant-garde luxury",
@@ -59,61 +123,247 @@
       ]
     },
     {
-      "id": "the-leela-goa",
-      "name": "The Leela Goa",
-      "area": "Mobor Beach, Cavelossim",
-      "region": "South Goa",
-      "address": "Mobor Beach, Cavelossim, Salcete, Goa 403731, India",
-      "coordinates": {"lat": 15.1585, "lng": 73.9472},
-      "image_url": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80",
-      "room_type": "Royal Villa with Private Lagoon View",
-      "check_in_time": "2:00 PM",
-      "check_out_time": "12:00 PM",
-      "confirmation_code": "LEELA-CAV-33918",
-      "guests_count": 2,
-      "status": "Confirmed Sample Reservation",
-      "amenities": [
-        "75-Acre Tropical Lagoon & Gardens",
-        "12-Hole Executive Golf Course",
-        "The Spa by The Leela",
-        "Private Mobor Beach Access",
-        "The Riverside Italian Fine Dining",
-        "Sal River Luxury Catamaran Cruises",
-        "The Poolside Seafood Grill"
+      "id": "the-westin-goa",
+      "name": "The Westin Goa",
+      "area": "Anjuna",
+      "region": "North Goa",
+      "latitude": 15.5865,
+      "longitude": 73.7483,
+      "rating": 4.6,
+      "reviewCount": 1850,
+      "description": "A tranquil wellness sanctuary situated in the pulsating heart of Anjuna. Boasts the signature Heavenly® Bed, Heavenly Spa, palm-fringed outdoor pools, and easy access to Anjuna Flea Market and coastal night markets.",
+      "images": [
+        "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80"
       ],
+      "amenities": [
+        "Heavenly Spa by Westin",
+        "Lagoon Pool with Swim-up Bar",
+        "WestinWORKOUT® Fitness Studio",
+        "The Market All-Day Diner",
+        "Anjuna Beach Shuttle",
+        "Yoga Lawn",
+        "Electric Car Charging",
+        "High-Speed Wi-Fi"
+      ],
+      "startingPrice": 18500,
+      "propertyType": "Luxury Wellness Resort",
+      "rooms": [
+        {
+          "id": "westin-room-1",
+          "name": "Deluxe Patio Room",
+          "capacity": 2,
+          "pricePerNight": 18500
+        },
+        {
+          "id": "westin-room-2",
+          "name": "Premium Pool View Room",
+          "capacity": 3,
+          "pricePerNight": 24000
+        },
+        {
+          "id": "westin-room-3",
+          "name": "Family Suite with Private Balcony",
+          "capacity": 4,
+          "pricePerNight": 38000
+        }
+      ],
+      "address": "DMC Marg, Anjuna, Bardez, Goa 403509, India",
+      "coordinates": {"lat": 15.5865, "lng": 73.7483},
+      "image_url": "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1200&q=80",
+      "room_type": "Premium Pool View Room",
+      "check_in_time": "3:00 PM",
+      "check_out_time": "11:00 AM",
+      "confirmation_code": "GOA-WSTN-41908",
+      "guests_count": 2,
       "highlights": [
-        "Sprawling 75-acre Portuguese-inspired riverside & beachfront sanctuary",
-        "Direct access to pristine Mobor Beach and Sal River estuary",
-        "Unmatched tranquility, wildlife birdwatching, and refined luxury in South Goa"
+        "Westin signature wellness and tranquil tropical landscape in Anjuna",
+        "Minutes from famous Anjuna beach cafes and vibrant night venues",
+        "Expansive multi-tier outdoor lagoon pool and holistic spa therapies"
+      ]
+    },
+    {
+      "id": "itc-grand-goa",
+      "name": "ITC Grand Goa Resort & Spa",
+      "area": "Arossim",
+      "region": "South Goa",
+      "latitude": 15.3340,
+      "longitude": 73.8967,
+      "rating": 4.9,
+      "reviewCount": 2940,
+      "description": "Set across 45 acres of lush landscaped gardens with serene lagoons and direct access to pristine Arossim Beach. Features Indo-Portuguese village architecture and the renowned Kaya Kalp Spa.",
+      "images": [
+        "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "amenities": [
+        "Direct Arossim Beach Access",
+        "Multi-Tier Lagoon Swimming Pool",
+        "Kaya Kalp Ayurvedic Spa",
+        "Ottimo Italian Restaurant",
+        "Kebabs & Kurries Fine Dining",
+        "Kids Activity Club",
+        "Tennis Courts & Water Sports",
+        "24/7 Room Dining"
+      ],
+      "startingPrice": 24000,
+      "propertyType": "5-Star Luxury Beach Resort",
+      "rooms": [
+        {
+          "id": "itc-room-1",
+          "name": "Garden View King Room with Balcony",
+          "capacity": 2,
+          "pricePerNight": 24000
+        },
+        {
+          "id": "itc-room-2",
+          "name": "Lagoon View Premium Suite",
+          "capacity": 3,
+          "pricePerNight": 32000
+        },
+        {
+          "id": "itc-room-3",
+          "name": "Sea Facing Presidential Suite",
+          "capacity": 4,
+          "pricePerNight": 52000
+        }
+      ],
+      "address": "Arossim Beach Road, Cansaulim, Salcete, Goa 403712, India",
+      "coordinates": {"lat": 15.3340, "lng": 73.8967},
+      "image_url": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80",
+      "room_type": "Lagoon View Premium Suite",
+      "check_in_time": "3:00 PM",
+      "check_out_time": "12:00 PM",
+      "confirmation_code": "GOA-ITCG-65231",
+      "guests_count": 2,
+      "highlights": [
+        "45 acres of scenic waterways, swaying coconut groves, and private beach frontage",
+        "Largest multi-level lagoon swimming pool in South Goa",
+        "Award-winning authentic Goan & Indian specialty dining at Kebabs & Kurries"
       ]
     },
     {
       "id": "alila-diwa",
-      "name": "Alila Diwa Goa - Hyatt",
-      "area": "Ada Village, Majorda",
+      "name": "Alila Diwa Goa",
+      "area": "Majorda",
       "region": "South Goa",
+      "latitude": 15.3134,
+      "longitude": 73.9168,
+      "rating": 4.8,
+      "reviewCount": 2610,
+      "description": "Overlooking verdant paddy fields and whispering palms in South Goa's cultural haven of Majorda. Features eco-conscious contemporary Goan architecture, an iconic infinity pool, and the secluded Diwa Club.",
+      "images": [
+        "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "amenities": [
+        "Paddy Field Infinity Pool",
+        "Spa Alila Holistic Wellness",
+        "Vivo All-Day Diner",
+        "Edge Bar & Tropical Lounge",
+        "Complimentary Shuttle to Majorda Beach",
+        "Diwa Club Private Pool & Butler",
+        "Mini Boutique Cinema",
+        "Bicycle Rentals"
+      ],
+      "startingPrice": 19500,
+      "propertyType": "Eco-Luxury Resort",
+      "rooms": [
+        {
+          "id": "alila-room-1",
+          "name": "Terrace King Room",
+          "capacity": 2,
+          "pricePerNight": 19500
+        },
+        {
+          "id": "alila-room-2",
+          "name": "Diwa Club Suite with Courtyard",
+          "capacity": 3,
+          "pricePerNight": 28000
+        },
+        {
+          "id": "alila-room-3",
+          "name": "Alila Presidential Suite with Private Terrace",
+          "capacity": 4,
+          "pricePerNight": 49000
+        }
+      ],
       "address": "48/10, Adao Waddo, Majorda, Salcete, Goa 403713, India",
       "coordinates": {"lat": 15.3134, "lng": 73.9168},
       "image_url": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80",
-      "room_type": "Diwa Club Suite with Courtyard Terrace",
+      "room_type": "Diwa Club Suite with Courtyard",
       "check_in_time": "3:00 PM",
       "check_out_time": "12:00 PM",
-      "confirmation_code": "ALILA-MAJ-51204",
+      "confirmation_code": "GOA-ALIL-51204",
       "guests_count": 2,
-      "status": "Confirmed Sample Reservation",
-      "amenities": [
-        "Paddy Field Infinity Pool",
-        "Spa Alila Ayurveda Pavilion",
-        "Vivo All-Day Diner",
-        "Edge Bar & Lounge",
-        "Complimentary Shuttle to Majorda Beach",
-        "Boutique Mini-Cinema",
-        "Diwa Club Private Pool & Lounge"
-      ],
       "highlights": [
         "Overlooks verdant green paddy fields and whispering coconut palms",
         "5 minutes from the expansive golden sands of Majorda & Utorda beaches",
         "Exclusive Diwa Club wing with personalized butler service"
+      ]
+    },
+    {
+      "id": "park-hyatt-goa",
+      "name": "Park Hyatt Goa Resort and Spa",
+      "area": "Cansaulim / Arossim",
+      "region": "South Goa",
+      "latitude": 15.3395,
+      "longitude": 73.8998,
+      "rating": 4.8,
+      "reviewCount": 2350,
+      "description": "An opulent beach resort designed as an enchanting Indo-Portuguese village, with glistening waterways, lagoons, landscaped gardens, and direct access to pristine silver-sand beaches of South Goa.",
+      "images": [
+        "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "amenities": [
+        "Direct Beachfront Access",
+        "Serpentine Swimming Pool with Waterslide",
+        "Sereno Spa & Ayurvedic Center",
+        "Da Luigi Trattoria Italian",
+        "Palms Seafood Beach Grill",
+        "Kids Camp Hyatt",
+        "Sunset Beach Cabanas",
+        "Concierge Yacht Charters"
+      ],
+      "startingPrice": 23500,
+      "propertyType": "5-Star Seaside Resort",
+      "rooms": [
+        {
+          "id": "hyatt-room-1",
+          "name": "Park King Garden View",
+          "capacity": 2,
+          "pricePerNight": 23500
+        },
+        {
+          "id": "hyatt-room-2",
+          "name": "Park Suite with Lagoon View",
+          "capacity": 3,
+          "pricePerNight": 31000
+        },
+        {
+          "id": "hyatt-room-3",
+          "name": "Sea View Villa Suite with Sun Deck",
+          "capacity": 4,
+          "pricePerNight": 51000
+        }
+      ],
+      "address": "Arossim Beach, Cansaulim, Salcete, Goa 403712, India",
+      "coordinates": {"lat": 15.3395, "lng": 73.8998},
+      "image_url": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
+      "room_type": "Park Suite with Lagoon View",
+      "check_in_time": "3:00 PM",
+      "check_out_time": "12:00 PM",
+      "confirmation_code": "GOA-PHYT-92015",
+      "guests_count": 2,
+      "highlights": [
+        "Stunning village layout connected by canals and arched Portuguese bridges",
+        "Spectacular free-form swimming pool with waterslides and poolside bar",
+        "Romantic sunset dinners directly on the uncrowded sands of Arossim Beach"
       ]
     }
   ],
@@ -124,14 +374,19 @@
       "category": "restaurant",
       "area": "Assagao",
       "region": "North Goa",
+      "latitude": 15.5908,
+      "longitude": 73.7725,
+      "coordinates": {"lat": 15.5908, "lng": 73.7725},
       "cuisine": "Peninsular South Indian, Coastal Seafood, Cocktails",
       "price_range": "₹₹₹ (₹1,800 for two)",
       "vibe": "Bohemian, heritage garden villa, romantic, relaxed",
       "distance_map": {
         "taj-fort-aguada": "14 km (~30 mins)",
         "w-goa": "5.5 km (~12 mins - Near Hotel)",
-        "the-leela-goa": "52 km (~1 hr 25 mins)",
-        "alila-diwa": "39 km (~1 hr 10 mins)"
+        "the-westin-goa": "3.8 km (~8 mins - Near Hotel)",
+        "itc-grand-goa": "42 km (~1 hr 15 mins)",
+        "alila-diwa": "39 km (~1 hr 10 mins)",
+        "park-hyatt-goa": "41 km (~1 hr 15 mins)"
       },
       "best_time": "Dinner (7:30 PM - 11:00 PM)",
       "duration": "1.5 - 2 hours",
@@ -146,14 +401,19 @@
       "category": "restaurant",
       "area": "Siolim",
       "region": "North Goa",
+      "latitude": 15.6267,
+      "longitude": 73.7634,
+      "coordinates": {"lat": 15.6267, "lng": 73.7634},
       "cuisine": "Greek, Mediterranean, Seafood & Cocktails",
       "price_range": "₹₹₹₹ (₹2,800 for two)",
       "vibe": "Sunset vibes, glamorous, cliffside riverfront view, live performances",
       "distance_map": {
         "taj-fort-aguada": "18 km (~35 mins)",
         "w-goa": "8.5 km (~18 mins - Near Hotel)",
-        "the-leela-goa": "58 km (~1 hr 35 mins)",
-        "alila-diwa": "45 km (~1 hr 20 mins)"
+        "the-westin-goa": "7.2 km (~15 mins)",
+        "itc-grand-goa": "48 km (~1 hr 25 mins)",
+        "alila-diwa": "45 km (~1 hr 20 mins)",
+        "park-hyatt-goa": "47 km (~1 hr 25 mins)"
       },
       "best_time": "Sunset into Dinner (5:00 PM - 9:30 PM)",
       "duration": "2 - 3 hours",
@@ -168,14 +428,19 @@
       "category": "restaurant",
       "area": "Candolim",
       "region": "North Goa",
+      "latitude": 15.5186,
+      "longitude": 73.7675,
+      "coordinates": {"lat": 15.5186, "lng": 73.7675},
       "cuisine": "Authentic Goan, Fresh Seafood, Multi-cuisine",
       "price_range": "₹₹₹ (₹1,600 for two)",
       "vibe": "Family-friendly, vibrant, live acoustic music, seaside breeze",
       "distance_map": {
         "taj-fort-aguada": "2.5 km (~7 mins - Near Hotel)",
         "w-goa": "12 km (~25 mins)",
-        "the-leela-goa": "48 km (~1 hr 20 mins)",
-        "alila-diwa": "35 km (~55 mins)"
+        "the-westin-goa": "9.5 km (~20 mins)",
+        "itc-grand-goa": "38 km (~1 hr)",
+        "alila-diwa": "35 km (~55 mins)",
+        "park-hyatt-goa": "37 km (~1 hr)"
       },
       "best_time": "Lunch or Dinner (12:30 PM - 3:30 PM, 7:00 PM - 11:00 PM)",
       "duration": "1.5 hours",
@@ -190,14 +455,19 @@
       "category": "restaurant",
       "area": "Cavelossim / Mobor",
       "region": "South Goa",
+      "latitude": 15.1612,
+      "longitude": 73.9488,
+      "coordinates": {"lat": 15.1612, "lng": 73.9488},
       "cuisine": "Authentic Goan Portuguese Seafood, Riverfront Dining",
       "price_range": "₹₹₹ (₹1,800 for two)",
       "vibe": "Scenic riverfront deck, gentle breezes, traditional fishing boat decor, romantic sunset",
       "distance_map": {
         "taj-fort-aguada": "50 km (~1 hr 25 mins)",
         "w-goa": "59 km (~1 hr 40 mins)",
-        "the-leela-goa": "0.8 km (2 mins drive / 10 mins walk - At Hotel Doorstep)",
-        "alila-diwa": "18 km (~30 mins)"
+        "the-westin-goa": "56 km (~1 hr 35 mins)",
+        "itc-grand-goa": "21 km (~35 mins)",
+        "alila-diwa": "18 km (~30 mins)",
+        "park-hyatt-goa": "20 km (~35 mins)"
       },
       "best_time": "Lunch or Sunset Dinner (12:30 PM - 11:00 PM)",
       "duration": "2 hours",
@@ -212,14 +482,19 @@
       "category": "restaurant",
       "area": "Betalbatim",
       "region": "South Goa",
+      "latitude": 15.2985,
+      "longitude": 73.9182,
+      "coordinates": {"lat": 15.2985, "lng": 73.9182},
       "cuisine": "Legendary Goan Coastal Cuisine, Fresh Seafood, Tandoori",
       "price_range": "₹₹₹ (₹1,700 for two)",
       "vibe": "Iconic Goan landmark, bustling, live acoustic Goan trios, legendary hospitality",
       "distance_map": {
         "taj-fort-aguada": "37 km (~1 hr)",
         "w-goa": "46 km (~1 hr 15 mins)",
-        "the-leela-goa": "16 km (~25 mins)",
-        "alila-diwa": "2.2 km (~5 mins - Near Hotel)"
+        "the-westin-goa": "44 km (~1 hr 10 mins)",
+        "itc-grand-goa": "4.5 km (~10 mins - Near Hotel)",
+        "alila-diwa": "2.2 km (~5 mins - Near Hotel)",
+        "park-hyatt-goa": "4.8 km (~10 mins - Near Hotel)"
       },
       "best_time": "Lunch (1:00 PM - 3:30 PM) or Dinner (7:30 PM - 11:00 PM)",
       "duration": "1.5 - 2 hours",
@@ -234,14 +509,19 @@
       "category": "restaurant",
       "area": "Benaulim",
       "region": "South Goa",
+      "latitude": 15.2634,
+      "longitude": 73.9298,
+      "coordinates": {"lat": 15.2634, "lng": 73.9298},
       "cuisine": "Modern Reimagined Goan Heritage, Artisanal Tasting Menus",
       "price_range": "₹₹₹₹ (₹3,200 for two)",
       "vibe": "Contemporary fine dining, artisanal storytelling, intimate, culinary artistry",
       "distance_map": {
         "taj-fort-aguada": "42 km (~1 hr 10 mins)",
         "w-goa": "51 km (~1 hr 25 mins)",
-        "the-leela-goa": "12 km (~20 mins - Near Hotel)",
-        "alila-diwa": "7.5 km (~15 mins - Near Hotel)"
+        "the-westin-goa": "48 km (~1 hr 20 mins)",
+        "itc-grand-goa": "9.8 km (~18 mins - Near Hotel)",
+        "alila-diwa": "7.5 km (~15 mins - Near Hotel)",
+        "park-hyatt-goa": "10.2 km (~20 mins - Near Hotel)"
       },
       "best_time": "Dinner (7:00 PM - 10:30 PM, Reservations Essential)",
       "duration": "2 - 2.5 hours",
@@ -256,14 +536,19 @@
       "category": "restaurant",
       "area": "Utorda Beach",
       "region": "South Goa",
+      "latitude": 15.3289,
+      "longitude": 73.9015,
+      "coordinates": {"lat": 15.3289, "lng": 73.9015},
       "cuisine": "Fresh Coastal Seafood, Beach Shack Grill",
       "price_range": "₹₹₹ (₹1,500 for two)",
       "vibe": "Sand-under-feet beachfront dining, swaying lanterns, sunset cocktails",
       "distance_map": {
         "taj-fort-aguada": "35 km (~55 mins)",
         "w-goa": "44 km (~1 hr 10 mins)",
-        "the-leela-goa": "19 km (~30 mins)",
-        "alila-diwa": "2.8 km (~6 mins - Near Hotel)"
+        "the-westin-goa": "42 km (~1 hr 05 mins)",
+        "itc-grand-goa": "1.5 km (~4 mins - Near Hotel)",
+        "alila-diwa": "2.8 km (~6 mins - Near Hotel)",
+        "park-hyatt-goa": "1.2 km (~3 mins - Near Hotel)"
       },
       "best_time": "Sunset into Dinner (4:30 PM - 10:00 PM)",
       "duration": "2 hours",
@@ -278,14 +563,19 @@
       "category": "restaurant",
       "area": "Baga",
       "region": "North Goa",
+      "latitude": 15.5583,
+      "longitude": 73.7516,
+      "coordinates": {"lat": 15.5583, "lng": 73.7516},
       "cuisine": "Goan Seafood, Continental, Beachside Grill, Pastries",
       "price_range": "₹₹ (₹1,200 for two)",
       "vibe": "Iconic beach shack, casual, breezy, sea-facing",
       "distance_map": {
         "taj-fort-aguada": "6.5 km (~15 mins)",
         "w-goa": "6.8 km (~15 mins)",
-        "the-leela-goa": "51 km (~1 hr 25 mins)",
-        "alila-diwa": "38 km (~1 hr)"
+        "the-westin-goa": "4.2 km (~10 mins - Near Hotel)",
+        "itc-grand-goa": "41 km (~1 hr 05 mins)",
+        "alila-diwa": "38 km (~1 hr)",
+        "park-hyatt-goa": "40 km (~1 hr 05 mins)"
       },
       "best_time": "Late Afternoon to Dinner (4:00 PM - 10:30 PM)",
       "duration": "1.5 hours",
@@ -300,14 +590,19 @@
       "category": "restaurant",
       "area": "Calangute",
       "region": "North Goa",
+      "latitude": 15.5398,
+      "longitude": 73.7588,
+      "coordinates": {"lat": 15.5398, "lng": 73.7588},
       "cuisine": "Goan Portuguese, Fresh Seafood, European",
       "price_range": "₹₹₹ (₹2,200 for two)",
       "vibe": "Quiet beachfront sanctuary, pet-friendly, intimate, shaded tropical garden",
       "distance_map": {
         "taj-fort-aguada": "4.5 km (~10 mins - Near Hotel)",
         "w-goa": "9 km (~20 mins)",
-        "the-leela-goa": "49 km (~1 hr 20 mins)",
-        "alila-diwa": "36 km (~55 mins)"
+        "the-westin-goa": "6.5 km (~15 mins)",
+        "itc-grand-goa": "39 km (~1 hr)",
+        "alila-diwa": "36 km (~55 mins)",
+        "park-hyatt-goa": "38 km (~1 hr)"
       },
       "best_time": "Lunch or Sunset (1:00 PM - 6:30 PM)",
       "duration": "2 hours",
@@ -322,14 +617,19 @@
       "category": "restaurant",
       "area": "Assagao",
       "region": "North Goa",
+      "latitude": 15.5942,
+      "longitude": 73.7711,
+      "coordinates": {"lat": 15.5942, "lng": 73.7711},
       "cuisine": "Traditional Goan Hindu Thali, Fresh Local Catch",
       "price_range": "₹ (₹600 for two)",
       "vibe": "No-frills, authentic local favorite, paddy field views",
       "distance_map": {
         "taj-fort-aguada": "13 km (~25 mins)",
         "w-goa": "4.2 km (~10 mins - Near Hotel)",
-        "the-leela-goa": "53 km (~1 hr 25 mins)",
-        "alila-diwa": "40 km (~1 hr 10 mins)"
+        "the-westin-goa": "3.5 km (~8 mins - Near Hotel)",
+        "itc-grand-goa": "43 km (~1 hr 15 mins)",
+        "alila-diwa": "40 km (~1 hr 10 mins)",
+        "park-hyatt-goa": "42 km (~1 hr 15 mins)"
       },
       "best_time": "Lunch (12:00 PM - 3:30 PM)",
       "duration": "1 hour",
@@ -344,14 +644,19 @@
       "category": "beach",
       "area": "Candolim",
       "region": "North Goa",
+      "latitude": 15.4982,
+      "longitude": 73.7654,
+      "coordinates": {"lat": 15.4982, "lng": 73.7654},
       "cuisine": "Beachside snacks and drinks",
       "price_range": "Free entry (Water sports ₹500 - ₹2,000)",
       "vibe": "Clean golden sand, gentle waves, watersports, historic fort backdrop",
       "distance_map": {
         "taj-fort-aguada": "0.4 km (5 mins walk - At Hotel Doorstep)",
         "w-goa": "13 km (~25 mins)",
-        "the-leela-goa": "50 km (~1 hr 25 mins)",
-        "alila-diwa": "37 km (~55 mins)"
+        "the-westin-goa": "10 km (~22 mins)",
+        "itc-grand-goa": "40 km (~1 hr)",
+        "alila-diwa": "37 km (~55 mins)",
+        "park-hyatt-goa": "39 km (~1 hr)"
       },
       "best_time": "Early Morning (6:30 AM - 9:00 AM) or Sunset (5:00 PM - 6:45 PM)",
       "duration": "2 hours",
@@ -366,14 +671,19 @@
       "category": "beach",
       "area": "Vagator",
       "region": "North Goa",
+      "latitude": 15.6028,
+      "longitude": 73.7336,
+      "coordinates": {"lat": 15.6028, "lng": 73.7336},
       "cuisine": "Cliffside cafes, cocktails & woodfired sourdough",
       "price_range": "Free entry",
       "vibe": "Dramatic red laterite cliffs, golden cove sands, sunset parties, sculpted Shiva rock",
       "distance_map": {
         "taj-fort-aguada": "13 km (~25 mins)",
         "w-goa": "0.3 km (3 mins walk - At Hotel Doorstep)",
-        "the-leela-goa": "59 km (~1 hr 35 mins)",
-        "alila-diwa": "46 km (~1 hr 20 mins)"
+        "the-westin-goa": "3.5 km (~8 mins - Near Hotel)",
+        "itc-grand-goa": "49 km (~1 hr 25 mins)",
+        "alila-diwa": "46 km (~1 hr 20 mins)",
+        "park-hyatt-goa": "48 km (~1 hr 25 mins)"
       },
       "best_time": "Morning swim or Sunset Golden Hour (4:30 PM - 7:00 PM)",
       "duration": "2 - 3 hours",
@@ -388,14 +698,19 @@
       "category": "beach",
       "area": "Cavelossim",
       "region": "South Goa",
+      "latitude": 15.1582,
+      "longitude": 73.9455,
+      "coordinates": {"lat": 15.1582, "lng": 73.9455},
       "cuisine": "Fresh fruit platters, coconut water, beach shacks",
       "price_range": "Free entry (Kayaking & Jet Ski ₹600 - ₹1,500)",
       "vibe": "Endless powdery white sands, dolphin sightings, ultra-peaceful, clean turquoise sea",
       "distance_map": {
         "taj-fort-aguada": "50 km (~1 hr 25 mins)",
         "w-goa": "60 km (~1 hr 40 mins)",
-        "the-leela-goa": "0.2 km (Direct Private Access - At Hotel Doorstep)",
-        "alila-diwa": "19 km (~30 mins)"
+        "the-westin-goa": "57 km (~1 hr 35 mins)",
+        "itc-grand-goa": "22 km (~35 mins)",
+        "alila-diwa": "19 km (~30 mins)",
+        "park-hyatt-goa": "21 km (~35 mins)"
       },
       "best_time": "Sunrise Walk (6:30 AM - 9:00 AM) or Golden Sunset (5:00 PM - 6:45 PM)",
       "duration": "2 - 3 hours",
@@ -410,14 +725,19 @@
       "category": "beach",
       "area": "Majorda",
       "region": "South Goa",
+      "latitude": 15.3182,
+      "longitude": 73.9085,
+      "coordinates": {"lat": 15.3182, "lng": 73.9085},
       "cuisine": "Beachside Goan shacks and chilled beer",
       "price_range": "Free entry",
       "vibe": "Expansive flat golden sands, gentle rolling surf, peaceful, shaded pine groves",
       "distance_map": {
         "taj-fort-aguada": "36 km (~55 mins)",
         "w-goa": "45 km (~1 hr 15 mins)",
-        "the-leela-goa": "18 km (~30 mins)",
-        "alila-diwa": "1.2 km (2 mins shuttle / 10 mins walk - Near Hotel)"
+        "the-westin-goa": "43 km (~1 hr 10 mins)",
+        "itc-grand-goa": "2.2 km (~5 mins - Near Hotel)",
+        "alila-diwa": "1.2 km (2 mins shuttle / 10 mins walk - Near Hotel)",
+        "park-hyatt-goa": "2.0 km (~5 mins - Near Hotel)"
       },
       "best_time": "Early Morning or Sunset (6:30 AM - 9:00 AM, 4:30 PM - 6:45 PM)",
       "duration": "2 hours",
@@ -432,14 +752,19 @@
       "category": "beach",
       "area": "Palolem",
       "region": "South Goa",
+      "latitude": 15.0100,
+      "longitude": 74.0232,
+      "coordinates": {"lat": 15.0100, "lng": 74.0232},
       "cuisine": "Seafood, Vegan cafes, Tiki cocktails",
       "price_range": "Free (Kayak rental ₹300/hr)",
       "vibe": "Crescent bay, postcard calm turquoise waters, colorful beach huts, kayak to Butterfly Beach",
       "distance_map": {
         "taj-fort-aguada": "75 km (~1 hr 50 mins)",
         "w-goa": "85 km (~2 hrs 05 mins)",
-        "the-leela-goa": "34 km (~45 mins - South Trip)",
-        "alila-diwa": "48 km (~1 hr 10 mins)"
+        "the-westin-goa": "82 km (~2 hrs)",
+        "itc-grand-goa": "46 km (~1 hr 05 mins)",
+        "alila-diwa": "48 km (~1 hr 10 mins)",
+        "park-hyatt-goa": "47 km (~1 hr 05 mins)"
       },
       "best_time": "Full Day Trip or Morning Kayak (8:00 AM - 5:00 PM)",
       "duration": "4 - 6 hours",
@@ -454,14 +779,19 @@
       "category": "culture",
       "area": "Cabo de Rama",
       "region": "South Goa",
+      "latitude": 15.0906,
+      "longitude": 73.9217,
+      "coordinates": {"lat": 15.0906, "lng": 73.9217},
       "cuisine": "Local cliffside juice stalls & coconut water",
       "price_range": "Free entry",
       "vibe": "Ancient clifftop fortress, panoramic turquoise ocean vista, dramatic rocky coast",
       "distance_map": {
         "taj-fort-aguada": "68 km (~1 hr 45 mins)",
         "w-goa": "77 km (~2 hrs)",
-        "the-leela-goa": "22 km (~35 mins - Near Hotel)",
-        "alila-diwa": "35 km (~50 mins)"
+        "the-westin-goa": "74 km (~1 hr 55 mins)",
+        "itc-grand-goa": "33 km (~45 mins)",
+        "alila-diwa": "35 km (~50 mins)",
+        "park-hyatt-goa": "34 km (~45 mins)"
       },
       "best_time": "Late Afternoon to Sunset (4:00 PM - 6:30 PM)",
       "duration": "2 hours",
@@ -476,14 +806,19 @@
       "category": "culture",
       "area": "Sinquerim / Candolim",
       "region": "North Goa",
+      "latitude": 15.4925,
+      "longitude": 73.7736,
+      "coordinates": {"lat": 15.4925, "lng": 73.7736},
       "cuisine": "Nearby local cafes and fresh tender coconut",
       "price_range": "₹50 entry fee",
       "vibe": "17th-century Portuguese fortress, sweeping sea panoramic vista, history",
       "distance_map": {
         "taj-fort-aguada": "0.8 km (2 mins drive / 10 mins walk from Hotel)",
         "w-goa": "13 km (~25 mins)",
-        "the-leela-goa": "51 km (~1 hr 25 mins)",
-        "alila-diwa": "38 km (~1 hr)"
+        "the-westin-goa": "11 km (~22 mins)",
+        "itc-grand-goa": "40 km (~1 hr)",
+        "alila-diwa": "38 km (~1 hr)",
+        "park-hyatt-goa": "39 km (~1 hr)"
       },
       "best_time": "Early Morning (9:00 AM - 10:30 AM) or Sunset (4:30 PM - 5:45 PM)",
       "duration": "1 - 1.5 hours",
@@ -498,14 +833,19 @@
       "category": "culture",
       "area": "Vagator",
       "region": "North Goa",
+      "latitude": 15.6067,
+      "longitude": 73.7381,
+      "coordinates": {"lat": 15.6067, "lng": 73.7381},
       "cuisine": "Fresh lime sodas at base",
       "price_range": "Free",
       "vibe": "Dramatic red laterite ruins, panoramic view of Vagator Beach & Chapora river mouth",
       "distance_map": {
         "taj-fort-aguada": "12 km (~25 mins)",
         "w-goa": "1.1 km (3 mins drive / 12 mins walk - At Doorstep)",
-        "the-leela-goa": "60 km (~1 hr 40 mins)",
-        "alila-diwa": "47 km (~1 hr 20 mins)"
+        "the-westin-goa": "3.2 km (~7 mins - Near Hotel)",
+        "itc-grand-goa": "50 km (~1 hr 25 mins)",
+        "alila-diwa": "47 km (~1 hr 20 mins)",
+        "park-hyatt-goa": "49 km (~1 hr 25 mins)"
       },
       "best_time": "Golden Hour / Sunset (5:00 PM - 6:30 PM)",
       "duration": "1.5 hours",
@@ -520,14 +860,19 @@
       "category": "culture",
       "area": "Panjim",
       "region": "Central Goa",
+      "latitude": 15.4989,
+      "longitude": 73.8322,
+      "coordinates": {"lat": 15.4989, "lng": 73.8322},
       "cuisine": "Traditional Goan Bakeries (Confeitaria 31 De Janeiro), Feni & Tapas",
       "price_range": "Free self-walk (Guided tour ₹800)",
       "vibe": "Cobblestone alleys, pastel yellow & indigo Portuguese villas, terracotta roofs, European charm",
       "distance_map": {
         "taj-fort-aguada": "13 km (~25 mins)",
         "w-goa": "19 km (~35 mins)",
-        "the-leela-goa": "42 km (~1 hr)",
-        "alila-diwa": "28 km (~45 mins)"
+        "the-westin-goa": "17 km (~30 mins)",
+        "itc-grand-goa": "26 km (~40 mins)",
+        "alila-diwa": "28 km (~45 mins)",
+        "park-hyatt-goa": "27 km (~40 mins)"
       },
       "best_time": "Morning (8:30 AM - 11:00 AM) or Late Afternoon (4:00 PM - 6:30 PM)",
       "duration": "2 hours",
@@ -542,14 +887,19 @@
       "category": "culture",
       "area": "Old Goa",
       "region": "Central Goa",
+      "latitude": 15.5008,
+      "longitude": 73.9117,
+      "coordinates": {"lat": 15.5008, "lng": 73.9117},
       "cuisine": "Local snack stalls",
       "price_range": "Free (Museum ₹20)",
       "vibe": "UNESCO World Heritage, Baroque architecture, sacred silence, towering cathedrals",
       "distance_map": {
         "taj-fort-aguada": "22 km (~40 mins)",
         "w-goa": "26 km (~50 mins)",
-        "the-leela-goa": "39 km (~55 mins)",
-        "alila-diwa": "27 km (~40 mins)"
+        "the-westin-goa": "24 km (~45 mins)",
+        "itc-grand-goa": "25 km (~38 mins)",
+        "alila-diwa": "27 km (~40 mins)",
+        "park-hyatt-goa": "26 km (~38 mins)"
       },
       "best_time": "Morning (9:30 AM - 12:00 PM)",
       "duration": "2 hours",
@@ -564,14 +914,19 @@
       "category": "activity",
       "area": "Sinquerim Jetty",
       "region": "North Goa",
+      "latitude": 15.4855,
+      "longitude": 73.7688,
+      "coordinates": {"lat": 15.4855, "lng": 73.7688},
       "cuisine": "Island BBQ Lunch included",
       "price_range": "₹2,500 - ₹3,500 per person",
       "vibe": "Adventure, underwater coral reefs, marine life, boat cruise",
       "distance_map": {
         "taj-fort-aguada": "1.2 km (Boat departs Sinquerim Jetty near Hotel)",
         "w-goa": "14 km (~30 mins)",
-        "the-leela-goa": "52 km (~1 hr 25 mins)",
-        "alila-diwa": "38 km (~1 hr)"
+        "the-westin-goa": "12 km (~25 mins)",
+        "itc-grand-goa": "41 km (~1 hr 05 mins)",
+        "alila-diwa": "38 km (~1 hr)",
+        "park-hyatt-goa": "40 km (~1 hr 05 mins)"
       },
       "best_time": "Morning (8:00 AM - 2:00 PM)",
       "duration": "5 - 6 hours",
@@ -586,14 +941,19 @@
       "category": "activity",
       "area": "Panjim Riverfront",
       "region": "Central Goa",
+      "latitude": 15.4986,
+      "longitude": 73.8277,
+      "coordinates": {"lat": 15.4986, "lng": 73.8277},
       "cuisine": "Goan tapas, wine & craft beer onboard",
       "price_range": "₹1,800 - ₹2,500 per person",
       "vibe": "Breezy luxury, live saxophone music, sunset over the Arabian Sea, romantic",
       "distance_map": {
         "taj-fort-aguada": "14 km (~25 mins)",
         "w-goa": "19 km (~35 mins)",
-        "the-leela-goa": "42 km (~1 hr)",
-        "alila-diwa": "29 km (~45 mins)"
+        "the-westin-goa": "17 km (~30 mins)",
+        "itc-grand-goa": "27 km (~40 mins)",
+        "alila-diwa": "29 km (~45 mins)",
+        "park-hyatt-goa": "28 km (~40 mins)"
       },
       "best_time": "Sunset (5:15 PM - 7:00 PM)",
       "duration": "2 hours",
@@ -608,14 +968,19 @@
       "category": "activity",
       "area": "Ponda",
       "region": "Central Goa",
+      "latitude": 15.4024,
+      "longitude": 74.0205,
+      "coordinates": {"lat": 15.4024, "lng": 74.0205},
       "cuisine": "Traditional Goan Hindu buffet served on banana leaf with fresh cashews & Feni welcome drink",
       "price_range": "₹600 per person (includes full lunch)",
       "vibe": "Eco-nature, fragrant spice trails, tropical lush greenery, authentic",
       "distance_map": {
         "taj-fort-aguada": "38 km (~55 mins)",
         "w-goa": "44 km (~1 hr 05 mins)",
-        "the-leela-goa": "32 km (~45 mins)",
-        "alila-diwa": "24 km (~35 mins)"
+        "the-westin-goa": "41 km (~1 hr)",
+        "itc-grand-goa": "22 km (~32 mins)",
+        "alila-diwa": "24 km (~35 mins)",
+        "park-hyatt-goa": "23 km (~32 mins)"
       },
       "best_time": "Morning to Lunch (10:30 AM - 2:00 PM)",
       "duration": "3 hours",
@@ -630,14 +995,19 @@
       "category": "nightlife",
       "area": "Anjuna",
       "region": "North Goa",
+      "latitude": 15.5728,
+      "longitude": 73.7428,
+      "coordinates": {"lat": 15.5728, "lng": 73.7428},
       "cuisine": "Continental, Pizza, Cocktails, Shisha",
       "price_range": "₹₹ (₹1,500 for two)",
       "vibe": "Psytrance heritage, sunset trance, beach party, electric energy",
       "distance_map": {
         "taj-fort-aguada": "9.5 km (~20 mins)",
         "w-goa": "3.5 km (~8 mins - Near Hotel)",
-        "the-leela-goa": "56 km (~1 hr 35 mins)",
-        "alila-diwa": "43 km (~1 hr 15 mins)"
+        "the-westin-goa": "1.8 km (~4 mins - Near Hotel)",
+        "itc-grand-goa": "46 km (~1 hr 18 mins)",
+        "alila-diwa": "43 km (~1 hr 15 mins)",
+        "park-hyatt-goa": "45 km (~1 hr 18 mins)"
       },
       "best_time": "Sunset & Night (5:30 PM - 2:00 AM)",
       "duration": "2 - 4 hours",
@@ -652,14 +1022,19 @@
       "category": "beach",
       "area": "Ashvem",
       "region": "North Goa",
+      "latitude": 15.6582,
+      "longitude": 73.7145,
+      "coordinates": {"lat": 15.6582, "lng": 73.7145},
       "cuisine": "Boutique cafes, healthy smoothie bowls, French bakeries",
       "price_range": "Free (Boutique daybeds ₹1,000 minimum spend)",
       "vibe": "Serene, upscale, expansive flat sands, bohemian beach clubs, chill",
       "distance_map": {
         "taj-fort-aguada": "22 km (~40 mins)",
         "w-goa": "12 km (~22 mins - Near Hotel)",
-        "the-leela-goa": "66 km (~1 hr 50 mins)",
-        "alila-diwa": "53 km (~1 hr 30 mins)"
+        "the-westin-goa": "14 km (~25 mins)",
+        "itc-grand-goa": "56 km (~1 hr 35 mins)",
+        "alila-diwa": "53 km (~1 hr 30 mins)",
+        "park-hyatt-goa": "55 km (~1 hr 35 mins)"
       },
       "best_time": "Late Morning through Sunset (10:00 AM - 6:30 PM)",
       "duration": "3 - 4 hours",

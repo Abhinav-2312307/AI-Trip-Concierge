@@ -1,26 +1,77 @@
-export interface HotelBooking {
+export interface HotelRoom {
+  id: string;
+  name: string;
+  capacity: number;
+  pricePerNight: number;
+}
+
+export interface HotelProperty {
   id: string;
   name: string;
   area: string;
-  region: 'North Goa' | 'South Goa' | 'Central Goa' | string;
-  address: string;
-  coordinates: { lat: number; lng: number };
-  image_url: string;
-  room_type: string;
-  check_in_time: string;
-  check_out_time: string;
-  confirmation_code: string;
-  guests_count: number;
+  region: 'North Goa' | 'South Goa' | string;
+  latitude: number;
+  longitude: number;
+  rating: number;
+  reviewCount: number;
+  description: string;
+  images: string[];
+  amenities: string[];
+  startingPrice: number;
+  propertyType: string;
+  rooms: HotelRoom[];
+  address?: string;
+  coordinates?: { lat: number; lng: number };
+  image_url?: string;
+  room_type?: string;
+  check_in_time?: string;
+  check_out_time?: string;
+  confirmation_code?: string;
+  guests_count?: number;
   guest_name?: string;
-  status: string;
+  status?: string;
   check_in?: string;
   check_in_formatted?: string;
   check_out?: string;
   check_out_formatted?: string;
   duration?: string;
   days_until_checkin?: number;
-  amenities: string[];
-  highlights: string[];
+  highlights?: string[];
+}
+
+export interface HotelBooking extends HotelProperty {
+  // Alias for backwards compatibility
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+}
+
+export interface Booking {
+  id: string;
+  userId?: string;
+  hotelId: string;
+  hotelName: string;
+  hotelLocation: string;
+  hotelImage?: string;
+  checkIn: string;
+  checkInFormatted: string;
+  checkOut: string;
+  checkOutFormatted: string;
+  nights: number;
+  guests: number;
+  room: HotelRoom;
+  subtotal: number;
+  gst: number;
+  totalAmount: number;
+  status: 'CONFIRMED' | 'PENDING' | 'CANCELLED';
+  guestName: string;
+  guestEmail: string;
+  guestPhone?: string;
+  createdAt?: string;
 }
 
 export interface Place {
@@ -29,6 +80,9 @@ export interface Place {
   category: 'restaurant' | 'beach' | 'culture' | 'nightlife' | 'activity';
   area: string;
   region: string;
+  latitude?: number;
+  longitude?: number;
+  coordinates?: { lat: number; lng: number };
   cuisine?: string;
   price_range: string;
   vibe: string;

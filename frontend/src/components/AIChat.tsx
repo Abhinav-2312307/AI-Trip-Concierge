@@ -188,23 +188,28 @@ export const AIChat: React.FC<AIChatProps> = ({
   };
 
   const sampleQuestions = [
-    "What's a good place for dinner near me tonight?",
-    "What should I know before check-in?",
-    "Suggest a beach close to my stay.",
-    "What can I do near my hotel?",
-    "Plan tomorrow's activities from my hotel."
+    "Where should I eat tonight?",
+    "What beaches are near me?",
+    "What can I do near me?",
+    "Plan my evening.",
+    "Plan a romantic evening.",
+    "I have 3 hours free.",
+    "Where can I find authentic Goan food?",
+    "How do I travel from Candolim to Panjim?",
+    "Change my itinerary because of rain.",
+    "What should I know before check-in?"
   ];
 
   return (
     <div className="animate-fade-in" style={{
-      maxWidth: '920px',
+      maxWidth: '960px',
       margin: '12px auto 0',
     }}>
       {/* Chat Container Box */}
       <div className="glass-card" style={{
         display: 'flex',
         flexDirection: 'column',
-        height: '700px',
+        height: '720px',
         overflow: 'hidden',
         border: '1px solid var(--border-primary)',
         borderRadius: 'var(--radius-md)',
@@ -222,25 +227,26 @@ export const AIChat: React.FC<AIChatProps> = ({
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: 'var(--radius-xs)',
-              background: 'var(--accent-primary)',
+              width: '38px',
+              height: '38px',
+              borderRadius: '8px',
+              background: 'linear-gradient(135deg, #D05B3B 0%, #E28445 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(208, 91, 59, 0.3)'
             }}>
-              <Bot size={20} color="#FFFFFF" />
+              <Bot size={22} color="#FFFFFF" />
             </div>
             <div>
-              <div style={{ fontSize: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span>AI Concierge</span>
-                <span style={{ fontSize: '0.74rem', color: 'var(--accent-primary)', background: 'rgba(208, 91, 59, 0.12)', padding: '1px 7px', borderRadius: '3px', fontWeight: 600 }}>
+              <div style={{ fontSize: '1.05rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontFamily: 'Playfair Display, serif' }}>YOUR PERSONAL GOA CONCIERGE</span>
+                <span style={{ fontSize: '0.74rem', color: '#D05B3B', background: 'rgba(208, 91, 59, 0.12)', padding: '2px 8px', borderRadius: '4px', fontWeight: 700 }}>
                   {hotelName}
                 </span>
               </div>
-              <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
-                Voice-Enabled Concierge • Origin: {hotelArea}
+              <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>
+                24/7 Grounded Assistant • Origin: {hotelArea} • Proactive Proximity Routing
               </div>
             </div>
           </div>
