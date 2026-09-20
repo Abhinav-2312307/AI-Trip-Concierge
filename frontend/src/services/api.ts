@@ -12,9 +12,39 @@ import type {
   ChatFeedbackPayload
 } from '../types';
 
-const API_BASE = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api`
-  : 'http://localhost:8000/api';
+function getApiBase(): string {
+  const raw = import.meta.env.VITE_API_URL;
+  if (!raw || raw.trim() === '') {
+    // In production browser environments (Render / Vercel), fallback to the live Render backend
+    if (
+      typeof window !== 'undefined' &&
+      (window.location.hostname.includes('onrender.com') ||
+        window.location.hostname.includes('vercel.app'))
+    ) {
+      return 'https://ai-trip-concierge-api.onrender.com/api';
+    }
+    return 'http://localhost:8000/api';
+  }
+
+  let formatted = raw.trim().replace(/\/+$/, '');
+
+  // If host was passed without protocol (e.g. from Render Blueprint host property)
+  if (!formatted.startsWith('http://') && !formatted.startsWith('https://')) {
+    if (formatted.includes(':10000') || !formatted.includes('.')) {
+      formatted = 'https://ai-trip-concierge-api.onrender.com';
+    } else {
+      formatted = `https://${formatted}`;
+    }
+  }
+
+  if (!formatted.endsWith('/api')) {
+    formatted = `${formatted}/api`;
+  }
+
+  return formatted;
+}
+
+const API_BASE = getApiBase();
 
 export async function fetchBookings(
   search?: string,
