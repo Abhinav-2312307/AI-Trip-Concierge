@@ -33,9 +33,10 @@ services:
         sync: false
 
   # --- 2. FRONTEND STATIC SITE ---
-  # Note: Static sites are deployed to Render's global CDN and do not specify region or plan.
-  - type: static
+  # Note: Static sites use type: web with runtime: static (without region or plan)
+  - type: web
     name: ai-trip-concierge-web
+    runtime: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
