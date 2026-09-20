@@ -339,7 +339,7 @@ class AIConciergeAgent:
             "parts": [{"text": user_content}]
         })
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={self.gemini_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key={self.gemini_key}"
         payload = {
             "contents": contents,
             "generationConfig": {"temperature": 0.4, "maxOutputTokens": 1200}
