@@ -5,7 +5,11 @@ import type {
   SmartAlert,
   TransportGuideItem,
   HotelBooking,
-  TripSetupRequest
+  TripSetupRequest,
+  ReviewSummary,
+  HotelReview,
+  ReviewCreatePayload,
+  ChatFeedbackPayload
 } from '../types';
 
 const API_BASE = 'http://localhost:8000/api';
@@ -170,5 +174,60 @@ export async function clearCustomTrip(): Promise<any> {
     method: 'POST',
   });
   if (!res.ok) throw new Error('Failed to clear trip');
+  return res.json();
+}
+
+// ─── REVIEW & FEEDBACK API ───
+
+export async function fetchHotelReviews(
+  hotelId?: string,
+  travelType?: string,
+  minRating?: number
+): Promise<ReviewSummary> {
+  const params = new URLSearchParams();
+  if (hotelId) params.append('hotel_id', hotelId);
+  if (travelType && travelType !== 'all') params.append('travel_type', travelType);
+  if (minRating) params.append('min_rating', minRating.toString());
+
+  const queryStr = params.toString() ? `?${params.toString()}` : '';
+  const res = await fetch(`${API_BASE}/reviews${queryStr}`);
+  if (!res.ok) throw new Error('Failed to fetch reviews');
+  return res.json();
+}
+
+export async function submitHotelReview(
+  payload: ReviewCreatePayload
+): Promise<{ status: string; message: string; review: HotelReview }> {
+  const res = await fetch(`${API_BASE}/reviews`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: 'Failed to submit review' }));
+    throw new Error(err.detail || 'Failed to submit review');
+  }
+  return res.json();
+}
+
+export async function voteReviewHelpful(
+  reviewId: string
+): Promise<{ status: string; review_id: string; helpful_count: number }> {
+  const res = await fetch(`${API_BASE}/reviews/${encodeURIComponent(reviewId)}/helpful`, {
+    method: 'POST',
+  });
+  if (!res.ok) throw new Error('Failed to vote review helpful');
+  return res.json();
+}
+
+export async function submitChatFeedback(
+  payload: ChatFeedbackPayload
+): Promise<{ status: string; message: string }> {
+  const res = await fetch(`${API_BASE}/feedback/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error('Failed to submit chat feedback');
   return res.json();
 }

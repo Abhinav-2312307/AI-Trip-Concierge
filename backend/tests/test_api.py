@@ -155,3 +155,59 @@ def test_coastal_conditions():
     assert "sunset" in data
     assert "tide" in data
     assert "ocean" in data
+
+def test_get_reviews():
+    response = client.get("/api/reviews?hotel_id=taj-fort-aguada")
+    assert response.status_code == 200
+    data = response.json()
+    assert "reviews" in data
+    assert "average_rating" in data
+    assert len(data["reviews"]) >= 1
+    assert data["average_rating"] > 0
+    assert "cleanliness" in data["category_averages"]
+
+def test_create_review():
+    payload = {
+        "hotel_id": "taj-fort-aguada",
+        "guest_name": "Priya Sharma",
+        "rating": 5,
+        "title": "Unforgettable Heritage Stay",
+        "comment": "The Arabian sea views from the cliff and the personalized heritage walk were extraordinary.",
+        "travel_type": "Couple",
+        "category_ratings": {
+            "cleanliness": 5.0,
+            "service": 5.0,
+            "location": 5.0,
+            "dining": 4.0,
+            "value": 4.0
+        },
+        "tags": ["Ocean View", "Exceptional Breakfast"]
+    }
+    response = client.post("/api/reviews", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert "review" in data
+    assert data["review"]["guest_name"] == "Priya Sharma"
+    assert data["review"]["rating"] == 5.0
+    assert data["review"]["verified_stay"] is True
+    assert "id" in data["review"]
+    
+    # Verify it can be upvoted
+    review_id = data["review"]["id"]
+    vote_res = client.post(f"/api/reviews/{review_id}/helpful")
+    assert vote_res.status_code == 200
+    assert vote_res.json()["helpful_count"] >= 1
+
+def test_chat_feedback():
+    payload = {
+        "message_id": "msg-123",
+        "feedback_type": "positive",
+        "hotel_id": "taj-fort-aguada",
+        "comment": "Great beach recommendation!"
+    }
+    response = client.post("/api/feedback/chat", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "success"
+
+

@@ -82,6 +82,55 @@ class TripSetupRequest(BaseModel):
     check_out: Optional[str] = Field(default=None, description="Check-out date (YYYY-MM-DD)")
     guest_name: Optional[str] = Field(default=None, description="Guest name")
 
+class ReviewCategoryRatings(BaseModel):
+    cleanliness: Optional[float] = Field(default=5.0, ge=1.0, le=5.0)
+    service: Optional[float] = Field(default=5.0, ge=1.0, le=5.0)
+    location: Optional[float] = Field(default=5.0, ge=1.0, le=5.0)
+    dining: Optional[float] = Field(default=5.0, ge=1.0, le=5.0)
+    value: Optional[float] = Field(default=5.0, ge=1.0, le=5.0)
+
+class ReviewCreateRequest(BaseModel):
+    hotel_id: str = Field(..., description="Target Hotel ID")
+    user_id: Optional[str] = Field(default=None, description="Optional User ID")
+    guest_name: str = Field(..., min_length=2, description="Reviewer name")
+    rating: float = Field(..., ge=1.0, le=5.0, description="Overall Star Rating (1-5)")
+    category_ratings: Optional[ReviewCategoryRatings] = Field(default=None)
+    travel_type: Optional[str] = Field(default="Couple", description="Couple, Family, Solo, Friends, Business")
+    title: str = Field(..., min_length=3, description="Review headline/title")
+    comment: str = Field(..., min_length=10, description="Detailed review text")
+    tags: Optional[List[str]] = Field(default=[], description="Highlight tags")
+    verified_stay: Optional[bool] = Field(default=True)
+
+class ChatFeedbackRequest(BaseModel):
+    message_id: str = Field(..., description="Message ID being rated")
+    feedback_type: str = Field(..., description="'positive' or 'negative'")
+    hotel_id: Optional[str] = Field(default="taj-fort-aguada", description="Hotel context")
+    tags: Optional[List[str]] = Field(default=[], description="Optional feedback tags")
+    comment: Optional[str] = Field(default=None, description="Optional comment")
+
+REVIEWS_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "reviews.json")
+_chat_feedback_store: List[Dict[str, Any]] = []
+
+def load_reviews_data() -> List[Dict[str, Any]]:
+    if os.path.exists(REVIEWS_PATH):
+        try:
+            import json
+            with open(REVIEWS_PATH, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            logger.error(f"Error loading reviews: {e}")
+    return []
+
+def save_reviews_data(reviews: List[Dict[str, Any]]) -> bool:
+    try:
+        import json
+        with open(REVIEWS_PATH, "w", encoding="utf-8") as f:
+            json.dump(reviews, f, indent=2, ensure_ascii=False)
+        return True
+    except Exception as e:
+        logger.error(f"Error saving reviews: {e}")
+        return False
+
 # ─── ENDPOINTS ───
 
 @app.get("/")
@@ -309,3 +358,161 @@ def get_weather(
 ):
     """Retrieve weather and tide info for active hotel."""
     return get_weather_and_tide_info(area=area, hotel_id=hotel_id or "taj-fort-aguada")
+
+# ─── REVIEW & FEEDBACK ENDPOINTS ───
+
+@app.get("/api/reviews")
+def get_reviews(
+    hotel_id: Optional[str] = Query(None, description="Filter by hotel ID"),
+    travel_type: Optional[str] = Query(None, description="Filter by travel type"),
+    min_rating: Optional[float] = Query(None, description="Filter by minimum star rating")
+):
+    """Retrieve verified hotel reviews and aggregated rating summary."""
+    reviews = load_reviews_data()
+
+    if hotel_id:
+        reviews = [r for r in reviews if r.get("hotel_id") == hotel_id]
+
+    if travel_type and travel_type.lower() != "all":
+        reviews = [r for r in reviews if r.get("travel_type", "").lower() == travel_type.lower()]
+
+    if min_rating:
+        reviews = [r for r in reviews if float(r.get("rating", 0)) >= min_rating]
+
+    # Calculate Aggregated Stats
+    total_count = len(reviews)
+    if total_count > 0:
+        avg_rating = round(sum(float(r.get("rating", 0)) for r in reviews) / total_count, 1)
+        
+        # Rating Distribution
+        distribution = {"5": 0, "4": 0, "3": 0, "2": 0, "1": 0}
+        for r in reviews:
+            star_key = str(int(round(float(r.get("rating", 5)))))
+            if star_key in distribution:
+                distribution[star_key] += 1
+            else:
+                distribution["5"] += 1
+
+        # Category Averages
+        cat_keys = ["cleanliness", "service", "location", "dining", "value"]
+        category_averages = {}
+        for cat in cat_keys:
+            cat_vals = [
+                float(r.get("category_ratings", {}).get(cat, r.get("rating", 5.0)))
+                for r in reviews
+                if r.get("category_ratings") and cat in r.get("category_ratings", {})
+            ]
+            if cat_vals:
+                category_averages[cat] = round(sum(cat_vals) / len(cat_vals), 1)
+            else:
+                category_averages[cat] = avg_rating
+    else:
+        avg_rating = 4.8
+        distribution = {"5": 0, "4": 0, "3": 0, "2": 0, "1": 0}
+        category_averages = {
+            "cleanliness": 4.9,
+            "service": 4.9,
+            "location": 4.8,
+            "dining": 4.7,
+            "value": 4.6
+        }
+
+    # Sort reviews by newest first
+    reviews_sorted = sorted(reviews, key=lambda x: x.get("created_at", ""), reverse=True)
+
+    return {
+        "count": total_count,
+        "average_rating": avg_rating,
+        "rating_distribution": distribution,
+        "category_averages": category_averages,
+        "reviews": reviews_sorted
+    }
+
+@app.post("/api/reviews")
+def create_review(req: ReviewCreateRequest):
+    """Submit a new guest review."""
+    reviews = load_reviews_data()
+    review_id = f"rev-{int(datetime.utcnow().timestamp())}"
+
+    cat_dict = {}
+    if req.category_ratings:
+        cat_dict = {
+            "cleanliness": req.category_ratings.cleanliness or req.rating,
+            "service": req.category_ratings.service or req.rating,
+            "location": req.category_ratings.location or req.rating,
+            "dining": req.category_ratings.dining or req.rating,
+            "value": req.category_ratings.value or req.rating
+        }
+    else:
+        cat_dict = {
+            "cleanliness": req.rating,
+            "service": req.rating,
+            "location": req.rating,
+            "dining": req.rating,
+            "value": req.rating
+        }
+
+    new_review = {
+        "id": review_id,
+        "hotel_id": req.hotel_id,
+        "user_id": req.user_id or "guest-anon",
+        "guest_name": req.guest_name.strip(),
+        "rating": round(float(req.rating), 1),
+        "category_ratings": cat_dict,
+        "travel_type": req.travel_type or "Couple",
+        "verified_stay": req.verified_stay if req.verified_stay is not None else True,
+        "title": req.title.strip(),
+        "comment": req.comment.strip(),
+        "tags": req.tags or [],
+        "helpful_count": 0,
+        "created_at": datetime.utcnow().isoformat() + "Z"
+    }
+
+    reviews.insert(0, new_review)
+    save_reviews_data(reviews)
+
+    return {
+        "status": "success",
+        "message": "Review submitted successfully!",
+        "review": new_review
+    }
+
+@app.post("/api/reviews/{review_id}/helpful")
+def mark_review_helpful(review_id: str):
+    """Upvote a review as helpful."""
+    reviews = load_reviews_data()
+    target_review = None
+    for r in reviews:
+        if r.get("id") == review_id:
+            r["helpful_count"] = r.get("helpful_count", 0) + 1
+            target_review = r
+            break
+
+    if not target_review:
+        raise HTTPException(status_code=404, detail="Review not found")
+
+    save_reviews_data(reviews)
+    return {
+        "status": "success",
+        "review_id": review_id,
+        "helpful_count": target_review["helpful_count"]
+    }
+
+@app.post("/api/feedback/chat")
+def submit_chat_feedback(req: ChatFeedbackRequest):
+    """Log quick user feedback on an AI Concierge response."""
+    entry = {
+        "id": f"fb-{int(datetime.utcnow().timestamp())}",
+        "message_id": req.message_id,
+        "feedback_type": req.feedback_type,
+        "hotel_id": req.hotel_id or "taj-fort-aguada",
+        "tags": req.tags or [],
+        "comment": req.comment,
+        "timestamp": datetime.utcnow().isoformat() + "Z"
+    }
+    _chat_feedback_store.append(entry)
+    logger.info(f"AI Concierge Chat Feedback Recorded: {entry}")
+    return {
+        "status": "success",
+        "message": "Thank you! Your feedback helps your AI Concierge improve."
+    }

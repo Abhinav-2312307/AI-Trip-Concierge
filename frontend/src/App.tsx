@@ -725,6 +725,7 @@ export const App: React.FC = () => {
         {currentView === 'hotel-details' && selectedHotelForDetails && (
           <HotelDetails
             hotel={selectedHotelForDetails}
+            guestName={guestName}
             onBack={() => setCurrentView('explore')}
             onProceedToCheckout={handleProceedToCheckout}
           />

@@ -213,3 +213,63 @@ export interface TripSetupRequest {
   check_out?: string;
   guest_name?: string;
 }
+
+export interface ReviewCategoryRatings {
+  cleanliness: number;
+  service: number;
+  location: number;
+  dining: number;
+  value: number;
+}
+
+export interface HotelReview {
+  id: string;
+  hotel_id: string;
+  user_id?: string;
+  guest_name: string;
+  rating: number;
+  category_ratings?: ReviewCategoryRatings;
+  travel_type?: 'Couple' | 'Family' | 'Solo' | 'Friends' | 'Business' | string;
+  verified_stay?: boolean;
+  title: string;
+  comment: string;
+  tags?: string[];
+  helpful_count: number;
+  created_at: string;
+  user_has_voted?: boolean;
+}
+
+export interface ReviewSummary {
+  count: number;
+  average_rating: number;
+  rating_distribution: {
+    '5': number;
+    '4': number;
+    '3': number;
+    '2': number;
+    '1': number;
+  };
+  category_averages: ReviewCategoryRatings;
+  reviews: HotelReview[];
+}
+
+export interface ReviewCreatePayload {
+  hotel_id: string;
+  user_id?: string;
+  guest_name: string;
+  rating: number;
+  category_ratings?: Partial<ReviewCategoryRatings>;
+  travel_type?: string;
+  title: string;
+  comment: string;
+  tags?: string[];
+  verified_stay?: boolean;
+}
+
+export interface ChatFeedbackPayload {
+  message_id: string;
+  feedback_type: 'positive' | 'negative';
+  hotel_id?: string;
+  tags?: string[];
+  comment?: string;
+}

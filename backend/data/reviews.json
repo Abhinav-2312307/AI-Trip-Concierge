@@ -1,0 +1,130 @@
+[
+  {
+    "id": "rev-1789865564",
+    "hotel_id": "taj-fort-aguada",
+    "user_id": "guest-anon",
+    "guest_name": "Priya Sharma",
+    "rating": 5.0,
+    "category_ratings": {
+      "cleanliness": 5.0,
+      "service": 5.0,
+      "location": 5.0,
+      "dining": 4.0,
+      "value": 4.0
+    },
+    "travel_type": "Couple",
+    "verified_stay": true,
+    "title": "Unforgettable Heritage Stay",
+    "comment": "The Arabian sea views from the cliff and the personalized heritage walk were extraordinary.",
+    "tags": [
+      "Ocean View",
+      "Exceptional Breakfast"
+    ],
+    "helpful_count": 1,
+    "created_at": "2026-09-20T06:22:44.379572Z"
+  },
+  {
+    "id": "rev-taj-1",
+    "hotel_id": "taj-fort-aguada",
+    "user_id": "user-101",
+    "guest_name": "Rohan & Priya Mehta",
+    "rating": 5.0,
+    "category_ratings": {
+      "cleanliness": 5.0,
+      "service": 5.0,
+      "location": 5.0,
+      "dining": 4.8,
+      "value": 4.6
+    },
+    "travel_type": "Couple",
+    "verified_stay": true,
+    "title": "Unmatched sea view sunsets and world-class heritage hospitality!",
+    "comment": "Staying on the ramparts of Fort Aguada was an unforgettable experience. The infinity pool overlooking the Arabian Sea during golden hour is magical. The 24/7 AI Concierge helped us book an impromptu romantic dinner at Cavatina and guided us away from tourist traps. Truly 5-star in every sense.",
+    "tags": [
+      "Ocean View",
+      "Romantic Sunset",
+      "Jiva Spa",
+      "Exceptional Service"
+    ],
+    "helpful_count": 28,
+    "created_at": "2026-09-12T14:30:00Z"
+  },
+  {
+    "id": "rev-taj-2",
+    "hotel_id": "taj-fort-aguada",
+    "user_id": "user-102",
+    "guest_name": "Dr. Ananya Deshmukh",
+    "rating": 4.8,
+    "category_ratings": {
+      "cleanliness": 4.9,
+      "service": 4.9,
+      "location": 5.0,
+      "dining": 4.7,
+      "value": 4.5
+    },
+    "travel_type": "Family",
+    "verified_stay": true,
+    "title": "Perfect serene escape with pristine private beach access",
+    "comment": "Traveled with our two kids and parents. The staff went above and beyond to make everyone comfortable. The heritage architecture combined with lush Portuguese garden cottages felt so authentic. Direct access to Sinquerim beach was seamless.",
+    "tags": [
+      "Private Beach",
+      "Kid Friendly",
+      "Heritage Charm",
+      "Great Breakfast"
+    ],
+    "helpful_count": 19,
+    "created_at": "2026-09-08T10:15:00Z"
+  },
+  {
+    "id": "rev-w-1",
+    "hotel_id": "w-goa-vagator",
+    "user_id": "user-103",
+    "guest_name": "Vikram Sethi",
+    "rating": 4.7,
+    "category_ratings": {
+      "cleanliness": 4.8,
+      "service": 4.7,
+      "location": 4.9,
+      "dining": 4.8,
+      "value": 4.4
+    },
+    "travel_type": "Friends",
+    "verified_stay": true,
+    "title": "Vibrant energy, Rockpool sunsets, and stellar cocktails",
+    "comment": "If you want high-energy luxury in North Goa right beneath Chapora Fort, W Goa is undefeated. The Rockpool lounge at sunset with live DJ sets is iconic. Rooms are bold, ultra-modern, and the concierge was on point for table reservations.",
+    "tags": [
+      "Rockpool Sunset",
+      "Nightlife",
+      "Chic Villas",
+      "Top Cocktails"
+    ],
+    "helpful_count": 24,
+    "created_at": "2026-09-14T18:45:00Z"
+  },
+  {
+    "id": "rev-alila-1",
+    "hotel_id": "alila-diwa-goa",
+    "user_id": "user-104",
+    "guest_name": "Sunita & Kabir Nair",
+    "rating": 4.9,
+    "category_ratings": {
+      "cleanliness": 5.0,
+      "service": 5.0,
+      "location": 4.8,
+      "dining": 4.9,
+      "value": 4.8
+    },
+    "travel_type": "Couple",
+    "verified_stay": true,
+    "title": "Paddy field serenity and South Goa's most peaceful retreat",
+    "comment": "Alila Diwa is pure tranquility. Watching the sun set over the emerald paddy fields from the infinity pool with a kokum cocktail is an experience you won't get anywhere else in India. Majorda beach is just minutes away by their private open-air shuttle.",
+    "tags": [
+      "Infinity Pool",
+      "Paddy Views",
+      "Serene Luxury",
+      "Spa Alila"
+    ],
+    "helpful_count": 31,
+    "created_at": "2026-09-10T11:20:00Z"
+  }
+]

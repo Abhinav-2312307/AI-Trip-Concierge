@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   Send,
   Bot,
-  ArrowRight,
+  ExternalLink,
   Volume2,
   VolumeX,
   Trash2,
@@ -10,9 +10,13 @@ import {
   MicOff,
   Radio,
   CheckCircle2,
-  XCircle
+  XCircle,
+  ThumbsUp,
+  ThumbsDown,
+  Check
 } from 'lucide-react';
 import type { ChatMessage, Place, HotelBooking } from '../types';
+import { submitChatFeedback } from '../services/api';
 
 interface AIChatProps {
   messages: ChatMessage[];
@@ -39,6 +43,20 @@ export const AIChat: React.FC<AIChatProps> = ({
   const [speechSupported, setSpeechSupported] = useState(true);
   const [listeningInterim, setListeningInterim] = useState('');
   const [speakingMessageId, setSpeakingMessageId] = useState<string | null>(null);
+  const [feedbackState, setFeedbackState] = useState<Record<string, 'positive' | 'negative'>>({});
+
+  const handleChatFeedback = async (messageId: string, feedbackType: 'positive' | 'negative') => {
+    setFeedbackState(prev => ({ ...prev, [messageId]: feedbackType }));
+    try {
+      await submitChatFeedback({
+        message_id: messageId,
+        feedback_type: feedbackType,
+        hotel_id: activeHotel?.id || 'taj-fort-aguada',
+      });
+    } catch (err) {
+      console.error('Failed to submit chat feedback:', err);
+    }
+  };
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
@@ -496,10 +514,80 @@ export const AIChat: React.FC<AIChatProps> = ({
                           gap: '4px'
                         }}
                       >
-                        Ask more details <ArrowRight size={11} />
+                        Explore <ExternalLink size={12} />
                       </button>
                     </div>
                   ))}
+                </div>
+              )}
+
+              {/* AI Message Micro-Feedback */}
+              {msg.sender === 'assistant' && msg.id !== 'welcome-msg' && !msg.isAlert && (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginTop: '4px',
+                  paddingLeft: '4px',
+                  fontSize: '0.74rem',
+                  color: 'var(--text-muted)'
+                }}>
+                  {feedbackState[msg.id] ? (
+                    <span style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      color: feedbackState[msg.id] === 'positive' ? '#10B981' : '#F59E0B',
+                      fontWeight: 600
+                    }}>
+                      <Check size={12} />
+                      {feedbackState[msg.id] === 'positive' ? 'Thanks! Glad this was helpful' : 'Thanks for the feedback!'}
+                    </span>
+                  ) : (
+                    <>
+                      <span>Was this recommendation helpful?</span>
+                      <button
+                        onClick={() => handleChatFeedback(msg.id, 'positive')}
+                        title="Helpful recommendation"
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: 'var(--text-muted)',
+                          cursor: 'pointer',
+                          padding: '2px 4px',
+                          borderRadius: '4px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '2px',
+                          transition: 'color 0.15s ease'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.color = '#10B981'}
+                        onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
+                      >
+                        <ThumbsUp size={13} />
+                      </button>
+                      <button
+                        onClick={() => handleChatFeedback(msg.id, 'negative')}
+                        title="Needs improvement"
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: 'var(--text-muted)',
+                          cursor: 'pointer',
+                          padding: '2px 4px',
+                          borderRadius: '4px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '2px',
+                          transition: 'color 0.15s ease'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.color = '#EF4444'}
+                        onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
+                      >
+                        <ThumbsDown size={13} />
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
             </div>

@@ -17,14 +17,17 @@ import {
   Sparkles,
   Heart,
   MapPin,
-  Building
+  Building,
+  Star
 } from 'lucide-react';
-import type { ItineraryResponse, ItinerarySlot, HotelBooking, Booking, TripContext } from '../types';
+import type { ItineraryResponse, ItinerarySlot, HotelBooking, Booking, TripContext, ReviewCreatePayload } from '../types';
 import { 
   downloadICSFile, 
   getGoogleCalendarUrl, 
   formatItineraryForClipboard 
 } from '../utils/calendarExport';
+import { submitHotelReview } from '../services/api';
+import { ReviewModal } from './ReviewModal';
 
 interface MyTripJourneyProps {
   itineraryData: ItineraryResponse | null;
@@ -62,6 +65,14 @@ export const MyTripJourney: React.FC<MyTripJourneyProps> = ({
   const [selectedDuration, setSelectedDuration] = useState<number>(3);
   const [copiedToast, setCopiedToast] = useState<boolean>(false);
   const [activeHubTab, setActiveHubTab] = useState<'plan' | 'stay' | 'weather' | 'experiences' | 'transport'>('plan');
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
+  const [reviewSubmittedToast, setReviewSubmittedToast] = useState<boolean>(false);
+
+  const handleReviewSubmitted = async (payload: ReviewCreatePayload) => {
+    await submitHotelReview(payload);
+    setReviewSubmittedToast(true);
+    setTimeout(() => setReviewSubmittedToast(false), 4000);
+  };
 
   const days = itineraryData?.itinerary || [];
   const currentDay = days[activeDayIndex] || days[0];
@@ -1132,7 +1143,124 @@ export const MyTripJourney: React.FC<MyTripJourneyProps> = ({
             </div>
           </div>
         </div>
+
+        {/* ── Rate Your Stay & Digital Journey Card ── */}
+        <div style={{
+          marginTop: '32px',
+          background: '#FFFFFF',
+          borderRadius: '24px',
+          border: '1px solid #E2E8F0',
+          padding: '28px clamp(20px, 3.5vw, 36px)',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '24px'
+        }}>
+          <div>
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: '#FFF5F0',
+              color: '#FF6B4A',
+              padding: '4px 12px',
+              borderRadius: '9999px',
+              fontSize: '0.78rem',
+              fontWeight: 700,
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
+              marginBottom: '8px'
+            }}>
+              <Sparkles size={13} />
+              <span>Traveller Review & Feedback</span>
+            </div>
+
+            <h3 style={{
+              margin: '0 0 6px 0',
+              fontSize: '1.4rem',
+              fontFamily: 'Playfair Display, serif',
+              fontWeight: 800,
+              color: '#0B1626'
+            }}>
+              How is your Goa stay at {hotelName}?
+            </h3>
+
+            <p style={{ margin: 0, color: '#64748B', fontSize: '0.9rem', maxWidth: '520px' }}>
+              Your feedback on the resort, dining, and AI concierge helps elevate your personal itinerary in real time.
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => setIsReviewModalOpen(true)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: 'linear-gradient(135deg, #FF6B4A 0%, #FF8A65 100%)',
+                color: '#FFFFFF',
+                border: 'none',
+                borderRadius: '9999px',
+                padding: '12px 24px',
+                fontSize: '0.92rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                boxShadow: '0 4px 15px rgba(255, 107, 74, 0.35)',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 8px 20px rgba(255, 107, 74, 0.45)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 107, 74, 0.35)';
+              }}
+            >
+              <Star size={16} fill="#FFFFFF" />
+              <span>Rate Your Stay & Itinerary</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Review Submitted Toast */}
+        {reviewSubmittedToast && (
+          <div style={{
+            position: 'fixed',
+            bottom: '24px',
+            right: '24px',
+            background: '#0B1626',
+            color: '#FFFFFF',
+            padding: '14px 22px',
+            borderRadius: '12px',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            zIndex: 1000,
+            fontSize: '0.9rem',
+            fontWeight: 600,
+            border: '1px solid rgba(255, 255, 255, 0.15)'
+          }}>
+            <span style={{ color: '#10B981' }}>✓</span>
+            <span>Thank you! Your verified review has been published.</span>
+          </div>
+        )}
+
       </div>
+
+      {/* Review Modal */}
+      {activeHotel && (
+        <ReviewModal
+          isOpen={isReviewModalOpen}
+          onClose={() => setIsReviewModalOpen(false)}
+          hotel={activeHotel}
+          guestName={activeGuestName}
+          onSubmitReview={handleReviewSubmitted}
+        />
+      )}
 
     </div>
   );
