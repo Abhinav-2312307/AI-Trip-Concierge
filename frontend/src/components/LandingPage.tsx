@@ -23,6 +23,7 @@ interface LandingPageProps {
   onExploreClick: () => void;
   onHotelClick: (hotel: HotelBooking) => void;
   onLoginClick?: () => void;
+  onPlanTrip?: () => void;
   onJudgeDemoClick: () => void;
   onOpenConcierge?: (prompt?: string) => void;
   onOpenMap?: () => void;
@@ -32,6 +33,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   hotels,
   onExploreClick,
   onHotelClick,
+  onLoginClick,
+  onPlanTrip,
   onJudgeDemoClick,
   onOpenConcierge,
   onOpenMap,
@@ -73,28 +76,28 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       title: 'Experiences',
       count: '24 Activities',
       image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80',
-      action: () => onOpenConcierge ? onOpenConcierge('Recommend top outdoor adventures and water sports in Goa') : onJudgeDemoClick()
+      action: () => onOpenConcierge ? onOpenConcierge('Recommend top outdoor adventures and water sports in Goa') : (onLoginClick ? onLoginClick() : onExploreClick())
     },
     {
       id: 'beaches',
       title: 'Beaches',
       count: '12 Beaches',
       image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80',
-      action: () => onOpenConcierge ? onOpenConcierge('What are the most peaceful hidden beaches in North & South Goa?') : onJudgeDemoClick()
+      action: () => onOpenConcierge ? onOpenConcierge('What are the most peaceful hidden beaches in North & South Goa?') : (onLoginClick ? onLoginClick() : onExploreClick())
     },
     {
       id: 'food-drinks',
       title: 'Food & Drinks',
       count: '35 Places',
       image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80',
-      action: () => onOpenConcierge ? onOpenConcierge('Recommend authentic Goan fish thali and beach shacks') : onJudgeDemoClick()
+      action: () => onOpenConcierge ? onOpenConcierge('Recommend authentic Goan fish thali and beach shacks') : (onLoginClick ? onLoginClick() : onExploreClick())
     },
     {
       id: 'nightlife',
       title: 'Nightlife',
       count: '15 Venues',
       image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80',
-      action: () => onOpenConcierge ? onOpenConcierge('What are the best sunset lounges and nightlife spots in Vagator and Anjuna?') : onJudgeDemoClick()
+      action: () => onOpenConcierge ? onOpenConcierge('What are the best sunset lounges and nightlife spots in Vagator and Anjuna?') : (onLoginClick ? onLoginClick() : onExploreClick())
     }
   ];
 
@@ -103,25 +106,25 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       id: 'best-time',
       title: 'Best Time to Visit Goa',
       image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=600&q=80',
-      action: () => onOpenConcierge ? onOpenConcierge('What is the best month and season to visit Goa?') : onJudgeDemoClick()
+      action: () => onOpenConcierge ? onOpenConcierge('What is the best month and season to visit Goa?') : (onLoginClick ? onLoginClick() : onExploreClick())
     },
     {
       id: 'top-beaches',
       title: 'Top 10 Beaches in Goa',
       image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80',
-      action: () => onOpenConcierge ? onOpenConcierge('Give me the top 10 beaches in Goa with pros and cons') : onJudgeDemoClick()
+      action: () => onOpenConcierge ? onOpenConcierge('Give me the top 10 beaches in Goa with pros and cons') : (onLoginClick ? onLoginClick() : onExploreClick())
     },
     {
       id: 'local-food',
       title: 'Local Food You Must Try',
       image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=600&q=80',
-      action: () => onOpenConcierge ? onOpenConcierge('List the must-try Goan dishes and where to eat them') : onJudgeDemoClick()
+      action: () => onOpenConcierge ? onOpenConcierge('List the must-try Goan dishes and where to eat them') : (onLoginClick ? onLoginClick() : onExploreClick())
     },
     {
       id: 'get-around',
       title: 'How to Get Around Goa',
       image: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=600&q=80',
-      action: () => onOpenConcierge ? onOpenConcierge('What is the best way to get around Goa: scooter, self-drive car, or taxi?') : onJudgeDemoClick()
+      action: () => onOpenConcierge ? onOpenConcierge('What is the best way to get around Goa: scooter, self-drive car, or taxi?') : (onLoginClick ? onLoginClick() : onExploreClick())
     }
   ];
 
@@ -133,11 +136,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       ───────────────────────────────────────────────────────────── */}
       <section style={{
         position: 'relative',
-        minHeight: '660px',
+        minHeight: '680px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        padding: '36px clamp(16px, 4vw, 64px) 110px',
+        padding: '100px clamp(16px, 4vw, 64px) 110px',
         backgroundImage: `
           linear-gradient(180deg, rgba(11, 22, 38, 0.45) 0%, rgba(11, 22, 38, 0.35) 45%, rgba(11, 22, 38, 0.75) 100%),
           url('https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=2200&q=88')
@@ -150,7 +153,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         {/* Top Floating Handwritten Script Badge (Top Right) */}
         <div style={{
           position: 'absolute',
-          top: '36px',
+          top: '90px',
           right: 'clamp(24px, 5vw, 80px)',
           transform: 'rotate(6deg)',
           pointerEvents: 'none',
@@ -255,7 +258,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           }}>
             {/* Primary Orange Pill CTA */}
             <button
-              onClick={onJudgeDemoClick}
+              onClick={onPlanTrip || onLoginClick || onExploreClick}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -680,7 +683,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           }}>
             {/* Action 1: Ask AI Concierge */}
             <div
-              onClick={() => onOpenConcierge ? onOpenConcierge('Hello! Help me plan an unforgettable trip to Goa.') : onJudgeDemoClick()}
+              onClick={() => onOpenConcierge ? onOpenConcierge('Hello! Help me plan an unforgettable trip to Goa.') : (onLoginClick ? onLoginClick() : onExploreClick())}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -727,7 +730,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             {/* Action 2: Create Itinerary */}
             <div
-              onClick={onJudgeDemoClick}
+              onClick={onPlanTrip || onLoginClick || onExploreClick}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -774,7 +777,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             {/* Action 3: Find Hidden Gems */}
             <div
-              onClick={() => onOpenConcierge ? onOpenConcierge('Show me 5 completely offbeat hidden gems and secret viewpoints in Goa') : onJudgeDemoClick()}
+              onClick={() => onOpenConcierge ? onOpenConcierge('Show me 5 completely offbeat hidden gems and secret viewpoints in Goa') : (onLoginClick ? onLoginClick() : onExploreClick())}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -1389,7 +1392,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </p>
 
             <button
-              onClick={() => onOpenConcierge ? onOpenConcierge('Show me curated Goan experiences: boat cruises, spice plantations, water sports, and beach shacks') : onJudgeDemoClick()}
+              onClick={() => onOpenConcierge ? onOpenConcierge('Show me curated Goan experiences: boat cruises, spice plantations, water sports, and beach shacks') : (onLoginClick ? onLoginClick() : onExploreClick())}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -1636,7 +1639,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
 
           <button
-            onClick={() => onOpenConcierge ? onOpenConcierge('Show me all Goa travel guides: weather, transport, hidden gems, and dining etiquette') : onJudgeDemoClick()}
+            onClick={() => onOpenConcierge ? onOpenConcierge('Show me all Goa travel guides: weather, transport, hidden gems, and dining etiquette') : (onLoginClick ? onLoginClick() : onExploreClick())}
             style={{
               display: 'inline-flex',
               alignItems: 'center',

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
+  Palmtree,
   Compass, 
   ChevronDown, 
   Sparkles, 
@@ -9,8 +10,8 @@ import {
   Bookmark, 
   LogOut, 
   Zap, 
-  Calendar,
-  Building
+  Calendar, 
+  Building 
 } from 'lucide-react';
 import type { TripContext, HotelBooking, User, Booking } from '../types';
 import type { SupportedLanguage } from '../utils/i18n';
@@ -75,8 +76,10 @@ export const Navbar: React.FC<NavbarProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const guestDisplayName = currentUser?.name || currentBooking?.guestName || 'Aditya';
-  const userInitial = guestDisplayName.charAt(0).toUpperCase() || 'A';
+  const guestDisplayName = currentUser?.name || (currentUser ? currentBooking?.guestName : '') || '';
+  const userInitial = guestDisplayName ? guestDisplayName.charAt(0).toUpperCase() : 'U';
+
+  const isTransparent = currentView === 'landing' && !isScrolled;
 
   const handleNavClick = (view: string, tab?: string) => {
     setCurrentView(view);
@@ -86,17 +89,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header style={{
-      position: 'sticky',
+      position: currentView === 'landing' ? 'fixed' : 'sticky',
       top: 0,
+      left: 0,
       width: '100%',
       height: '74px',
       zIndex: 100,
-      background: isScrolled
-        ? 'rgba(11, 22, 38, 0.92)'
-        : 'rgba(11, 22, 38, 0.55)',
-      backdropFilter: 'blur(20px)',
-      WebkitBackdropFilter: 'blur(20px)',
-      borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
+      background: isTransparent
+        ? 'linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.18) 60%, rgba(0, 0, 0, 0) 100%)'
+        : 'rgba(11, 22, 38, 0.92)',
+      backdropFilter: isTransparent ? 'none' : 'blur(20px)',
+      WebkitBackdropFilter: isTransparent ? 'none' : 'blur(20px)',
+      borderBottom: isTransparent ? 'none' : '1px solid rgba(255, 255, 255, 0.12)',
       boxShadow: isScrolled ? '0 10px 30px rgba(0, 0, 0, 0.35)' : 'none',
       transition: 'all 0.3s ease'
     }}>
@@ -111,9 +115,9 @@ export const Navbar: React.FC<NavbarProps> = ({
         gap: '24px'
       }}>
         
-        {/* ── LEFT: Modern Sunset Brand Logo ── */}
+        {/* ── LEFT: Modern Sunset Brand Logo with Palm Tree ── */}
         <div
-          onClick={() => handleNavClick(hasActiveBooking ? 'dashboard' : 'landing', 'overview')}
+          onClick={() => handleNavClick(currentUser && hasActiveBooking ? 'dashboard' : 'landing', 'overview')}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -131,10 +135,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 4px 14px rgba(255, 107, 74, 0.45)',
+            boxShadow: '0 4px 15px rgba(255, 107, 74, 0.45)',
             flexShrink: 0
           }}>
-            <Compass size={22} color="#FFFFFF" strokeWidth={2.4} />
+            <Palmtree size={22} color="#FFFFFF" strokeWidth={2.4} />
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
@@ -159,23 +163,24 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
 
-        {/* ── CENTER: Clean Modern Navigation Links ── */}
+        {/* ── CENTER: Clean Modern Navigation Links (Orange Underline on Active) ── */}
         <nav style={{
           display: 'flex',
           alignItems: 'center',
-          gap: 'clamp(12px, 2vw, 28px)'
+          gap: 'clamp(14px, 2.2vw, 32px)'
         }} className="desktop-nav-center">
           
           {/* 1. Home */}
           <button
             onClick={() => handleNavClick('landing')}
             style={{
-              background: currentView === 'landing' ? 'rgba(255, 255, 255, 0.14)' : 'transparent',
+              background: 'transparent',
               border: 'none',
-              borderRadius: '9999px',
-              padding: '7px 16px',
-              color: currentView === 'landing' ? '#FFFFFF' : 'rgba(255, 255, 255, 0.75)',
-              fontSize: '0.92rem',
+              borderBottom: currentView === 'landing' ? '2.5px solid #FF6B4A' : '2.5px solid transparent',
+              borderRadius: 0,
+              padding: '6px 4px 6px',
+              color: currentView === 'landing' ? '#FFFFFF' : 'rgba(255, 255, 255, 0.82)',
+              fontSize: '0.94rem',
               fontWeight: currentView === 'landing' ? 700 : 500,
               cursor: 'pointer',
               transition: 'all 0.2s ease'
@@ -184,7 +189,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               if (currentView !== 'landing') e.currentTarget.style.color = '#FFFFFF';
             }}
             onMouseLeave={(e) => {
-              if (currentView !== 'landing') e.currentTarget.style.color = 'rgba(255, 255, 255, 0.75)';
+              if (currentView !== 'landing') e.currentTarget.style.color = 'rgba(255, 255, 255, 0.82)';
             }}
           >
             Home
@@ -195,12 +200,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={() => handleNavClick('dashboard', 'bookings')}
               style={{
-                background: isDashboard && activeTab === 'bookings' ? 'rgba(255, 255, 255, 0.14)' : 'transparent',
+                background: 'transparent',
                 border: 'none',
-                borderRadius: '9999px',
-                padding: '7px 16px',
-                color: isDashboard && activeTab === 'bookings' ? '#FFFFFF' : 'rgba(255, 255, 255, 0.75)',
-                fontSize: '0.92rem',
+                borderBottom: isDashboard && activeTab === 'bookings' ? '2.5px solid #FF6B4A' : '2.5px solid transparent',
+                borderRadius: 0,
+                padding: '6px 4px 6px',
+                color: isDashboard && activeTab === 'bookings' ? '#FFFFFF' : 'rgba(255, 255, 255, 0.82)',
+                fontSize: '0.94rem',
                 fontWeight: isDashboard && activeTab === 'bookings' ? 700 : 500,
                 cursor: 'pointer',
                 transition: 'all 0.2s ease'
@@ -209,7 +215,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 if (!(isDashboard && activeTab === 'bookings')) e.currentTarget.style.color = '#FFFFFF';
               }}
               onMouseLeave={(e) => {
-                if (!(isDashboard && activeTab === 'bookings')) e.currentTarget.style.color = 'rgba(255, 255, 255, 0.75)';
+                if (!(isDashboard && activeTab === 'bookings')) e.currentTarget.style.color = 'rgba(255, 255, 255, 0.82)';
               }}
             >
               My Trips
@@ -220,12 +226,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={() => handleNavClick('explore')}
             style={{
-              background: (currentView === 'explore' || currentView === 'hotel-details') ? 'rgba(255, 255, 255, 0.14)' : 'transparent',
+              background: 'transparent',
               border: 'none',
-              borderRadius: '9999px',
-              padding: '7px 16px',
-              color: (currentView === 'explore' || currentView === 'hotel-details') ? '#FFFFFF' : 'rgba(255, 255, 255, 0.75)',
-              fontSize: '0.92rem',
+              borderBottom: (currentView === 'explore' || currentView === 'hotel-details') ? '2.5px solid #FF6B4A' : '2.5px solid transparent',
+              borderRadius: 0,
+              padding: '6px 4px 6px',
+              color: (currentView === 'explore' || currentView === 'hotel-details') ? '#FFFFFF' : 'rgba(255, 255, 255, 0.82)',
+              fontSize: '0.94rem',
               fontWeight: (currentView === 'explore' || currentView === 'hotel-details') ? 700 : 500,
               cursor: 'pointer',
               transition: 'all 0.2s ease'
@@ -234,7 +241,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               if (currentView !== 'explore' && currentView !== 'hotel-details') e.currentTarget.style.color = '#FFFFFF';
             }}
             onMouseLeave={(e) => {
-              if (currentView !== 'explore' && currentView !== 'hotel-details') e.currentTarget.style.color = 'rgba(255, 255, 255, 0.75)';
+              if (currentView !== 'explore' && currentView !== 'hotel-details') e.currentTarget.style.color = 'rgba(255, 255, 255, 0.82)';
             }}
           >
             Explore Goa
@@ -250,12 +257,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               }
             }}
             style={{
-              background: isDashboard && activeTab === 'directory' ? 'rgba(255, 255, 255, 0.14)' : 'transparent',
+              background: 'transparent',
               border: 'none',
-              borderRadius: '9999px',
-              padding: '7px 16px',
-              color: isDashboard && activeTab === 'directory' ? '#FFFFFF' : 'rgba(255, 255, 255, 0.75)',
-              fontSize: '0.92rem',
+              borderBottom: isDashboard && activeTab === 'directory' ? '2.5px solid #FF6B4A' : '2.5px solid transparent',
+              borderRadius: 0,
+              padding: '6px 4px 6px',
+              color: isDashboard && activeTab === 'directory' ? '#FFFFFF' : 'rgba(255, 255, 255, 0.82)',
+              fontSize: '0.94rem',
               fontWeight: isDashboard && activeTab === 'directory' ? 700 : 500,
               cursor: 'pointer',
               transition: 'all 0.2s ease'
@@ -264,7 +272,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               if (!(isDashboard && activeTab === 'directory')) e.currentTarget.style.color = '#FFFFFF';
             }}
             onMouseLeave={(e) => {
-              if (!(isDashboard && activeTab === 'directory')) e.currentTarget.style.color = 'rgba(255, 255, 255, 0.75)';
+              if (!(isDashboard && activeTab === 'directory')) e.currentTarget.style.color = 'rgba(255, 255, 255, 0.82)';
             }}
           >
             Experiences
@@ -280,12 +288,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               }
             }}
             style={{
-              background: isDashboard && activeTab === 'map' ? 'rgba(255, 255, 255, 0.14)' : 'transparent',
+              background: 'transparent',
               border: 'none',
-              borderRadius: '9999px',
-              padding: '7px 16px',
-              color: isDashboard && activeTab === 'map' ? '#FFFFFF' : 'rgba(255, 255, 255, 0.75)',
-              fontSize: '0.92rem',
+              borderBottom: isDashboard && activeTab === 'map' ? '2.5px solid #FF6B4A' : '2.5px solid transparent',
+              borderRadius: 0,
+              padding: '6px 4px 6px',
+              color: isDashboard && activeTab === 'map' ? '#FFFFFF' : 'rgba(255, 255, 255, 0.82)',
+              fontSize: '0.94rem',
               fontWeight: isDashboard && activeTab === 'map' ? 700 : 500,
               cursor: 'pointer',
               transition: 'all 0.2s ease'
@@ -294,7 +303,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               if (!(isDashboard && activeTab === 'map')) e.currentTarget.style.color = '#FFFFFF';
             }}
             onMouseLeave={(e) => {
-              if (!(isDashboard && activeTab === 'map')) e.currentTarget.style.color = 'rgba(255, 255, 255, 0.75)';
+              if (!(isDashboard && activeTab === 'map')) e.currentTarget.style.color = 'rgba(255, 255, 255, 0.82)';
             }}
           >
             Travel Guides
@@ -305,7 +314,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* ── RIGHT: Glowing Pill CTA + Notification + User Avatar ── */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }} ref={menuRef}>
           
-          {/* Glowing Dark Pill Ask AI Concierge Button */}
+          {/* Frosted Glass Pill Ask AI Concierge Button */}
           <button
             onClick={() => {
               if (hasActiveBooking || currentUser) {
@@ -315,30 +324,34 @@ export const Navbar: React.FC<NavbarProps> = ({
               }
             }}
             style={{
-              background: 'rgba(255, 255, 255, 0.08)',
-              border: '1px solid rgba(255, 255, 255, 0.22)',
+              background: 'rgba(255, 255, 255, 0.12)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              border: '1px solid rgba(255, 255, 255, 0.28)',
               borderRadius: '9999px',
-              padding: '8px 18px',
+              padding: '8px 20px',
               color: '#FFFFFF',
-              fontSize: '0.86rem',
+              fontSize: '0.88rem',
               fontWeight: 600,
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '7px',
+              gap: '8px',
               cursor: 'pointer',
-              boxShadow: '0 0 12px rgba(255, 107, 74, 0.15)',
+              boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)',
               transition: 'all 0.25s ease'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.16)';
-              e.currentTarget.style.borderColor = 'rgba(255, 107, 74, 0.6)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+              e.currentTarget.style.borderColor = 'rgba(255, 107, 74, 0.7)';
+              e.currentTarget.style.transform = 'translateY(-1px)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.22)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.28)';
+              e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
-            <Sparkles size={14} color="#FF9A76" />
+            <Sparkles size={15} color="#FF7E67" />
             <span>Ask AI Concierge</span>
           </button>
 
@@ -348,11 +361,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => handleNavClick('dashboard', 'alerts')}
               style={{
                 position: 'relative',
-                background: 'rgba(255, 255, 255, 0.08)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
+                background: 'rgba(255, 255, 255, 0.12)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255, 255, 255, 0.25)',
                 color: '#FFFFFF',
-                width: '36px',
-                height: '36px',
+                width: '38px',
+                height: '38px',
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
@@ -362,14 +377,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               }}
               title={unreadAlertCount > 0 ? `${unreadAlertCount} new notifications` : 'Notifications'}
             >
-              <Bell size={15} />
+              <Bell size={16} />
               {unreadAlertCount > 0 && (
                 <span style={{
                   position: 'absolute',
-                  top: '-2px',
-                  right: '-2px',
-                  width: '15px',
-                  height: '15px',
+                  top: '-3px',
+                  right: '-3px',
+                  width: '16px',
+                  height: '16px',
                   borderRadius: '50%',
                   background: '#FF6B4A',
                   color: '#FFFFFF',
@@ -387,7 +402,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           )}
 
           {/* Signed In: Profile Pill with Dropdown | Signed Out: Sign In Button */}
-          {currentUser || hasActiveBooking ? (
+          {currentUser ? (
             <div style={{ position: 'relative' }}>
               <button
                 onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
@@ -395,12 +410,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
-                  background: 'rgba(255, 255, 255, 0.08)',
-                  border: '1px solid rgba(255, 255, 255, 0.18)',
+                  background: 'rgba(0, 0, 0, 0.22)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255, 255, 255, 0.24)',
                   borderRadius: '9999px',
-                  padding: '4px 12px 4px 4px',
+                  padding: '4px 14px 4px 4px',
                   color: '#FFFFFF',
-                  fontSize: '0.86rem',
+                  fontSize: '0.88rem',
                   fontWeight: 600,
                   cursor: 'pointer',
                   transition: 'all 0.2s ease'
@@ -416,13 +433,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: '0.8rem',
-                  fontWeight: 800
+                  fontWeight: 800,
+                  boxShadow: '0 2px 8px rgba(255, 107, 74, 0.4)'
                 }}>
                   {userInitial}
                 </div>
 
                 <span>{guestDisplayName.split(' ')[0]}</span>
-                <ChevronDown size={13} color="#CBD5E1" />
+                <ChevronDown size={14} color="#CBD5E1" />
               </button>
 
               {/* Floating Luxury Profile Dropdown */}

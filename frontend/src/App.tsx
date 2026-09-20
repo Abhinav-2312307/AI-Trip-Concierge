@@ -55,13 +55,7 @@ export const App: React.FC = () => {
   });
 
   // Top-Level Application View: 'landing' | 'explore' | 'hotel-details' | 'confirmation' | 'dashboard'
-  const [currentView, setCurrentView] = useState<string>(() => {
-    const savedUser = localStorage.getItem('concierge_user');
-    const savedBooking = localStorage.getItem('concierge_current_booking');
-    if (savedUser && savedBooking) return 'dashboard';
-    if (savedUser) return 'explore';
-    return 'landing';
-  });
+  const [currentView, setCurrentView] = useState<string>('landing');
 
   // Active Hotel context
   const [activeHotelId, setActiveHotelId] = useState<string>(() => {
@@ -681,17 +675,40 @@ export const App: React.FC = () => {
               setAuthModalMode('login');
               setIsAuthModalOpen(true);
             }}
+            onPlanTrip={() => {
+              if (currentUser) {
+                if (currentBooking) {
+                  setCurrentView('dashboard');
+                  setActiveTab('overview');
+                } else {
+                  setCurrentView('explore');
+                }
+              } else {
+                setAuthModalMode('login');
+                setIsAuthModalOpen(true);
+              }
+            }}
             onJudgeDemoClick={handleJudgeDemo}
             onOpenConcierge={(prompt) => {
-              handleJudgeDemo();
-              setActiveTab('chat');
-              if (prompt) {
-                setTimeout(() => handleSendMessage(prompt), 300);
+              if (currentUser) {
+                setCurrentView('dashboard');
+                setActiveTab('chat');
+                if (prompt) {
+                  setTimeout(() => handleSendMessage(prompt), 300);
+                }
+              } else {
+                setAuthModalMode('login');
+                setIsAuthModalOpen(true);
               }
             }}
             onOpenMap={() => {
-              handleJudgeDemo();
-              setActiveTab('map');
+              if (currentUser) {
+                setCurrentView('dashboard');
+                setActiveTab('map');
+              } else {
+                setAuthModalMode('login');
+                setIsAuthModalOpen(true);
+              }
             }}
           />
         )}
