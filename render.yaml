@@ -1,0 +1,53 @@
+# ==============================================================================
+# 🌴 Render Blueprint Specification (render.yaml)
+# AI Trip Concierge - Post-Booking Travel Companion
+# ==============================================================================
+# Deploys:
+# 1. Backend Web Service (FastAPI / Python)
+# 2. Frontend Static Site (React / Vite)
+# ==============================================================================
+
+services:
+  # --- 1. BACKEND WEB SERVICE ---
+  - type: web
+    name: ai-trip-concierge-api
+    runtime: python
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.8
+      - key: HOST
+        value: 0.0.0.0
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+
+  # --- 2. FRONTEND STATIC SITE ---
+  - type: web
+    name: ai-trip-concierge-web
+    runtime: static
+    region: oregon
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: ai-trip-concierge-api
+          property: host
