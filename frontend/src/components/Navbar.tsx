@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   Palmtree,
-  Compass, 
   ChevronDown, 
   Sparkles, 
   Bell, 

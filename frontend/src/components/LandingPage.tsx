@@ -24,7 +24,7 @@ interface LandingPageProps {
   onHotelClick: (hotel: HotelBooking) => void;
   onLoginClick?: () => void;
   onPlanTrip?: () => void;
-  onJudgeDemoClick: () => void;
+  onJudgeDemoClick?: () => void;
   onOpenConcierge?: (prompt?: string) => void;
   onOpenMap?: () => void;
 }
@@ -35,7 +35,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   onHotelClick,
   onLoginClick,
   onPlanTrip,
-  onJudgeDemoClick,
   onOpenConcierge,
   onOpenMap,
 }) => {
